@@ -1,0 +1,52 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+
+class CampaignSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        \DB::table('campaigns')->insert([
+            [
+                'topic_id' => 1,
+                'user_id' => 1, // Martin (admin)
+                'name' => 'Operace Nedůvěra',
+                'start_date' => now()->format('Y-m-d'),
+                'end_date' => null,
+            ],
+            [
+                'topic_id' => 2,
+                'user_id' => 2, // Alex (campaign_manager)
+                'name' => 'Projekt Rozdělení',
+                'start_date' => now()->format('Y-m-d'),
+                'end_date' => null,
+            ],
+            [
+                'topic_id' => 3,
+                'user_id' => 1, // Martin (admin)
+                'name' => 'Simulace Panika',
+                'start_date' => now()->format('Y-m-d'),
+                'end_date' => null,
+            ],
+            [
+                'topic_id' => 4,
+                'user_id' => 2, // Alex (campaign_manager)
+                'name' => 'Neexistující Horizont 2025',
+                'start_date' => now()->format('Y-m-d'),
+                'end_date' => null,
+            ],
+            [
+                'topic_id' => 5,
+                'user_id' => 1, // Martin (admin)
+                'name' => 'Protokol Myšlenka',
+                'start_date' => now()->format('Y-m-d'),
+                'end_date' => null,
+            ],
+        ]);
+    }
+}

@@ -17,8 +17,7 @@ return new class extends Migration
                 'admin',
                 'campaign_manager',
                 'coordinator',
-                'worker',
-                'guest'
+                'worker'
             ])->default('guest')->after('address');
         });
     }
@@ -30,3 +29,5 @@ return new class extends Migration
         });
     }
 };
+
+
