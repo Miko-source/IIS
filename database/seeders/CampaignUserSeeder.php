@@ -10,29 +10,99 @@ class CampaignUserSeeder extends Seeder
     {
         \DB::table('campaign_user')->insert([
 
-            // Operace Nedůvěra – Martin (admin)
-            ['campaign_id' => 1, 'user_id' => 1], // Martin - admin
-            ['campaign_id' => 1, 'user_id' => 3], // Jana - coordinator
-            ['campaign_id' => 1, 'user_id' => 5], // Tomáš - guest
+            // Operace Nedůvěra
+            [
+                'campaign_id' => 1,
+                'user_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ], // Martin (admin)
+            [
+                'campaign_id' => 1,
+                'user_id' => 3,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ], // Jana (coordinator)
+            [
+                'campaign_id' => 1,
+                'user_id' => 6,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ], // Petr (worker)
 
-            // Projekt Rozdělení – Alex (campaign_manager)
-            ['campaign_id' => 2, 'user_id' => 1], // Martin - admin
-            ['campaign_id' => 2, 'user_id' => 2], // Alex - campaign_manager
-            ['campaign_id' => 2, 'user_id' => 4], // Petr - worker
+            // Projekt Rozdělení
+            [
+                'campaign_id' => 2,
+                'user_id' => 2,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ], // Alex (campaign_manager)
+            [
+                'campaign_id' => 2,
+                'user_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ], // Martin (admin)
+            [
+                'campaign_id' => 2,
+                'user_id' => 7,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ], // Marek (worker)
 
-            // Simulace Panika – Martin (admin)
-            ['campaign_id' => 3, 'user_id' => 1], // Martin - admin
-            ['campaign_id' => 3, 'user_id' => 3], // Jana - coordinator
+            // Simulace Panika
+            [
+                'campaign_id' => 3,
+                'user_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ], // Martin (admin)
+            [
+                'campaign_id' => 3,
+                'user_id' => 4,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ], // Lucie (coordinator)
 
-            // Neexistující Horizont 2025 – Alex (campaign_manager)
-            ['campaign_id' => 4, 'user_id' => 1], // Martin - admin
-            ['campaign_id' => 4, 'user_id' => 2], // Alex - campaign_manager
-            ['campaign_id' => 4, 'user_id' => 4], // Petr - worker
+            // Neexistující Horizont 2025
+            [
+                'campaign_id' => 4,
+                'user_id' => 2,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ], // Alex (campaign_manager)
+            [
+                'campaign_id' => 4,
+                'user_id' => 8,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ], // Karel (worker)
+            [
+                'campaign_id' => 4,
+                'user_id' => 9,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ], // Lukáš (worker)
 
-            // Protokol Myšlenka – Martin (admin)
-            ['campaign_id' => 5, 'user_id' => 1], // Martin - admin
-            ['campaign_id' => 5, 'user_id' => 3], // Jana - coordinator
-            ['campaign_id' => 5, 'user_id' => 4], // Petr - worker
+            // Protokol Myšlenka 
+            [
+                'campaign_id' => 5,
+                'user_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ], // Martin (admin)
+            [
+                'campaign_id' => 5,
+                'user_id' => 5,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ], // David Marek (coordinator)
+            [
+                'campaign_id' => 5,
+                'user_id' => 10,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ], // Filip (worker)
 
         ]);
     }

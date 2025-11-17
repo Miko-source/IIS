@@ -19,6 +19,8 @@ class UserSeeder extends Seeder
                 'email' => 'martin@example.com',
                 'password' => bcrypt('admin123'),
                 'role' => 'admin',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
                 'name' => 'Alex',
@@ -26,6 +28,8 @@ class UserSeeder extends Seeder
                 'email' => 'alex@example.com',
                 'password' => bcrypt('1234'),
                 'role' => 'campaign_manager',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
                 'name' => 'Jana',
@@ -33,6 +37,26 @@ class UserSeeder extends Seeder
                 'email' => 'JanaNovakova@example.com',
                 'password' => bcrypt('jana'),
                 'role' => 'coordinator',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Lucie',
+                'surname' => 'Králová',
+                'email' => 'lucie.kralova@example.com',
+                'password' => bcrypt('lucie123'),
+                'role' => 'coordinator',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'David',
+                'surname' => 'Marek',
+                'email' => 'david.marek@example.com',
+                'password' => bcrypt('david123'),
+                'role' => 'coordinator',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
                 'name' => 'Petr',
@@ -40,6 +64,8 @@ class UserSeeder extends Seeder
                 'email' => 'PetrLanda@example.com',
                 'password' => bcrypt('petrLanda'),
                 'role' => 'worker',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
                 'name' => 'Marek',
@@ -47,6 +73,8 @@ class UserSeeder extends Seeder
                 'email' => 'marek.svoboda@example.com',
                 'password' => bcrypt('marek123'),
                 'role' => 'worker',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
                 'name' => 'Karel',
@@ -54,6 +82,8 @@ class UserSeeder extends Seeder
                 'email' => 'karel.hruska@example.com',
                 'password' => bcrypt('karelhr'),
                 'role' => 'worker',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
                 'name' => 'Lukáš',
@@ -61,6 +91,8 @@ class UserSeeder extends Seeder
                 'email' => 'lukas.vana@example.com',
                 'password' => bcrypt('lukasvana'),
                 'role' => 'worker',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
                 'name' => 'Filip',
@@ -68,6 +100,8 @@ class UserSeeder extends Seeder
                 'email' => 'filip.kral@example.com',
                 'password' => bcrypt('filipkral'),
                 'role' => 'worker',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
                 'name' => 'David',
@@ -75,9 +109,10 @@ class UserSeeder extends Seeder
                 'email' => 'david.pokorny@example.com',
                 'password' => bcrypt('davidpok'),
                 'role' => 'worker',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
         ]);
     }
 
 }
-

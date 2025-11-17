@@ -18,6 +18,8 @@ class CampaignSeeder extends Seeder
                 'name' => 'Operace Nedůvěra',
                 'start_date' => now()->format('Y-m-d'),
                 'end_date' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
                 'topic_id' => 2,
@@ -25,6 +27,8 @@ class CampaignSeeder extends Seeder
                 'name' => 'Projekt Rozdělení',
                 'start_date' => now()->format('Y-m-d'),
                 'end_date' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
                 'topic_id' => 3,
@@ -32,6 +36,8 @@ class CampaignSeeder extends Seeder
                 'name' => 'Simulace Panika',
                 'start_date' => now()->format('Y-m-d'),
                 'end_date' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
                 'topic_id' => 4,
@@ -39,6 +45,8 @@ class CampaignSeeder extends Seeder
                 'name' => 'Neexistující Horizont 2025',
                 'start_date' => now()->format('Y-m-d'),
                 'end_date' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
                 'topic_id' => 5,
@@ -46,6 +54,8 @@ class CampaignSeeder extends Seeder
                 'name' => 'Protokol Myšlenka',
                 'start_date' => now()->format('Y-m-d'),
                 'end_date' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
         ]);
     }

@@ -18,7 +18,8 @@ return new class extends Migration
                 'campaign_manager',
                 'coordinator',
                 'worker'
-            ])->default('guest')->after('address');
+                // 'guest' bude resen pomoci cookies
+            ])->default('worker')->after('address');
         });
     }
 
