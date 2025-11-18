@@ -4,34 +4,55 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LogoutController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\Admin\UserController;
 
-Route::get('/login', [LoginController::class, 'show'])->name('login');
-Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 
-Route::get('/register', [RegisterController::class, 'show'])->name('register');
-Route::post('/register', [RegisterController::class, 'register'])->name('register.post');
 
-Route::post('/logout', [LogoutController::class, 'logout'])->middleware('auth')->name('logout');
 
-// ÚVODNÍ STRÁNKA – tvoje view s kartičkami + login modal
+
+// ÚVODNÍ STRÁNKA
 Route::get('/', function () {
     return view('home');
 })->name('home');
 
-// AUTH ROUTES (Mikov backend)
 
-// Login
+// AUTH ROUTES
 Route::get('/login', [LoginController::class, 'show'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 
-// Registrace
 Route::get('/register', [RegisterController::class, 'show'])->name('register');
 Route::post('/register', [RegisterController::class, 'register'])->name('register.post');
 
-// Logout
-Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
+Route::post('/logout', [LogoutController::class, 'logout'])
+    ->middleware('auth')
+    ->name('logout');
 
-// Dashboard (jen pro přihlášené)
+
+// DASHBOARD (jen pro přihlášené)
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware('auth')->name('dashboard');
+})
+->middleware('auth')
+->name('dashboard');
+
+
+// PROFIL UŽIVATELE
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+});
+
+
+// ADMIN – SPRÁVA UŽIVATELŮ
+Route::middleware(['auth', 'role:admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::resource('users', AdminUserController::class)->except(['show', 'create', 'store']);
+    });
+
+Route::post('/admin/users/{user}/edit', [UserController::class, 'update'])
+    ->name('admin.users.update')
+    ->middleware(['auth', 'admin']);

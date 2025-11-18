@@ -31,4 +31,4 @@
     <button type="submit">Registrovat</button>
 </form>
 
-<a href="/login">Přihlásit</a>
+<a href="/">Přihlásit</a>
