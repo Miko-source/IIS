@@ -3,12 +3,13 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class MessageSeeder extends Seeder
 {
     public function run(): void
     {
-        \DB::table('messages')->insert([
+        DB::table('messages')->insert([
             [
                 'activity_id' => 1,
                 'user_id' => 3, // Jana

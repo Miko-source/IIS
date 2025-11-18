@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class ActivityUserSeeder extends Seeder
 {
@@ -11,7 +12,7 @@ class ActivityUserSeeder extends Seeder
      */
     public function run(): void
     {
-        \DB::table('activity_user')->insert([
+        DB::table('activity_user')->insert([
             
             // CAMPAIGN 1 - Operace Nedůvěra
             // Dostupní workers: user 6 (Petr)

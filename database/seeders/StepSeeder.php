@@ -3,12 +3,13 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class StepSeeder extends Seeder
 {
     public function run(): void
     {
-        \DB::table('steps')->insert([
+        DB::table('steps')->insert([
 
             // Operace Nedůvěra (campaign_id 1)
             [

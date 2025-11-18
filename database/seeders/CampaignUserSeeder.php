@@ -3,12 +3,13 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class CampaignUserSeeder extends Seeder
 {
     public function run(): void
     {
-        \DB::table('campaign_user')->insert([
+        DB::table('campaign_user')->insert([
 
             // Operace Nedůvěra
             [

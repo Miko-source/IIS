@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-
+use Illuminate\Support\Facades\DB;
 class CampaignSeeder extends Seeder
 {
     /**
@@ -11,7 +11,7 @@ class CampaignSeeder extends Seeder
      */
     public function run(): void
     {
-        \DB::table('campaigns')->insert([
+        DB::table('campaigns')->insert([
             [
                 'topic_id' => 1,
                 'user_id' => 1, // Martin (admin)
