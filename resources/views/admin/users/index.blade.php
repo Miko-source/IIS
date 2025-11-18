@@ -25,7 +25,7 @@
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->surname }}</td>
                     <td>{{ $user->email }}</td>
-                    <td>{{ $user->role?->value }}</td>
+                    <td>{{ $user->role?->value}}</td>
                     <td>
                         <a href="{{ route('admin.users.edit', $user) }}">Upravit</a>
 

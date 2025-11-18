@@ -11,7 +11,8 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::orderBy('id')->paginate(20);
+        $users = User::where('id', '!=', auth()->id())->paginate(10);
+
 
         return view('admin.users.index', compact('users'));
     }
@@ -29,8 +30,17 @@ class UserController extends Controller
             'name'    => ['required', 'string', 'max:255'],
             'surname' => ['required', 'string', 'max:255'],
             'email'   => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
-            'role'    => ['required', 'in:admin,campaign_manager,coordinator,worker'],
+            'role'    => ['required', 'in:manager,coordinator,worker'],
         ]);
+           
+            if ($validated['role'] === 'admin') {
+                return back()->withErrors('Nelze přiřadit roli admin.');
+            }
+
+            // 
+            if ($user->role === 'admin') {
+                return back()->withErrors('Nelze upravovat administrátora.');
+            }
 
         $user->update($validated);
 

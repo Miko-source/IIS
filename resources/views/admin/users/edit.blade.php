@@ -24,12 +24,15 @@
     <br>
 
     <label>Role</label>
-    <select name="role">
-        <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>Admin</option>
-        <option value="manager" {{ $user->role == 'manager' ? 'selected' : '' }}>Manager</option>
-        <option value="coordinator" {{ $user->role == 'coordinator' ? 'selected' : '' }}>Coordinator</option>
-        <option value="worker" {{ $user->role == 'worker' ? 'selected' : '' }}>Worker</option>
+    <select name="role" required>
+        <option value="{{ $user->role->value }}" selected hidden>{{ ucfirst($user->role->value) }}</option>
+
+        {{-- Povol role, které admin smí přiřadit --}}
+        <option value="manager">Manager</option>
+        <option value="coordinator">Coordinator</option>
+        <option value="worker">Worker</option>
     </select>
+
 
     <br><br>
 
