@@ -7,9 +7,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\UserController;
-
-
-
+use App\Http\Controllers\Admin\TopicController;
+use App\Http\Controllers\TopicPublicController;
 
 
 // ÚVODNÍ STRÁNKA
@@ -56,3 +55,15 @@ Route::middleware(['auth', 'role:admin'])
 Route::post('/admin/users/{user}/edit', [UserController::class, 'update'])
     ->name('admin.users.update')
     ->middleware(['auth', 'admin']);
+
+ 
+
+Route::middleware(['auth', 'admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::resource('topics', TopicController::class);
+    });
+//zobrazeni temat
+Route::get('/topics', [TopicPublicController::class, 'index'])->name('topics.index');
+Route::get('/topics/{topic}', [TopicPublicController::class, 'show'])->name('topics.show');
