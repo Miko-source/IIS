@@ -105,6 +105,47 @@ class CampaignUserSeeder extends Seeder
                 'updated_at' => now(),
             ], // Filip (worker)
 
+            // Akce Paralýza
+            [
+                'campaign_id' => 6,
+                'user_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'campaign_id' => 6,
+                'user_id' => 7,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            // Taktika Narušení
+            [
+                'campaign_id' => 7,
+                'user_id' => 2,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'campaign_id' => 7,
+                'user_id' => 4,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            // Operace Echo
+            [
+                'campaign_id' => 8,
+                'user_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'campaign_id' => 8,
+                'user_id' => 6,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
     }
 }

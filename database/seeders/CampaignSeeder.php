@@ -57,6 +57,33 @@ class CampaignSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'topic_id' => 2,
+                'user_id' => 1,
+                'name' => 'Akce Paralýza',
+                'start_date' => now()->format('Y-m-d'),
+                'end_date' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'topic_id' => 3,
+                'user_id' => 2,
+                'name' => 'Taktika Narušení',
+                'start_date' => now()->format('Y-m-d'),
+                'end_date' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'topic_id' => 3,
+                'user_id' => 1,
+                'name' => 'Operace Echo',
+                'start_date' => now()->format('Y-m-d'),
+                'end_date' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
     }
 }
