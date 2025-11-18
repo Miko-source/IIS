@@ -15,4 +15,9 @@ class Topic extends Model
         'description',
         'sources',
     ];
+
+    public function campaigns()
+    {
+        return $this->hasMany(Campaign::class);
+    }
 }

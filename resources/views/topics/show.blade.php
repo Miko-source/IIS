@@ -18,27 +18,52 @@
 
     <a href="{{ route('topics.index') }}" class="btn btn-secondary">Zpět na seznam</a>
 
-
-
-
-</div>
-
-<div>
-    @if(auth()->check() && auth()->user()->isAdmin())
     <hr>
-    <h4>Oprav si </h4>
 
-    <a href="{{ route('admin.topics.edit', $topic) }}" class="btn btn-warning">Upravit</a>
+    <h3>Kampaně k tomuto tématu</h3>
 
-    <form action="{{ route('admin.topics.destroy', $topic) }}" method="POST" class="d-inline">
-        @csrf
-        @method('DELETE')
-        <button class="btn btn-danger"
-                onclick="return confirm('Opravdu smazat toto téma?')">
-            Smazat
-        </button>
+    @if($campaigns->isEmpty())
+        <p>Zatím nejsou žádné kampaně.</p>
+    @else
+        <ul class="list-group">
+            @foreach($campaigns as $campaign)
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>{{ $campaign->name }}</strong>
+                        @if($campaign->start_date)
+                            <span>(od {{ $campaign->start_date }})</span>
+                        @endif
+                    </div>
 
-@endif
+                    <a href="{{ route('topics.campaigns.show', [$topic, $campaign]) }}" class="btn btn-primary btn-sm">
+                        Otevřít
+                    </a>
+                </li>
+            @endforeach
+        </ul>
+    @endif
+
+    @if(auth()->check() && auth()->user()->isAdmin())
+        <a href="{{ route('topics.campaigns.create', $topic) }}" class="btn btn-success mt-2">
+            + Vytvořit novou kampaň
+        </a>
+    @endif
+
+    @if(auth()->check() && auth()->user()->isAdmin())
+        <hr>
+        <h4>Oprav si</h4>
+
+        <a href="{{ route('admin.topics.edit', $topic) }}" class="btn btn-warning">Upravit</a>
+
+        <form action="{{ route('admin.topics.destroy', $topic) }}" method="POST" class="d-inline">
+            @csrf
+            @method('DELETE')
+
+            <button class="btn btn-danger" onclick="return confirm('Opravdu smazat toto téma?')">
+                Smazat
+            </button>
+        </form>
+    @endif
 </div>
 
 
