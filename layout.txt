@@ -1,0 +1,26 @@
+app/
+ └── Http/
+      ├── Controllers/
+      │     └── Auth/
+      │           ├── LoginController.php
+      │           ├── RegisterController.php
+      │           └── LogoutController.php
+      ├── Middleware/
+      │     └── RoleMiddleware.php
+      └── Requests/
+            └── Auth/
+                 ├── LoginRequest.php
+                 └── RegisterRequest.php
+
+database/
+ └── migrations/
+        (migrace pro users + role)
+
+routes/
+ └── web.php
+
+resources/
+ └── views/
+       └── auth/
+             ├── login.blade.php
+             └── register.blade.php
