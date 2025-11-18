@@ -9,6 +9,8 @@ Pokud chceš vše vyčistit a znovu vytvořit tabulky:
 
 php artisan migrate:fresh
 - smaže všechny tabulky v databázi a následně spustí všechny migrace od začátku.
+php artisan migrate:fresh --seed
+po spuštění migrací tabulky naplní také daty ze seeders
 
 Instalace databáze – krok za krokem
 1) Vytvořit databázi
@@ -26,7 +28,7 @@ FLUSH PRIVILEGES;
 
 4) Nastavit .env soubor
 
-V souboru .env nastav:
+V souboru .env nastav tyto polozky:
 
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -35,13 +37,13 @@ DB_DATABASE=iisproj
 DB_USERNAME=laravel
 DB_PASSWORD=secret123
 
-✔ Hotovo
 
-Po dokončení kroků stačí spustit:
-
+Po dokončení kroků stačí spustit jedno z:
 php artisan migrate
-
+php artisan migrate:fresh
+php artisan migrate:fresh --seed
 a projekt je připraven k použití.
 Dá se zkontrolovat pomocí
 USE iisproj;
 SHOW COLUMNS FROM users;
+nebo pomoci dbeaver-ce vizuálně
