@@ -2,15 +2,25 @@ app/
  └── Http/
       ├── Controllers/
       │     └── Auth/
-      │           ├── LoginController.php
-      │           ├── RegisterController.php
-      │           └── LogoutController.php
+      │     |      ├── LoginController.php
+      │     |      ├── RegisterController.php
+      │     |      └── LogoutController.php
+      |     |__Admin
+      |     |     |__ UserController.php
+      |     |
+      |     |__ProfileController.php
+      | 
       ├── Middleware/
-      │     └── RoleMiddleware.php
+      │     └── RoleMiddleware.php, 
+      |     |___AdminMiddleware.php
+      |
       └── Requests/
             └── Auth/
                  ├── LoginRequest.php
                  └── RegisterRequest.php
+ bootstrap/
+       |
+       |__app.php
 
 database/
  └── migrations/
@@ -21,6 +31,22 @@ routes/
 
 resources/
  └── views/
-       └── auth/
-             ├── login.blade.php
-             └── register.blade.php
+     |    └── auth/
+     |        └── register.blade.php
+     |__admin/
+     |       |__users/
+     |              |___  edit.blade.php
+     |              |___  index.blade.php
+     |__layouts/
+              |_app.blade.php
+     |
+     |__profile/
+             |_edit.blade.php
+     |
+     |__dashboard.blade.php
+     |__home.blade.php
+
+
+
+
+
