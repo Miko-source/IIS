@@ -19,7 +19,7 @@ class RegisterController extends Controller
     {
         $data = $request->validated();
 
-        // Vytvoření uživatele
+        // Create User
         $user = User::create([
             'name'     => $data['name'],
             'surname'  => $data['surname'], 
@@ -28,10 +28,10 @@ class RegisterController extends Controller
             'role'     => 'worker'
         ]);
 
-        // Automatické přihlášení hned po registraci
+        // Automat sign in
         Auth::login($user);
 
-        // Přesměrování na dashboard
+        // dashboard
         return redirect('/dashboard')->with('success', 'Registrace proběhla úspěšně.');
     }
 }
