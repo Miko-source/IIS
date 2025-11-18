@@ -26,7 +26,7 @@
 <div>
     @if(auth()->check() && auth()->user()->isAdmin())
     <hr>
-    <h4>Administrace tématu</h4>
+    <h4>Oprav si </h4>
 
     <a href="{{ route('admin.topics.edit', $topic) }}" class="btn btn-warning">Upravit</a>
 
