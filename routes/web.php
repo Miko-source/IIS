@@ -199,6 +199,13 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->name('dashboard');
 
 
+Route::get('/topics/{topic}/campaigns/{campaign}/edit', 
+    [CampaignController::class, 'edit']
+)->name('topics.campaigns.edit');
 
 
 
+Route::put('/topics/{topic}/campaigns/{campaign}', 
+    [CampaignController::class, 'update']
+)->name('topics.campaigns.update');
+Route::resource('topics.campaigns', CampaignController::class);
