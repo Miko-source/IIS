@@ -90,26 +90,6 @@ Route::get('/topics/{topic}', [TopicPublicController::class, 'show'])->name('top
 
 require __DIR__.'/campaigns.php';
 
-// -------------------------------------------------------------
-// KAMPANĚ K TÉMATU
-// -------------------------------------------------------------
-Route::prefix('topics/{topic}')->group(function () {
-
-    Route::get('/campaigns', [CampaignController::class, 'index'])
-        ->name('topics.campaigns.index');
-
-    Route::get('/campaigns/{campaign}', [CampaignController::class, 'show'])
-        ->name('topics.campaigns.show');
-
-    Route::middleware(['auth', 'role:admin'])->group(function () {
-        Route::get('/campaigns/create', [CampaignController::class, 'create'])
-            ->name('topics.campaigns.create');
-
-        Route::post('/campaigns', [CampaignController::class, 'store'])
-            ->name('topics.campaigns.store');
-    });
-});
-
 
 // -------------------------------------------------------------
 // STEPS
@@ -197,15 +177,3 @@ Route::delete('/activities/{activity}/leave',
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware('auth')
     ->name('dashboard');
-
-
-Route::get('/topics/{topic}/campaigns/{campaign}/edit', 
-    [CampaignController::class, 'edit']
-)->name('topics.campaigns.edit');
-
-
-
-Route::put('/topics/{topic}/campaigns/{campaign}', 
-    [CampaignController::class, 'update']
-)->name('topics.campaigns.update');
-Route::resource('topics.campaigns', CampaignController::class);
