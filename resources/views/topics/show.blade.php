@@ -16,11 +16,25 @@
         <p><strong>Zdroje:</strong> {{ $topic->sources }}</p>
     @endif
 
-    
 
-    <hr>
+    @if(auth()->check() && auth()->user()->isAdmin())
+        <hr>
+        <h4>Oprav si</h4>
 
-    <h3>Kampaně k tomuto tématu</h3>
+        <a href="{{ route('admin.topics.edit', $topic) }}" class="btn btn-warning">Upravit</a>
+
+        <form action="{{ route('admin.topics.destroy', $topic) }}" method="POST" class="d-inline">
+            @csrf
+            @method('DELETE')
+
+            <button class="btn btn-danger" onclick="return confirm('Opravdu smazat toto téma?')">
+                Smazat
+            </button>
+        </form>
+    @endif
+    <a href="{{ route('topics.index') }}" class="btn btn-secondary">Zpět na seznam</a>
+
+        <h3>Kampaně k tomuto tématu</h3>
 
     @if($campaigns->isEmpty())
         <p>Zatím nejsou žádné kampaně.</p>
@@ -48,23 +62,6 @@
             + Vytvořit novou kampaň
         </a>
     @endif
-
-    @if(auth()->check() && auth()->user()->isAdmin())
-        <hr>
-        <h4>Oprav si</h4>
-
-        <a href="{{ route('admin.topics.edit', $topic) }}" class="btn btn-warning">Upravit</a>
-
-        <form action="{{ route('admin.topics.destroy', $topic) }}" method="POST" class="d-inline">
-            @csrf
-            @method('DELETE')
-
-            <button class="btn btn-danger" onclick="return confirm('Opravdu smazat toto téma?')">
-                Smazat
-            </button>
-        </form>
-    @endif
-    <a href="{{ route('topics.index') }}" class="btn btn-secondary">Zpět na seznam</a>
 </div>
 
 
