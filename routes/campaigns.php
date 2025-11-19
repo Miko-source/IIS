@@ -6,8 +6,10 @@
  * ---------------------------------------------------------
  */
 
-use App\Http\Controllers\CampaignController;
+use App\Http\Controllers\Campaign\CampaignController;
+use App\Http\Controllers\Campaign\CampaignManagerController;
 use Illuminate\Support\Facades\Route;
+
 // Kampaně k tématu
 Route::prefix('topics/{topic}')->group(function () {
     Route::get('/campaigns', [CampaignController::class, 'index'])->name('topics.campaigns.index');
@@ -25,5 +27,11 @@ Route::prefix('topics/{topic}')->group(function () {
 
         Route::delete('/campaigns/{campaign}', [CampaignController::class, 'destroy'])
             ->name('topics.campaigns.destroy');
+
+        // Správa správců kampaní - jen pro adminy
+        Route::patch('/campaigns/{campaign}/manager', [CampaignManagerController::class, 'update'])
+            ->name('topics.campaigns.manager.update');
+        Route::delete('/campaigns/{campaign}/manager', [CampaignManagerController::class, 'destroy'])
+            ->name('topics.campaigns.manager.destroy');
     });
 });

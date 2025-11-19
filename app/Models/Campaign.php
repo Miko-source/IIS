@@ -1,8 +1,11 @@
 <?php
-
-
+/**
+ * ---------------------------------------------------------
+ * Autor:  Martin Bureš
+ * Login:  xbures38
+ * ---------------------------------------------------------
+ */
 namespace App\Models;
-// App\Models\Campaign.php
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -27,6 +30,11 @@ class Campaign extends Model
     public function steps()
     {
         return $this->hasMany(\App\Models\CampaignStep::class, 'campaign_id');
+    }
+    // Správce kampaně
+    public function manager()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
 }

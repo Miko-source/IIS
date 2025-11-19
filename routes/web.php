@@ -12,7 +12,7 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\TopicController;
 
 use App\Http\Controllers\TopicPublicController;
-use App\Http\Controllers\CampaignController;
+use App\Http\Controllers\Campaign\CampaignController;
 use App\Http\Controllers\CampaignStepController;
 use App\Http\Controllers\ActivityController;  
 use App\Http\Controllers\DashboardController;

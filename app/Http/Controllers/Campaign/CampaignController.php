@@ -1,10 +1,18 @@
 <?php
+/**
+ * ---------------------------------------------------------
+ * Autor:  Martin Bureš
+ * Login:  xbures38
+ * ---------------------------------------------------------
+ */
+namespace App\Http\Controllers\Campaign;
 
-namespace App\Http\Controllers;
-
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Topic;
 use App\Models\Campaign;
+use App\Models\User;
+use App\Enums\UserRole; 
 
 
 class CampaignController extends Controller
@@ -25,9 +33,6 @@ class CampaignController extends Controller
         return view('campaigns.create', compact('topic'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request, Topic $topic)
     {
         $validated = $request->validate([
@@ -46,12 +51,15 @@ class CampaignController extends Controller
             ->with('success', 'Kampaň byla vytvořena.');
     }
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(Topic $topic, Campaign $campaign)
     {
-        return view('campaigns.show', compact('topic', 'campaign'));
+        $this->authorize('view', $campaign);
+        
+        // vybrat všechno kde role není admin
+        $users = User::where('role', '!=', UserRole::ADMIN)->get();
+        
+        return view('campaigns.show', compact('topic', 'campaign', 'users'));
     }
 
     /**
@@ -77,4 +85,5 @@ class CampaignController extends Controller
     {
         //
     }
+
 }

@@ -11,7 +11,6 @@ namespace App\Policies;
 use App\Models\User;
 use App\Enums\UserRole;
 use App\Models\Campaign;
-use Illuminate\Auth\Access\Response;
 
 class CampaignPolicy
 {
@@ -22,9 +21,7 @@ class CampaignPolicy
     {
         return false;
     }
-    /**
-     * Determine whether the user can view the model.
-     */
+
     public function view(User $user, Campaign $campaign): bool
     {
         // admin
@@ -42,32 +39,29 @@ class CampaignPolicy
             ->where('campaign_user.user_id', $user->id)
             ->exists();
     }
-
-
-    /**
-     * Determine whether the user can create models.
-     */
+    
     public function create(User $user): bool
     {
         return $user->hasRoleOrHigher(UserRole::ADMIN);
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
+ // správce kampaně nebo admin může upravovat kampaň
     public function update(User $user, Campaign $campaign): bool
     {
         return $campaign->user_id === $user->id || $user->hasRoleOrHigher(UserRole::ADMIN);
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
     public function delete(User $user): bool
     {
-        return false;
+        return $user->hasRoleOrHigher(UserRole::ADMIN);
     }
 
+    
+    public function manageManager(User $user): bool
+    {
+        return $user->hasRoleOrHigher(UserRole::ADMIN);
+    }
+    
     /**
      * Determine whether the user can restore the model.
      */
@@ -82,5 +76,24 @@ class CampaignPolicy
     public function forceDelete(User $user): bool
     {
         return false;
+    } 
+
+    /**
+     * Determine whether the user can assign a manager to the campaign.
+     */
+    public function assignManager(User $user, Campaign $campaign): bool
+    {
+        return $user->hasRoleOrHigher(UserRole::ADMIN);
     }
+    public function editManager(User $user, Campaign $campaign): bool
+    {
+        return $user->hasRoleOrHigher(UserRole::ADMIN);
+    }
+    public function updateManager(User $user, Campaign $campaign): bool
+    {
+        return $user->hasRoleOrHigher(UserRole::ADMIN);
+    }
+
+
+
 }
