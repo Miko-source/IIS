@@ -14,6 +14,19 @@
         <p><strong>Konec:</strong> {{ $campaign->end_date }}</p>
     @endif
 
+    @can('update', $campaign)
+        <div class="d-flex gap-2 my-3">
+            <a href="{{ route('topics.campaigns.edit', [$topic, $campaign]) }}" class="btn btn-primary">
+                Upravit kampaň
+            </a>
+            <form action="{{ route('topics.campaigns.destroy', [$topic, $campaign]) }}" method="POST" onsubmit="return confirm('Opravdu chcete kampaň smazat?');">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-danger">Smazat kampaň</button>
+            </form>
+        </div>
+    @endcan
+
     <a href="{{ route('topics.show', $topic) }}" class="btn btn-secondary mt-3">
         ← Zpět na téma
     </a>

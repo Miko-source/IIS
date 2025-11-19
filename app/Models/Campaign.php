@@ -1,7 +1,8 @@
 <?php
 
-// App\Models\Campaign.php
+
 namespace App\Models;
+// App\Models\Campaign.php
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -24,4 +25,3 @@ class Campaign extends Model
         return $this->belongsTo(Topic::class);
     }
 }
-

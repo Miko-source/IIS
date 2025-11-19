@@ -15,10 +15,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
 
-        // 🔥 ZDE REGISTRUJEME ALIASY MIDDLEWARE
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'role_at_least' => \App\Http\Middleware\RoleAtLeastMiddleware::class,
+
         ]);
 
         // Web middleware stack

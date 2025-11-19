@@ -20,17 +20,30 @@ class CampaignController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Topic $topic)
     {
-        //
+        return view('campaigns.create', compact('topic'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Topic $topic)
     {
-        //
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'start_date' => ['required', 'date'],
+            'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
+        ]);
+
+        $validated['topic_id'] = $topic->id;
+        $validated['user_id'] = $request->user()->id;
+
+        $campaign = Campaign::create($validated);
+
+        return redirect()
+            ->route('topics.campaigns.show', [$topic, $campaign])
+            ->with('success', 'Kampaň byla vytvořena.');
     }
 
     /**

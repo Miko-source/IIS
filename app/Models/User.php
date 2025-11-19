@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\UserRole;      // ← přidej
+use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -11,7 +11,6 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    // pokud používáš mass assignment:
     protected $fillable = [
         'name',
         'surname',
@@ -42,5 +41,25 @@ class User extends Authenticatable
         }
 
         return $this->role?->value === $role;
+    }
+
+    public function hasRoleOrHigher(UserRole|string $role): bool
+    {
+        $roleHierarchy = [
+            UserRole::WORKER->value => 1,
+            UserRole::CAMPAIGN_MANAGER->value => 2,
+            UserRole::COORDINATOR->value => 3,
+            UserRole::ADMIN->value => 4,
+        ];
+        $currentRole = $this->role->value; 
+        $neededRole = $role instanceof UserRole ? $role->value: $role;
+
+        if (!isset($roleHierarchy[$currentRole]) || !isset($roleHierarchy[$neededRole])) {
+                return false;
+        }
+        $current = $roleHierarchy[$currentRole];
+        $needed = $roleHierarchy[$neededRole];
+        
+        return $current>=$needed;
     }
 }
