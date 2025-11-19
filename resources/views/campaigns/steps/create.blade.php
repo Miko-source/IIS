@@ -1,0 +1,37 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
+    <h1>Přidat krok ke kampani: {{ $campaign->name }}</h1>
+
+    <form action="{{ route('campaign.steps.store', $campaign->id) }}" method="POST">
+        @csrf
+
+        <div class="mb-3">
+            <label class="form-label">Název kroku</label>
+            <input type="text" name="name" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Pořadí kroku</label>
+            <input type="number" name="order" class="form-control" value="1" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Koordinátor</label>
+            <select name="user_id" class="form-select" required>
+                @foreach($coordinators as $coord)
+                    <option value="{{ $coord->id }}">{{ $coord->name }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Popis</label>
+            <textarea name="description" class="form-control"></textarea>
+        </div>
+
+        <button class="btn btn-success">Vytvořit krok</button>
+    </form>
+</div>
+@endsection
