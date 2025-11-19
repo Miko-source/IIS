@@ -15,10 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
 
-<<<<<<< HEAD
-=======
         
->>>>>>> eef2b5a (Moje úpravy + sloučené změny z Backend)
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
