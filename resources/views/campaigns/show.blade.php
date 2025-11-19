@@ -13,6 +13,10 @@
     @if($campaign->end_date)
         <p><strong>Konec:</strong> {{ $campaign->end_date }}</p>
     @endif
+    <a href="{{ route('campaign.steps.index', $campaign->id) }}" class="btn btn-outline-primary">
+    Spravovat kroky kampaně
+    </a>
+
 
     @can('update', $campaign)
         <div class="d-flex gap-2 my-3">

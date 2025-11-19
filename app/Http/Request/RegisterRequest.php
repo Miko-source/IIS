@@ -8,7 +8,7 @@ class RegisterRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        // registrace je dostupná každému
+        // registrace pro kazdeho
         return true;
     }
 
@@ -19,7 +19,7 @@ class RegisterRequest extends FormRequest
             'surname'               => ['required', 'string', 'max:255'],
             'email'                 => ['required', 'email', 'max:255', 'unique:users,email'],
             'password'              => ['required', 'string', 'min:8', 'confirmed'],
-            // password_confirmation automaticky páruje s 'confirmed'
+            
         ];
     }
 

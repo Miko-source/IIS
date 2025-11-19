@@ -2,7 +2,11 @@
 
 namespace App\Models;
 
+<<<<<<< HEAD
 use App\Enums\UserRole;
+=======
+use App\Enums\UserRole;      
+>>>>>>> eef2b5a (Moje úpravy + sloučené změny z Backend)
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -11,6 +15,10 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+<<<<<<< HEAD
+=======
+   
+>>>>>>> eef2b5a (Moje úpravy + sloučené změny z Backend)
     protected $fillable = [
         'name',
         'surname',
@@ -28,7 +36,7 @@ class User extends Authenticatable
         ];
     }
 
-    // malé helpery se hodí
+    
     public function isAdmin(): bool
     {
         return $this->role === UserRole::ADMIN;
@@ -42,6 +50,7 @@ class User extends Authenticatable
 
         return $this->role?->value === $role;
     }
+<<<<<<< HEAD
 
     public function hasRoleOrHigher(UserRole|string $role): bool
     {
@@ -63,3 +72,13 @@ class User extends Authenticatable
         return $current>=$needed;
     }
 }
+=======
+    public function activities()
+    {
+        return $this->belongsToMany(Activity::class, 'activity_user')
+                    ->withPivot('is_confirmed')
+                    ->withTimestamps();
+    }
+
+}
+>>>>>>> eef2b5a (Moje úpravy + sloučené změny z Backend)

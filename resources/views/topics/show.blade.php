@@ -16,7 +16,7 @@
         <p><strong>Zdroje:</strong> {{ $topic->sources }}</p>
     @endif
 
-    <a href="{{ route('topics.index') }}" class="btn btn-secondary">Zpět na seznam</a>
+    
 
     <hr>
 
@@ -64,6 +64,7 @@
             </button>
         </form>
     @endif
+    <a href="{{ route('topics.index') }}" class="btn btn-secondary">Zpět na seznam</a>
 </div>
 
 

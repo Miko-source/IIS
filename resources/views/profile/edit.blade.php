@@ -1,4 +1,4 @@
-@extends('layouts.app') {{-- nebo co používáš --}}
+@extends('layouts.app') 
 
 @section('content')
     <h1>Můj profil</h1>

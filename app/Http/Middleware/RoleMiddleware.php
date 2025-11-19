@@ -12,7 +12,6 @@ class RoleMiddleware
     /**
      * Handle an incoming request.
      *
-     * Použití: ->middleware('role:admin') nebo 'role:admin,coordinator'
      */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
@@ -22,7 +21,7 @@ class RoleMiddleware
             abort(403, 'Nemáš oprávnění.');
         }
 
-        // převedeme stringy na enum hodnoty (pokud používáš enum)
+        // string na enum role
         $allowed = collect($roles)
             ->map(fn ($r) => $r instanceof UserRole ? $r->value : $r)
             ->toArray();

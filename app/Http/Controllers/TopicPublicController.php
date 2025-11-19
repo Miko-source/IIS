@@ -14,7 +14,7 @@ class TopicPublicController extends Controller
 
     public function show(Topic $topic)
 {
-    $campaigns = $topic->campaigns()->get(); // Načtení kampaní
+    $campaigns = $topic->campaigns()->get(); 
 
     return view('topics.show', compact('topic', 'campaigns'));
 }

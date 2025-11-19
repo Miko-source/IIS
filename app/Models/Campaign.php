@@ -24,4 +24,9 @@ class Campaign extends Model
     {
         return $this->belongsTo(Topic::class);
     }
+    public function steps()
+    {
+        return $this->hasMany(\App\Models\CampaignStep::class, 'campaign_id');
+    }
+
 }
