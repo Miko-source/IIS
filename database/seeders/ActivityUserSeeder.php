@@ -110,6 +110,89 @@ class ActivityUserSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+
+            // CAMPAIGN 6 - Akce Paralýza (workers: Karel, Lukáš)
+            [
+                'activity_id' => 11,
+                'user_id' => 8, // Karel
+                'is_confirmed' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'activity_id' => 12,
+                'user_id' => 9, // Lukáš
+                'is_confirmed' => false,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'activity_id' => 13,
+                'user_id' => 8, // Karel
+                'is_confirmed' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'activity_id' => 14,
+                'user_id' => 9, // Lukáš
+                'is_confirmed' => false,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            // CAMPAIGN 7 - Taktika Narušení (workers: Filip, David P.)
+            [
+                'activity_id' => 15,
+                'user_id' => 10, // Filip
+                'is_confirmed' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'activity_id' => 16,
+                'user_id' => 10, // Filip
+                'is_confirmed' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'activity_id' => 17,
+                'user_id' => 11, // David P.
+                'is_confirmed' => false,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'activity_id' => 18,
+                'user_id' => 10, // Filip
+                'is_confirmed' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            // CAMPAIGN 8 - Operace Echo (workers: Lukáš, Karel)
+            [
+                'activity_id' => 19,
+                'user_id' => 9, // Lukáš
+                'is_confirmed' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'activity_id' => 20,
+                'user_id' => 8, // Karel
+                'is_confirmed' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'activity_id' => 21,
+                'user_id' => 11, // David P.
+                'is_confirmed' => false,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
     }
 }

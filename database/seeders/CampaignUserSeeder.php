@@ -105,44 +105,122 @@ class CampaignUserSeeder extends Seeder
                 'updated_at' => now(),
             ], // Filip (worker)
 
-            // Akce Paralýza
+            // Akce Paralýza (campaign 6)
             [
                 'campaign_id' => 6,
-                'user_id' => 1,
+                'user_id' => 1, // Martin (admin) - manager kampaně
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'campaign_id' => 6,
-                'user_id' => 7,
+                'user_id' => 3, // Jana (coordinator) - koordinátor kroků
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'campaign_id' => 6,
+                'user_id' => 4, // Lucie (coordinator)
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'campaign_id' => 6,
+                'user_id' => 5, // David (coordinator)
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'campaign_id' => 6,
+                'user_id' => 8, // Karel (worker) - realizátor aktivit
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'campaign_id' => 6,
+                'user_id' => 9, // Lukáš (worker) - realizátor aktivit
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
 
-            // Taktika Narušení
+            // Taktika Narušení (campaign 7)
             [
                 'campaign_id' => 7,
-                'user_id' => 2,
+                'user_id' => 2, // Alex (campaign_manager) - manager kampaně
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'campaign_id' => 7,
-                'user_id' => 4,
+                'user_id' => 3, // Jana (coordinator)
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'campaign_id' => 7,
+                'user_id' => 4, // Lucie (coordinator) - koordinátor kroků
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'campaign_id' => 7,
+                'user_id' => 5, // David (coordinator)
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'campaign_id' => 7,
+                'user_id' => 10, // Filip (worker) - realizátor aktivit
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'campaign_id' => 7,
+                'user_id' => 11, // David P. (worker) - realizátor aktivit
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
 
-            // Operace Echo
+            // Operace Echo (campaign 8)
             [
                 'campaign_id' => 8,
-                'user_id' => 1,
+                'user_id' => 1, // Martin (admin) - manager kampaně
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'campaign_id' => 8,
-                'user_id' => 6,
+                'user_id' => 3, // Jana (coordinator)
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'campaign_id' => 8,
+                'user_id' => 4, // Lucie (coordinator)
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'campaign_id' => 8,
+                'user_id' => 5, // David (coordinator) - koordinátor kroků
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'campaign_id' => 8,
+                'user_id' => 8, // Karel (worker) - realizátor aktivit
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'campaign_id' => 8,
+                'user_id' => 9, // Lukáš (worker) - realizátor aktivit
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'campaign_id' => 8,
+                'user_id' => 11, // David P. (worker) - realizátor aktivit
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

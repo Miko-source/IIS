@@ -156,6 +156,93 @@ class StepSeeder extends Seeder
                 'updated_at' => now(),
             ],
 
+            // Akce Paralýza (campaign_id 6)
+            [
+                'campaign_id' => 6,
+                'user_id' => 3,
+                'name' => 'Analýza infrastrukturních slabin',
+                'order' => 1,
+                'description' => 'Mapování kritických komunikačních kanálů vhodných k ochromení.',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'campaign_id' => 6,
+                'user_id' => 4,
+                'name' => 'Příprava paralyzujících sdělení',
+                'order' => 2,
+                'description' => 'Tvorba sdělení zvyšujících nerozhodnost cílových osob.',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'campaign_id' => 6,
+                'user_id' => 5,
+                'name' => 'Koordinace zátěžových kanálů',
+                'order' => 3,
+                'description' => 'Plán nasazení bot sítí a vícekanálového zahlcení.',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            // Taktika Narušení (campaign_id 7)
+            [
+                'campaign_id' => 7,
+                'user_id' => 4,
+                'name' => 'Monitoring komunikačních uzlů',
+                'order' => 1,
+                'description' => 'Identifikace míst vhodných pro vložení rušivých prvků.',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'campaign_id' => 7,
+                'user_id' => 5,
+                'name' => 'Nasazení rušivých prvků',
+                'order' => 2,
+                'description' => 'Koordinace rušivých vstupů a falešných instrukcí.',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'campaign_id' => 7,
+                'user_id' => 3,
+                'name' => 'Vyhodnocení reakčních vzorců',
+                'order' => 3,
+                'description' => 'Analýza odezvy cílových skupin a úprava taktiky.',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            // Operace Echo (campaign_id 8)
+            [
+                'campaign_id' => 8,
+                'user_id' => 5,
+                'name' => 'Sběr originálních sdělení',
+                'order' => 1,
+                'description' => 'Vyhledání obsahu vhodného pro echo-replikace.',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'campaign_id' => 8,
+                'user_id' => 3,
+                'name' => 'Tvorba echo skriptů',
+                'order' => 2,
+                'description' => 'Přepracování sdělení do více úrovní odrazů.',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'campaign_id' => 8,
+                'user_id' => 4,
+                'name' => 'Automatizované publikování',
+                'order' => 3,
+                'description' => 'Nastavení plánovačů pro postupné opakování zpráv.',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
         ]);
     }
 }

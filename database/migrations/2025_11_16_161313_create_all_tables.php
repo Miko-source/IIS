@@ -48,7 +48,9 @@ return new class extends Migration
                   ->onDelete('cascade');
             // správce kampaně (1:N)
             $table->foreignId('user_id')
-                  ->constrained('users');
+                  ->nullable()
+                  ->constrained('users')
+                  ->nullOnDelete(); //když se smaže uživatel, user_id, pořád zůstane správce admin
             $table->string('name');
             $table->date('start_date');
             $table->date('end_date')->nullable();

@@ -129,6 +129,139 @@ class ActivitySeeder extends Seeder
                 'updated_at' => now(),
             ],
 
+            // STEP 16 – Akce Paralýza (kampaně 6)
+            [
+                'name' => 'Vypracování mapy kritických kanálů',
+                'step_id' => 16,
+                'type_id' => 1,
+                'cost' => 1100,
+                'description' => 'Detailní dokument o tocích informací v cílové infrastruktuře.',
+                'start_date' => now()->format('Y-m-d'),
+                'end_date' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Technický audit slabin',
+                'step_id' => 16,
+                'type_id' => 3,
+                'cost' => 950,
+                'description' => 'Vizuální znázornění uzlů vhodných pro zahlcení.',
+                'start_date' => now()->format('Y-m-d'),
+                'end_date' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // STEP 17
+            [
+                'name' => 'Balíček paralyzujících sdělení',
+                'step_id' => 17,
+                'type_id' => 1,
+                'cost' => 780,
+                'description' => 'Série textových variant zdůrazňujících nejistotu rozhodování.',
+                'start_date' => now()->format('Y-m-d'),
+                'end_date' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // STEP 18
+            [
+                'name' => 'Nasazení zátěžového scénáře',
+                'step_id' => 18,
+                'type_id' => 2,
+                'cost' => 520,
+                'description' => 'Testovací publikace k ověření schopnosti zahlcení.',
+                'start_date' => now()->format('Y-m-d'),
+                'end_date' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            // STEP 19 – Taktika Narušení (kampaně 7)
+            [
+                'name' => 'Sběr signálů komunikačních center',
+                'step_id' => 19,
+                'type_id' => 1,
+                'cost' => 640,
+                'description' => 'Analytická zpráva o časech a místech koordinace.',
+                'start_date' => now()->format('Y-m-d'),
+                'end_date' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // STEP 20
+            [
+                'name' => 'Rušivé instrukce pro operátory',
+                'step_id' => 20,
+                'type_id' => 2,
+                'cost' => 430,
+                'description' => 'Krátké zprávy zasílané v kritických okamžicích.',
+                'start_date' => now()->format('Y-m-d'),
+                'end_date' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Falešné přistávací stránky',
+                'step_id' => 20,
+                'type_id' => 3,
+                'cost' => 1250,
+                'description' => 'Vizuálně identické stránky s odlišnými instrukcemi.',
+                'start_date' => now()->format('Y-m-d'),
+                'end_date' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // STEP 21
+            [
+                'name' => 'Vyhodnocení rušení v terénu',
+                'step_id' => 21,
+                'type_id' => 1,
+                'cost' => 680,
+                'description' => 'Souhrn reakcí cílových skupin a návrh úprav.',
+                'start_date' => now()->format('Y-m-d'),
+                'end_date' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            // STEP 22 – Operace Echo (kampaně 8)
+            [
+                'name' => 'Kurátorský seznam originálních sdělení',
+                'step_id' => 22,
+                'type_id' => 1,
+                'cost' => 720,
+                'description' => 'Výběr příspěvků, které je vhodné převzít do echo smyčky.',
+                'start_date' => now()->format('Y-m-d'),
+                'end_date' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // STEP 23
+            [
+                'name' => 'Audiovizuální echo skripty',
+                'step_id' => 23,
+                'type_id' => 3,
+                'cost' => 1380,
+                'description' => 'Skripty převádějící text na sérii videí a grafických postů.',
+                'start_date' => now()->format('Y-m-d'),
+                'end_date' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // STEP 24
+            [
+                'name' => 'Plán publikace odrazů',
+                'step_id' => 24,
+                'type_id' => 2,
+                'cost' => 460,
+                'description' => 'Nastavení automatizovaných plánů a sledování výkonu.',
+                'start_date' => now()->format('Y-m-d'),
+                'end_date' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
         ]);
     }
 }

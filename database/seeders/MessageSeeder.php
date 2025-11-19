@@ -58,6 +58,38 @@ class MessageSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'activity_id' => 12,
+                'user_id' => 9, // Lukáš
+                'content' => 'Technický audit odhalil tři přetížené uzly, čeká se na potvrzení zásahu.',
+                'success' => false,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'activity_id' => 15,
+                'user_id' => 4, // Lucie
+                'content' => 'Monitoring zachytil dvě nové koordinační místnosti, data sdílím v příloze.',
+                'success' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'activity_id' => 19,
+                'user_id' => 5, // David
+                'content' => 'Kurátorský seznam obsahuje 18 vhodných příspěvků k replikaci.',
+                'success' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'activity_id' => 21,
+                'user_id' => 2, // Alex
+                'content' => 'Plán publikace byl schválen, čekáme na metriky prvních odrazů.',
+                'success' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
     }
 }
