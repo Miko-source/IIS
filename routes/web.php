@@ -69,16 +69,5 @@ Route::middleware(['auth', 'admin'])
 Route::get('/topics', [TopicPublicController::class, 'index'])->name('topics.index');
 Route::get('/topics/{topic}', [TopicPublicController::class, 'show'])->name('topics.show');
 
-// Kampaně k tématu
-Route::prefix('topics/{topic}')->group(function () {
-    Route::get('/campaigns', [CampaignController::class, 'index'])->name('topics.campaigns.index');
-    Route::get('/campaigns/{campaign}', [CampaignController::class, 'show'])->name('topics.campaigns.show');
 
-    Route::middleware(['auth', 'admin'])->group(function () {
-        Route::get('/campaigns/create', [CampaignController::class, 'create'])->name('topics.campaigns.create');
-        Route::post('/campaigns', [CampaignController::class, 'store'])->name('topics.campaigns.store');
-    });
-
-Route::get('topics/{topic}/campaigns/{campaign}', [CampaignController::class, 'show'])
-    ->name('topics.campaigns.show');
-});
+require __DIR__.'/campaigns.php';
