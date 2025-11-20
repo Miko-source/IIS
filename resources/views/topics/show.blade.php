@@ -39,9 +39,25 @@
                         @endif
                     </div>
 
-                    <a href="{{ route('topics.campaigns.show', [$topic, $campaign]) }}" class="btn btn-primary btn-sm">
-                        Otevřít
-                    </a>
+                    <div class="d-flex gap-2">
+                        <a href="{{ route('topics.campaigns.show', [$topic, $campaign]) }}" class="btn btn-primary btn-sm">
+                            Otevřít
+                        </a>
+                        @can('update', $campaign)
+                            <a href="{{ route('topics.campaigns.show', [$topic, $campaign]) }}?edit_campaign=1" class="btn btn-warning btn-sm">
+                                Upravit
+                            </a>
+                        @endcan
+                        @can('delete', $campaign)
+                            <form action="{{ route('topics.campaigns.destroy', [$topic, $campaign]) }}" method="POST" onsubmit="return confirm('Opravdu chcete kampaň smazat?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    Smazat
+                                </button>
+                            </form>
+                        @endcan
+                    </div>
                 </li>
             @endforeach
         </ul>

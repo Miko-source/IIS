@@ -17,8 +17,13 @@ use App\Enums\UserRole;
 
 class CampaignController extends Controller
 {
-    public function create(Topic $topic)
+
+
+    //tvori novou kampan na TopicsView
+    public function create(Topic $topic )
     {
+        //kontrola prav na kampane
+        $this->authorize('create', Campaign::class);
         return view('campaigns.create', compact('topic'));
     }
 
@@ -39,10 +44,11 @@ class CampaignController extends Controller
             ->route('topics.campaigns.show', [$topic, $campaign])
             ->with('success', 'Kampaň byla vytvořena.');
     }
-
+//tvori novou kampan na TopicsView
 
     public function show(Topic $topic, Campaign $campaign)
     {
+        //kontrola prav na konretni isntanci kampane
         $this->authorize('view', $campaign);
         
         // vybrat všechno kde role není admin
@@ -51,28 +57,43 @@ class CampaignController extends Controller
         return view('campaigns.show', compact('topic', 'campaign', 'users'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function edit(Topic $topic, Campaign $campaign)
     {
-        //
+        $this->authorize('update', $campaign);
+        return redirect()
+            ->route('topics.campaigns.show', [$topic, $campaign, 'edit_campaign' => 1]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Topic $topic, Campaign $campaign)
     {
-        //
+        $this->authorize('update', $campaign);
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'start_date' => ['required', 'date'],
+            'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
+        ]);
+        $campaign->update($validated);
+        return redirect()
+            ->route('topics.campaigns.show', [$topic, $campaign])
+            ->with('success', 'Kampaň byla upravena.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Topic $topic, Campaign $campaign)
     {
-        //
+        $this->authorize('delete', $campaign);
+
+        $campaign->delete();
+
+        return redirect()
+            ->route('topics.show', $topic)
+            ->with('success', 'Kampaň byla smazána.');
     }
 
 }

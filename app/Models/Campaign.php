@@ -37,4 +37,10 @@ class Campaign extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    // Uživatelé s viditelností kampaně (pivot campaign_user)
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'campaign_user')->withTimestamps();
+    }
+
 }

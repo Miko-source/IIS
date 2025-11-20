@@ -10,26 +10,51 @@ use App\Http\Controllers\Campaign\CampaignController;
 use App\Http\Controllers\Campaign\CampaignManagerController;
 use Illuminate\Support\Facades\Route;
 
-// Kampaně k tématu
+// Správa kampaní
 Route::prefix('topics/{topic}')->group(function () {
-    Route::get('/campaigns/{campaign}', [CampaignController::class, 'show'])->name('topics.campaigns.show');
+    // Detail kampaně – přístupný od role worker
+    Route::middleware(['auth', 'role_at_least:worker'])
+        ->prefix('campaigns')
+        ->name('topics.campaigns.')
+        ->group(function () {
+            Route::get('/{campaign}', [CampaignController::class, 'show'])
+                ->whereNumber('campaign')
+                ->name('show');
+        });
 
+    // Úprava kampaně – správce kampaně a výš
     Route::middleware(['auth', 'role_at_least:campaign_manager'])
+        ->prefix('campaigns')
+        ->name('topics.campaigns.')
+        ->group(function () {
+            Route::put('/{campaign}', [CampaignController::class, 'update'])
+                ->whereNumber('campaign')
+                ->name('update');
+        });
+
+    // Vytvoření a smazání kampaně – pouze admin
+    Route::middleware(['auth', 'role_at_least:admin'])
         ->prefix('campaigns')
         ->name('topics.campaigns.')
         ->group(function () {
             Route::get('/create', [CampaignController::class, 'create'])->name('create');
             Route::post('/', [CampaignController::class, 'store'])->name('store');
-            Route::get('/{campaign}', [CampaignController::class, 'show'])->name('show');
-            
-            Route::get('/{campaign}/edit', [CampaignController::class, 'edit'])->name('edit');
-            Route::put('/{campaign}', [CampaignController::class, 'update'])->name('update');
-            Route::delete('/{campaign}', [CampaignController::class, 'destroy'])->name('destroy');
+            Route::delete('/{campaign}', [CampaignController::class, 'destroy'])
+                ->whereNumber('campaign')
+                ->name('destroy');
         });
 
-        // Správa správců kampaní - jen pro adminy
-        Route::patch('/campaigns/{campaign}/manager', [CampaignManagerController::class, 'update'])
-            ->name('topics.campaigns.manager.update');
-        Route::delete('/campaigns/{campaign}/manager', [CampaignManagerController::class, 'destroy'])
-            ->name('topics.campaigns.manager.destroy');
+    // Správa správců kampaní - jen pro adminy
+    Route::middleware(['auth', 'role_at_least:admin'])
+        ->prefix('campaigns/{campaign}/manager')
+        ->name('topics.campaigns.manager.')
+        ->group(function () {
+            Route::patch('/', [CampaignManagerController::class, 'update'])
+                ->whereNumber('campaign')
+                ->name('update');
+
+            Route::delete('/', [CampaignManagerController::class, 'destroy'])
+                ->whereNumber('campaign')
+                ->name('destroy');
+        });
 });
