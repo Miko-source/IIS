@@ -96,6 +96,26 @@ class CampaignPolicy
     {
         return $user->hasRoleOrHigher(UserRole::ADMIN);
     }
+////////////////////////////////addded///////////////////////////////////////
+
+
+    public function manageWorkers(User $user, Campaign $campaign)
+    {
+        // ADMIN role
+        if ($user->role instanceof UserRole && $user->role === UserRole::ADMIN) {
+            return true;
+        }
+
+        // Správce kampaně (user_id kampaně)
+        if ($user->id === $campaign->user_id) {
+            return true;
+        }
+
+        return false;
+    }
+    
+
+
 
 
 

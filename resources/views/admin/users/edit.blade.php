@@ -5,8 +5,9 @@
 @section('content')
 <h1>Upravit uživatele: {{ $user->name }}</h1>
 
-<form method="POST" action="/admin/users/{{ $user->id }}/edit">
+<form method="POST" action="{{ route('admin.users.update', $user->id) }}">
     @csrf
+    @method('PUT')
 
     <label>Jméno</label>
     <input type="text" name="name" value="{{ $user->name }}" required>
@@ -25,14 +26,14 @@
 
     <label>Role</label>
     <select name="role" required>
-        <option value="{{ $user->role->value }}" selected hidden>{{ ucfirst($user->role->value) }}</option>
+        <option value="{{ $user->role->value }}" selected hidden>
+            {{ ucfirst($user->role->value) }}
+        </option>
 
-        {{-- Povol role, které admin smí přiřadit --}}
-        <option value="manager">Manager</option>
+        <option value="campaign_manager">Manager</option>
         <option value="coordinator">Coordinator</option>
         <option value="worker">Worker</option>
     </select>
-
 
     <br><br>
 

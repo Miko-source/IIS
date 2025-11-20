@@ -42,6 +42,12 @@ Route::prefix('topics/{topic}')->group(function () {
             Route::delete('/{campaign}', [CampaignController::class, 'destroy'])
                 ->whereNumber('campaign')
                 ->name('destroy');
+            //necham, ale blokkovalo to workera,
+            // Route::get('/{campaign}', [CampaignController::class, 'show'])->name('show');
+            
+            Route::get('/{campaign}/edit', [CampaignController::class, 'edit'])->name('edit');
+            Route::put('/{campaign}', [CampaignController::class, 'update'])->name('update');
+            Route::delete('/{campaign}', [CampaignController::class, 'destroy'])->name('destroy');
         });
 
     // Správa správců kampaní - jen pro adminy

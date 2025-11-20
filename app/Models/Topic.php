@@ -20,4 +20,6 @@ class Topic extends Model
     {
         return $this->hasMany(Campaign::class);
     }
+
+
 }

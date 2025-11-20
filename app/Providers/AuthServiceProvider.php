@@ -2,23 +2,25 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use App\Models\Campaign;
+use App\Policies\CampaignPolicy;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {
     /**
-     * Register services.
+     * The policy mappings for the application.
      */
-    public function register(): void
-    {
-        //
-    }
+    protected $policies = [
+        Campaign::class => CampaignPolicy::class,
+        // sem můžeš přidat další policy podle potřeby
+    ];
 
     /**
-     * Bootstrap services.
+     * Register any authentication / authorization services.
      */
     public function boot(): void
     {
-        //
+        $this->registerPolicies();
     }
 }

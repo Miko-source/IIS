@@ -16,6 +16,7 @@ use App\Http\Controllers\Campaign\CampaignController;
 use App\Http\Controllers\CampaignStepController;
 use App\Http\Controllers\ActivityController;  
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CampaignWorkerController;
 
 
 // -------------------------------------------------------------
@@ -194,4 +195,37 @@ Route::patch('/activity-users/{activityUser}/reject',
 //     ->middleware('auth')
 //     ->name('my.requests');
 
+
+// // stránka pro správu pracovníků
+// Route::get('/campaigns/{campaign}/workers', 
+//     [CampaignController::class, 'manageWorkers'])
+//     ->name('campaigns.workers');
+
+// // přidání pracovníka
+// Route::post('/campaigns/{campaign}/workers', 
+//     [CampaignController::class, 'addWorker'])
+//     ->name('campaigns.workers.add');
+
+// // odebrání pracovníka
+// Route::delete('/campaigns/{campaign}/workers/{user}', 
+//     [CampaignController::class, 'removeWorker'])
+//     ->name('campaigns.workers.remove');
+
+
+
+Route::get('/campaigns/manage-workers', 
+    [CampaignWorkerController::class, 'selectTopic'])
+    ->name('campaigns.manage');
+
+Route::get('/campaigns/{campaign}/workers', 
+    [CampaignWorkerController::class, 'manageWorkers'])
+    ->name('campaigns.workers');
+
+Route::post('/campaigns/{campaign}/workers', 
+    [CampaignWorkerController::class, 'addWorker'])
+    ->name('campaigns.workers.add');
+
+Route::delete('/campaigns/{campaign}/workers/{user}', 
+    [CampaignWorkerController::class, 'removeWorker'])
+    ->name('campaigns.workers.remove');
 

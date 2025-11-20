@@ -17,6 +17,11 @@
     {{-- -------------------------
         ODKAZY PODLE ROLE
     -------------------------- --}}
+
+    <a href="{{ route('campaigns.manage') }}" class="btn btn-warning mt-3">
+    Správa pracovníků kampaní
+</a>
+
     <!-- @if ($role === 'admin')
         <p><a href="{{ route('admin.users.index') }}">Správa uživatelů</a></p>
     @endif
@@ -163,6 +168,7 @@
     @endif
 
 @endif
+
 
 
 @endsection

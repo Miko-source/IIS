@@ -71,4 +71,11 @@ class User extends Authenticatable
                     ->withTimestamps();
     }
 
+    public function campaignsVisible()
+{
+    return $this->belongsToMany(Campaign::class, 'campaign_user')
+        ->withTimestamps();
+}
+
+
 }

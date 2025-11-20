@@ -18,7 +18,7 @@ class RoleAtLeastMiddleware
         $user = $request->user();
         //$role ocekava honotu z app/Enums/UserRole.php
         if (!$user || !$user->hasRoleOrHigher($role)) {
-            abort(403, 'Nemáš oprávnění.');
+            abort(403, 'Nemáš oprávnění2.');
         }
 
         return $next($request);

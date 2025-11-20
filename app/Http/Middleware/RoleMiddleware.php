@@ -27,7 +27,7 @@ class RoleMiddleware
             ->toArray();
 
         if (!in_array($user->role?->value, $allowed, true)) {
-            abort(403, 'Nemáš oprávnění.');
+            abort(403, 'Nemáš oprávnění1.');
         }
 
         return $next($request);

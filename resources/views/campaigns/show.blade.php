@@ -12,6 +12,7 @@
             'topic' => $topic,
             'users' => $users
         ])
+        
     @endcan
 
     {{-- Akce / inline edit kampaně --}}
