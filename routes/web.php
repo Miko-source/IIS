@@ -177,3 +177,21 @@ Route::delete('/activities/{activity}/leave',
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware('auth')
     ->name('dashboard');
+
+    // Potvrzení účasti
+Route::patch('/activity-users/{activityUser}/confirm',
+    [ActivityController::class, 'confirm'])
+    ->name('activityUsers.confirm')
+    ->middleware('auth');
+
+// Odmítnutí účasti
+Route::patch('/activity-users/{activityUser}/reject',
+    [ActivityController::class, 'reject'])
+    ->name('activityUsers.reject')
+    ->middleware('auth');
+
+// Route::get('/my-requests', [DashboardController::class, 'myRequests'])
+//     ->middleware('auth')
+//     ->name('my.requests');
+
+

@@ -51,4 +51,17 @@ class DashboardController extends Controller
 
         return view('dashboard', compact('requests'));
     }
+
+    public function myRequests()
+    {
+        $user = auth()->user();
+
+        // všechny aktivity, na které se tento uživatel přihlásil
+        $activities = $user->activities()
+            ->with(['step.campaign'])
+            ->get();
+
+        return view('dashboard.my-requests', compact('activities'));
+    }
+
 }

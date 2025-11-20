@@ -7,6 +7,7 @@ use App\Models\Type;
 use App\Models\Campaign;
 use App\Models\CampaignStep;
 use Illuminate\Http\Request;
+use App\Models\ActivityUser;
 
 class ActivityController extends Controller
 {
@@ -85,41 +86,46 @@ class ActivityController extends Controller
         if ($activity->workers()->where('user_id', $user->id)->exists()) {
             return back()->with('error', 'Už jsi k této aktivitě přihlášen.');
         }
-
-        $activity->workers()->attach($user->id, [
-            'is_confirmed' => false
-        ]);
+        $activity->users()->attach($user->id, ['is_confirmed' => 0]);
+      
 
         return back()->with('success', 'Úspěšně jsi se přihlásil, čeká se na potvrzení koordinátora.');
     }
 
-    public function confirmWorker(Activity $activity, User $user)
-    {
-        // opravdu odhlasen
-        if (! $activity->workers()->where('user_id', $user->id)->exists()) {
-            return back()->with('error', 'Tento uživatel není přihlášen k aktivitě.');
-        }
-
-        $activity->workers()->updateExistingPivot($user->id, [
-            'is_confirmed' => true
-        ]);
-
-        return back()->with('success', 'Pracovník byl potvrzen.');
-    }
     public function leave(Activity $activity)
     {
         $userId = auth()->id();
 
-        // pokud neni prihlasen
-        if (! $activity->workers()->where('user_id', $userId)->exists()) {
+        // Zda je worker přihlášen k aktivitě
+        if (! $activity->users()->where('user_id', $userId)->exists()) {
             return back()->with('error', 'Nejsi u této aktivity přihlášen.');
         }
 
-        $activity->workers()->detach($userId);
+        // Smazání pivot záznamu → tím zmizí i jeho stav (pending/confirmed/rejected)
+        $activity->users()->detach($userId);
 
         return back()->with('success', 'Byl jsi odhlášen z aktivity.');
     }
 
 
+    public function confirm(ActivityUser $activityUser)
+    {
+        $this->authorize('manage', $activityUser);
+
+        $activityUser->is_confirmed = 1;
+        $activityUser->save();
+
+        return back()->with('success', 'Uživatel byl potvrzen.');
+    }
+
+    public function reject(ActivityUser $activityUser)
+    {
+        $this->authorize('manage', $activityUser);
+
+        $activityUser->is_confirmed = 2;
+        $activityUser->save();
+
+        return back()->with('success', 'Uživatel byl odmítnut.');
+    }
 
 }

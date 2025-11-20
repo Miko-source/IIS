@@ -103,7 +103,8 @@ return new class extends Migration
             $table->foreignId('user_id')        // realizátor
                   ->constrained('users')
                   ->onDelete('cascade');
-            $table->boolean('is_confirmed')->default(false); // koordinátor musí potvrdit
+            $table->tinyInteger('is_confirmed')->default(0);  // 0 = pending
+                // koordinátor musí potvrdit
             $table->timestamps();
             $table->unique(['activity_id', 'user_id']);
         });
