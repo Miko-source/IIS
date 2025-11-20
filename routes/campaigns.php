@@ -21,6 +21,7 @@ Route::prefix('topics/{topic}')->group(function () {
             Route::get('/create', [CampaignController::class, 'create'])->name('create');
             Route::post('/', [CampaignController::class, 'store'])->name('store');
             Route::get('/{campaign}', [CampaignController::class, 'show'])->name('show');
+            
             Route::get('/{campaign}/edit', [CampaignController::class, 'edit'])->name('edit');
             Route::put('/{campaign}', [CampaignController::class, 'update'])->name('update');
             Route::delete('/{campaign}', [CampaignController::class, 'destroy'])->name('destroy');

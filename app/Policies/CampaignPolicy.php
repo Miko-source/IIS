@@ -45,6 +45,17 @@ class CampaignPolicy
         return $user->hasRoleOrHigher(UserRole::ADMIN);
     }
 
+    // dočasně povoleno každému uživateli
+    public function update(User $user, Campaign $campaign): bool
+    {
+        return true;
+    }
+
+    public function delete(User $user, Campaign $campaign): bool
+    {
+        return true;
+    }
+
  // správce kampaně nebo admin může upravovat kampaň
 
     public function manageManager(User $user): bool
