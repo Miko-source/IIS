@@ -5,7 +5,6 @@
     <title>DisinfoCamp Manager</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Jednoduché CSS priamo tu -->
     <style>
         body {
             margin: 0;
@@ -142,7 +141,7 @@
             position: fixed;
             inset: 0;
             background-color: rgba(0, 0, 0, 0.5);
-            display: none; /* skryté defaultne */
+            display: none;
             align-items: center;
             justify-content: center;
             z-index: 50;
@@ -230,7 +229,7 @@
 <body>
 <div class="page">
 
-    <!-- NAVBAR -->
+    
     <header class="navbar">
         <div class="navbar-title">
             DisinfoCamp Manager
@@ -242,7 +241,6 @@
             {{-- tlačidlo otvorí login modal --}}
             <button class="btn-primary js-open-login">Přihlásit se</button>
 
-            {{-- klasický link na registračnú stránku (Mikov register.blade.php) --}}
             <a href="{{ route('register') }}" class="btn-outline" style="text-decoration:none;display:inline-block;">
                 Registrovat se
             </a>
@@ -292,13 +290,11 @@
         </section>
     </main>
 
-    <!-- FOOTER -->
     <footer class="footer">
         &copy; 2025 DisinfoCamp Manager – váš tým
     </footer>
 </div>
 
-<!-- LOGIN MODAL – front + napojení na Mikův LoginController -->
 <div class="modal-backdrop" id="login-backdrop">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="login-title">
         <button class="modal-close" id="login-close" aria-label="Zavřít">
@@ -307,7 +303,6 @@
 
         <h2 class="modal-title" id="login-title">Přihlášení do systému</h2>
 
-        {{-- globálna chyba z LoginController@login (Neplatné přihlašovací údaje.) --}}
         @if ($errors->has('login'))
             <div class="flash-message">
                 {{ $errors->first('login') }}
@@ -369,7 +364,6 @@
     </div>
 </div>
 
-<!-- Jednoduchý JS na otevření/zavření modalu -->
 <script>
     const backdrop = document.getElementById('login-backdrop');
     const closeBtn = document.getElementById('login-close');
@@ -385,7 +379,6 @@
         backdrop.classList.remove('is-visible');
     });
 
-    // zavření kliknutím mimo modální okno
     backdrop.addEventListener('click', (e) => {
         if (e.target === backdrop) {
             backdrop.classList.remove('is-visible');

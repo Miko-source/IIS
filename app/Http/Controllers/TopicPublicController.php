@@ -8,7 +8,7 @@ class TopicPublicController extends Controller
 {
     public function index()
     {
-        $topics = Topic::all();
+        $topics = Topic::orderBy('name')->paginate(10);
         return view('topics.index', compact('topics'));
     }
 

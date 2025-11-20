@@ -2,46 +2,147 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>IIS systém</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title>@yield('title', 'DisinfoCamp Manager')</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+    <style>
+        body {
+            background: #f3f4f6;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        .app-navbar {
+            background: #111827;
+            color: #fff;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+        }
+
+        .app-navbar .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
+        .app-navbar .nav-link {
+            color: #e5e7eb;
+        }
+
+        .app-navbar .nav-link.active {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .app-main {
+            min-height: calc(100vh - 64px);
+            padding-top: 24px;
+            padding-bottom: 32px;
+        }
+
+        .app-footer {
+            font-size: 12px;
+            color: #6b7280;
+            padding: 8px 0 16px;
+            text-align: center;
+        }
+    </style>
 </head>
 
-<body class="bg-light">
+<body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-        <div class="container">
-            <a class="navbar-brand" href="{{ route('home') }}">IIS</a>
+<nav class="navbar navbar-expand-lg app-navbar">
+    <div class="container">
+        <a class="navbar-brand text-danger fw-bold" href="{{ route('dashboard') }}">
+            DisinfoCamp Manager
+        </a>
 
-            <div>
-                @auth
-                    <span class="text-white me-3">
-                        {{ auth()->user()->name }} ({{ auth()->user()->role }})
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#mainNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            @auth
+                @php
+                    $role = auth()->user()->role instanceof \App\Enums\UserRole
+                        ? auth()->user()->role->value
+                        : auth()->user()->role;
+                @endphp
+
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"
+                           href="{{ route('dashboard') }}">
+                            Dashboard
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('topics.*') ? 'active' : '' }}"
+                           href="{{ route('topics.index') }}">
+                            Témata
+                        </a>
+                    </li>
+
+                    {{-- iba admin vidí spravu uživatelů --}}
+                    @if($role === 'admin')
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.topics.*') ? 'active' : '' }}"
+                               href="{{ route('admin.topics.index') }}">
+                                Správa témat
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
+                               href="{{ route('admin.users.index') }}">
+                                Uživatelé
+                            </a>
+                        </li>
+                    @endif
+                </ul>
+
+                <div class="d-flex align-items-center gap-3">
+                    <span class="text-sm text-light">
+                        {{ auth()->user()->name }} ({{ $role }})
                     </span>
+
+                    <a href="{{ route('profile.edit') }}"
+                       class="btn btn-sm btn-outline-light">
+                        Můj profil
+                    </a>
 
                     <form action="{{ route('logout') }}" method="POST" class="d-inline">
                         @csrf
-                        <button class="btn btn-sm btn-outline-light">Odhlásit</button>
+                        <button class="btn btn-sm btn-light text-dark">
+                            Odhlásit
+                        </button>
                     </form>
-                @else
-                    <a href="{{ route('login') }}" class="btn btn-outline-light btn-sm">Přihlásit</a>
-                @endauth
-            </div>
+                </div>
+            @else
+                <ul class="navbar-nav me-auto"></ul>
+                <div class="d-flex gap-2">
+                    <a href="{{ route('login') }}" class="btn btn-outline-light btn-sm">
+                        Přihlásit
+                    </a>
+                    <a href="{{ route('register') }}" class="btn btn-sm btn-light text-dark">
+                        Registrovat
+                    </a>
+                </div>
+            @endauth
         </div>
-    </nav>
+    </div>
+</nav>
 
-<div class="container mb-4">
+<main class="app-main">
+    <div class="container">
+        @yield('content')
+    </div>
+</main>
 
-    @auth
-        <div class="mb-3">
-            <a href="{{ route('dashboard') }}" class="btn btn-outline-primary btn-sm">
-                ← Zpět na dashboard
-            </a>
-        </div>
-    @endauth
+<footer class="app-footer">
+    &copy; 2025 DisinfoCamp Manager – tým IIS
+</footer>
 
-    @yield('content')
-</div>
-
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

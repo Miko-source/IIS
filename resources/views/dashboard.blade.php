@@ -9,20 +9,20 @@
 @section('content')
     <h1>Vítej v systému, {{ auth()->user()->name }} {{ auth()->user()->surname }}!</h1>
 
-    <p>Tvá role: 
+    <!-- <p>Tvá role: 
         <strong>{{ $role }}</strong>
-    </p>
+    </p> -->
 
 
     {{-- -------------------------
         ODKAZY PODLE ROLE
     -------------------------- --}}
-    @if ($role === 'admin')
+    <!-- @if ($role === 'admin')
         <p><a href="{{ route('admin.users.index') }}">Správa uživatelů</a></p>
     @endif
 
     <p><a href="{{ route('topics.index') }}">Zobrazit témata</a></p>
-    <p><a href="{{ route('profile.edit') }}">Můj profil</a></p>
+    <p><a href="{{ route('profile.edit') }}">Můj profil</a></p> -->
 
 
     {{-- -------------------------
@@ -60,7 +60,9 @@
                 @endforeach
             </tbody>
         </table>
-
+        <div class="mt-4 d-flex justify-content-center">
+            {{ $requests->links() }}
+        </div>
     @else
         <p class="text-muted">Žádné čekající žádosti.</p>
     @endif

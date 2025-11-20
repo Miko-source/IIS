@@ -7,26 +7,18 @@
     @if($topics->isEmpty())
         <p>Žádná témata zatím nebyla vytvořena.</p>
     @else
-        <ul class="list-group">
-            @foreach($topics as $topic)
-                <li class="list-group-item">
-                    <a href="{{ route('topics.show', $topic) }}">
-                        {{ $topic->name }}
-                    </a>
-                </li>
-            @endforeach
-        </ul>
+        <div class="d-grid gap-2">
+        @foreach($topics as $topic)
+            <a href="{{ route('topics.show', $topic) }}"
+                class="btn btn-outline-primary text-start fw-semibold"
+                style="padding: 12px 18px; font-size: 16px;">
+                {{ $topic->name }}
+            </a>
+        @endforeach
+        </div>
+        <div class="mt-4 d-flex justify-content-center">
+            {{ $topics->links() }}
+        </div>
     @endif
-</div>
-<div>
-@if(auth()->check() && auth()->user()->isAdmin())
-
-
-    
-
-    <a href="{{ route('admin.topics.index') }}" class="btn btn-secondary">
-        Spravovat temata
-    </a>
-@endif
 </div>
 @endsection

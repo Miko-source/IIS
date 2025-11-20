@@ -47,7 +47,7 @@ class DashboardController extends Controller
         }
 
         
-        $requests = $query->get();
+        $requests = $query->paginate(10);
 
         return view('dashboard', compact('requests'));
     }
