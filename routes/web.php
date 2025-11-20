@@ -12,7 +12,6 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\TopicController;
 
 use App\Http\Controllers\TopicPublicController;
-use App\Http\Controllers\Campaign\CampaignController;
 use App\Http\Controllers\CampaignStepController;
 use App\Http\Controllers\ActivityController;  
 use App\Http\Controllers\DashboardController;
@@ -23,6 +22,9 @@ use App\Http\Controllers\CampaignWorkerController;
 // Uvodni stranka – verejna homepage
 // -------------------------------------------------------------
 Route::get('/', function () {
+    if (auth()->check()) {
+        return redirect()->route('dashboard');
+    }
     return view('home');
 })->name('home');
 
@@ -85,8 +87,11 @@ Route::middleware(['auth', 'role:admin'])
 // -------------------------------------------------------------
 // Verejna temata – vypis a detail
 // -------------------------------------------------------------
-Route::get('/topics', [TopicPublicController::class, 'index'])->name('topics.index');
-Route::get('/topics/{topic}', [TopicPublicController::class, 'show'])->name('topics.show');
+Route::middleware(['auth', 'role_at_least:worker'])->group(function () {
+    Route::get('/topics', [TopicPublicController::class, 'index'])->name('topics.index');
+    Route::get('/topics/{topic}', [TopicPublicController::class, 'show'])->name('topics.show');
+});
+
 
 
 // -------------------------------------------------------------

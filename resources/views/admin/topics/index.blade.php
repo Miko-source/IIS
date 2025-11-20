@@ -15,7 +15,13 @@
     <tbody>
         @foreach($topics as $topic)
             <tr>
-                <td>{{ $topic->name }}</td>
+                <td>
+                    <a href="{{ route('topics.show', $topic) }}"
+                       class="btn btn-outline-primary text-start fw-semibold w-100"
+                       style="padding: 12px 18px; font-size: 16px;">
+                        {{ $topic->name }}
+                    </a>
+                </td>
                 <td>{{ $topic->target_group }}</td>
                 <td>
                     <a href="{{ route('admin.topics.edit', $topic) }}" class="btn btn-warning btn-sm">Upravit</a>

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="cs">
 <head>
@@ -77,14 +78,6 @@
                         </a>
                     </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('topics.*') ? 'active' : '' }}"
-                           href="{{ route('topics.index') }}">
-                            Témata
-                        </a>
-                    </li>
-
-                    {{-- iba admin vidí spravu uživatelů --}}
                     @if($role === 'admin')
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('admin.topics.*') ? 'active' : '' }}"
@@ -96,6 +89,13 @@
                             <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
                                href="{{ route('admin.users.index') }}">
                                 Uživatelé
+                            </a>
+                        </li>
+                    @else
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('topics.*') ? 'active' : '' }}"
+                               href="{{ route('topics.index') }}">
+                                Témata
                             </a>
                         </li>
                     @endif
@@ -135,8 +135,25 @@
 
 <main class="app-main">
     <div class="container">
+        {{-- zpráva se zobrazuje na vsech co pouzivaji tento layout --}}
+                        {{-- Flash zprávy --}}
+                @if (session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                @endif
+
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                @endif
+
         @yield('content')
     </div>
+    
 </main>
 
 <footer class="app-footer">

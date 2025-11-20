@@ -10,7 +10,12 @@ class LoginController extends Controller
 {
     public function show()
     {
-        return view('auth.login');
+        // Pokud je uživatel již přihlášený, přesměruj na dashboard
+        if (auth()->check()) {
+            return redirect()->route('dashboard');
+        }
+        
+        return view('home', ['openLoginModal' => true]);
     }
 
     public function login(LoginRequest $request)
@@ -21,6 +26,7 @@ class LoginController extends Controller
         if (!Auth::attempt($credentials)) {
             return back()
                 ->withErrors(['login' => 'Neplatné přihlašovací údaje.'])
+                ->with('openLoginModal', true)
                 ->withInput();
         }
 

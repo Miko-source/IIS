@@ -3,13 +3,31 @@
 @section('content')
 <div class="container">
     <div class="mb-3">
-        <a href="{{ route('topics.index') }}" class="btn btn-outline-secondary btn-sm">
+        @php
+            $backRoute = auth()->check() && auth()->user()->isAdmin()
+                ? route('admin.topics.index')
+                : route('topics.index');
+        @endphp
+        <a href="{{ $backRoute }}" class="btn btn-outline-secondary btn-sm">
             ← Zpět na seznam
         </a>
     </div>
 
 
     <h1>{{ $topic->name }}</h1>
+
+    @can('update', $topic)
+        <div class="d-flex gap-2 my-2">
+            <a href="{{ route('admin.topics.edit', $topic) }}" class="btn btn-warning btn-sm">
+                Upravit téma
+            </a>
+            <form action="{{ route('admin.topics.destroy', $topic) }}" method="POST" onsubmit="return confirm('Opravdu chcete téma smazat?');" class="d-inline">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-danger btn-sm">Smazat téma</button>
+            </form>
+        </div>
+    @endcan
 
     @if($topic->description)
         <p><strong>Popis:</strong> {{ $topic->description }}</p>

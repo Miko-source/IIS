@@ -368,12 +368,17 @@
     const backdrop = document.getElementById('login-backdrop');
     const closeBtn = document.getElementById('login-close');
     const openButtons = document.querySelectorAll('.js-open-login');
+    const shouldOpen = {{ json_encode(($openLoginModal ?? false) || session('openLoginModal') || $errors->has('login')) }};
 
     openButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             backdrop.classList.add('is-visible');
         });
     });
+
+    if (shouldOpen) {
+        backdrop.classList.add('is-visible');
+    }
 
     closeBtn.addEventListener('click', () => {
         backdrop.classList.remove('is-visible');
