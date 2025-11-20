@@ -46,17 +46,7 @@ class CampaignPolicy
     }
 
  // správce kampaně nebo admin může upravovat kampaň
-    public function update(User $user, Campaign $campaign): bool
-    {
-        return $campaign->user_id === $user->id || $user->hasRoleOrHigher(UserRole::ADMIN);
-    }
 
-    public function delete(User $user): bool
-    {
-        return $user->hasRoleOrHigher(UserRole::ADMIN);
-    }
-
-    
     public function manageManager(User $user): bool
     {
         return $user->hasRoleOrHigher(UserRole::ADMIN);
