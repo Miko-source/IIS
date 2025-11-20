@@ -28,14 +28,16 @@ class Activity extends Model
 
     public function workers()
     {
-        return $this->users();
+        return $this->belongsToMany(User::class, 'activity_user')
+                    ->withPivot('is_confirmed')
+                    ->withTimestamps();
     }
     public function users()
-    {
-        return $this->belongsToMany(User::class, 'activity_user')
-            ->withPivot('is_confirmed', 'success_rate')
-            ->withTimestamps();
-    }
+{
+    return $this->belongsToMany(User::class, 'activity_user')
+        ->withPivot('is_confirmed', 'success_rate')
+        ->withTimestamps();
+}
 
 
 }
