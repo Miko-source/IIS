@@ -21,6 +21,15 @@
     <a href="{{ route('campaigns.manage') }}" class="btn btn-warning mt-3">
     Správa pracovníků kampaní
 </a>
+    <a href="{{ route('workspace') }}" class="btn btn-primary mt-3">
+        Můj pracovní prostor
+    </a>
+    @if (in_array($role, ['campaign_manager', 'admin']))
+    <a href="{{ route('dashboard.campaigns') }}" class="btn btn-primary mt-3">
+        Přehled kampaní
+    </a>
+@endif
+
 
     <!-- @if ($role === 'admin')
         <p><a href="{{ route('admin.users.index') }}">Správa uživatelů</a></p>

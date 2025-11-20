@@ -65,6 +65,7 @@ return new class extends Migration
                 ->onDelete('cascade');
             // koordinátor kroku (1:N)
             $table->foreignId('user_id')
+                ->nullable()
                 ->constrained('users');
             $table->string('name'); 
             $table->integer('order');

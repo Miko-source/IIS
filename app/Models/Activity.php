@@ -38,6 +38,11 @@ class Activity extends Model
         ->withPivot('is_confirmed', 'success_rate')
         ->withTimestamps();
 }
+    public function messages()
+{
+    return $this->hasMany(Message::class);
+}
+
 
 
 }

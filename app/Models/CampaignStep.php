@@ -29,6 +29,26 @@ class CampaignStep extends Model
     {
         return $this->hasMany(Activity::class, 'step_id');
     }
+
+    public function isCompletedSuccessfully(): bool
+    {
+        foreach ($this->activities as $activity) {
+            $message = $activity->messages()->latest()->first();
+
+            // aktivita nemá vyhodnocení → krok není splněn
+            if (!$message) {
+                return false;
+            }
+
+            // poslední vyhodnocení bylo neúspěšné
+            if (!$message->success) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     
 
 }

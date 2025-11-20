@@ -76,6 +76,44 @@ class User extends Authenticatable
     return $this->belongsToMany(Campaign::class, 'campaign_user')
         ->withTimestamps();
 }
+public function promoteToCampaignManager()
+{
+    
+    if ($this->hasRoleOrHigher(\App\Enums\UserRole::CAMPAIGN_MANAGER)) {
+        return;
+    }
+
+    // nastav roli
+    $this->role = \App\Enums\UserRole::CAMPAIGN_MANAGER;
+    $this->save();
+}
+public function refreshRole()
+{
+    // Admin se nesmí měnit
+    if ($this->role === UserRole::ADMIN) {
+        return;
+    }
+
+    // správce kampaně
+    $isManager = \App\Models\Campaign::where('user_id', $this->id)->exists();
+    if ($isManager) {
+        $this->role = UserRole::CAMPAIGN_MANAGER;
+        $this->save();
+        return;
+    }
+
+    // koordinátor kroku
+    $isCoordinator = \App\Models\CampaignStep::where('user_id', $this->id)->exists();
+    if ($isCoordinator) {
+        $this->role = UserRole::COORDINATOR;
+        $this->save();
+        return;
+    }
+
+    //  Jinak worker
+    $this->role = UserRole::WORKER;
+    $this->save();
+}
 
 
 }

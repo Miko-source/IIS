@@ -7,6 +7,10 @@ use App\Models\ActivityUser;
 use App\Models\Campaign;
 use App\Models\CampaignStep;
 use App\Enums\UserRole;
+use Illuminate\Http\Request;
+use App\Models\Message;
+
+
 
 class DashboardController extends Controller
 {
@@ -56,12 +60,137 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
 
-        // všechny aktivity, na které se tento uživatel přihlásil
+        // všechny aktivity na ktere je prihlasen
         $activities = $user->activities()
             ->with(['step.campaign'])
             ->get();
 
         return view('dashboard.my-requests', compact('activities'));
     }
+
+    public function workspace()
+    {
+        $user = Auth::user();
+
+        // Aktivní
+        $assigned = ActivityUser::with([
+                'activity',
+                'activity.step',
+                'activity.step.campaign',
+            ])
+            ->where('user_id', $user->id)
+            ->where('is_confirmed', true)
+            ->get();
+
+        // Uzavřené aktivity
+        $closedActivityIds = Message::where('user_id', $user->id)
+            ->pluck('activity_id')
+            ->unique();
+
+        $closedActivities = \App\Models\Activity::with([
+                'step',
+                'step.campaign',
+                'messages'  
+            ])
+            ->whereIn('id', $closedActivityIds)
+            ->get();
+
+        return view('workspace.index', compact('assigned', 'closedActivities'));
+    }
+
+
+
+    public function submitReport(Request $request, ActivityUser $activityUser)
+        {
+            $request->validate([
+                'content' => 'required|string|min:5|max:5000',
+                'success' => 'required|boolean',
+            ]);
+
+            // jen uzivatel, ktery je prihlasen
+            if ($activityUser->user_id !== Auth::id()) {
+                abort(403);
+            }
+
+            // report
+            Message::create([
+                'activity_id' => $activityUser->activity_id,
+                'user_id'     => Auth::id(),
+                'content'     => $request->content,
+                'success'     => $request->success,
+            ]);
+
+            // smazat všechny přihlášené uživatele k této aktivitě
+            ActivityUser::where('activity_id', $activityUser->activity_id)->delete();
+
+            // hotovo – aktivita zmizí všem workerům
+            return back()->with('status', 'Zpráva byla odeslána a aktivita byla uzavřena.');
+        }
+
+    public function campaigns()
+    {
+        $user = Auth::user();
+
+        // kampane + temata
+        $query = Campaign::with('topic');
+
+        // ADMIN vse
+        if ($user->hasRoleOrHigher(UserRole::ADMIN)) {
+            // bezomezeni
+        } else {
+            // jen jeho kampane
+            $query->where('user_id', $user->id);
+        }
+
+        $campaigns = $query
+            ->orderBy('topic_id')
+            ->orderBy('name')
+            ->get();
+
+        // seskupíme kampaně podle témat
+        $campaignsByTopic = $campaigns->groupBy('topic_id');
+
+        return view('dashboard.campaigns.index', compact('campaignsByTopic'));
+    }
+    public function campaignDetail(Campaign $campaign)
+    {
+        $user = Auth::user();
+
+        // admin nebo správce kampaně
+        if (!($user->hasRoleOrHigher(UserRole::ADMIN) || $campaign->user_id === $user->id)) {
+            abort(403);
+        }
+
+        $campaign->load([
+            'topic',
+            'steps.activities.messages.user',
+        ]);
+
+        return view('dashboard.campaigns.show', compact('campaign'));
+    }
+
+    public function deleteStep(CampaignStep $step)
+    {
+        $user = Auth::user();
+        $campaign = $step->campaign;
+
+        // správce kampaně nebo admin
+        if (!($user->hasRoleOrHigher(UserRole::ADMIN) || $campaign->user_id === $user->id)) {
+            abort(403);
+        }
+
+        // krok lze smazat jen pokud je splněn
+        if (!$step->isCompletedSuccessfully()) {
+            return back()->with('error', 'Krok nemůže být odstraněn, protože není kompletně splněný.');
+        }
+
+        // smazat krok
+        $step->delete();
+
+        return back()->with('status', 'Krok byl úspěšně odstraněn.');
+    }
+
+
+
 
 }
