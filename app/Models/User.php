@@ -43,7 +43,7 @@ class User extends Authenticatable
 
         return $this->role?->value === $role;
     }
-
+// kontrola zda je aktuální role vyšší než požadovaná (vstupní), dědičná funkce
     public function hasRoleOrHigher(UserRole|string $role): bool
     {
         $roleHierarchy = [
