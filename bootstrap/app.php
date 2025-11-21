@@ -6,7 +6,9 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
-use Symfony\Component\HttpKernel\Exception\HttpException; 
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -33,27 +35,49 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         
         //error handling
-            $exceptions->renderable(function (HttpException $e, $request) {
+        $exceptions->renderable(function (HttpException $e, $request) {
 
-                            // 403 Forbidden Handler 
-                if ($e->getStatusCode() === 403) {
-                    
-                    // came from a site (via button/link)
-                    if ($request->headers->has('referer') && 
-                        str_starts_with($request->header('referer'), $request->root())) {
-                        
-                        return back()->with('error', 'Nemáte oprávnění pro tuto akci.');
-                    }
-                    
-                    //  URL
-                    return redirect()
-                        ->route('dashboard')
-                        ->with('error', 'Nemáte oprávnění pro přístup k této stránce.');
-                }
-
+            // 403 Forbidden Handler 
+            if ($e->getStatusCode() === 403) {
                 
-            
-            });
+                // came from a site (via button/link)
+                if ($request->headers->has('referer') && 
+                    str_starts_with($request->header('referer'), $request->root())) {
+                    
+                    return back()->with('error', 'Nemáte oprávnění pro tuto akci.');
+                }
+                
+                //  URL
+                return redirect()
+                    ->route('dashboard')
+                    ->with('error', 'Nemáte oprávnění pro přístup k této stránce.');
+            }
+        });
 
-        })->create();
+        // 404 – record not found in DB (/topics/200)
 
+        $exceptions->renderable(function (NotFoundHttpException $e, $request) {
+
+            if ($request->headers->has('referer') &&
+                str_starts_with($request->header('referer'), $request->root())) {
+                return back()->with('error', 'Záznam nebyl nalezen.');
+            }
+
+            return match (true) {
+                
+                $request->is('topics/*/campaigns/*') => redirect()
+                    ->route('topics.index') 
+                    ->with('error', 'Požadovaná kampaň neexistuje.'),
+
+                // concrete URL
+                $request->is('topics/*') => redirect()
+                    ->route('topics.index')
+                    ->with('error', 'Požadovaný topic neexistuje.'),
+
+                // Default fallback
+                default => redirect()
+                    ->route('dashboard')
+                    ->with('error', 'Požadovaná stránka neexistuje.'),
+            };
+        });
+    })->create();
