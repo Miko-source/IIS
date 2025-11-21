@@ -20,4 +20,5 @@ require __DIR__.'/activities.php';
 require __DIR__.'/workers.php';
 require __DIR__.'/dashboard.php';
 require __DIR__.'/profile.php';
+require __DIR__.'/errors.php';
 

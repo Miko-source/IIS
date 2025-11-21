@@ -32,22 +32,27 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         
-            // 403 Forbidden Handler 
+        //error handling
             $exceptions->renderable(function (HttpException $e, $request) {
+
+                            // 403 Forbidden Handler 
                 if ($e->getStatusCode() === 403) {
                     
-                    // Pokud přišel z jiné stránky (klikl na odkaz/tlačítko)
+                    // came from a site (via button/link)
                     if ($request->headers->has('referer') && 
                         str_starts_with($request->header('referer'), $request->root())) {
                         
                         return back()->with('error', 'Nemáte oprávnění pro tuto akci.');
                     }
                     
-                    // Přímé zadání URL
+                    //  URL
                     return redirect()
                         ->route('dashboard')
                         ->with('error', 'Nemáte oprávnění pro přístup k této stránce.');
                 }
+
+                
+            
             });
 
         })->create();
