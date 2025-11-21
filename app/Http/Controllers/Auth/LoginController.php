@@ -10,7 +10,7 @@ class LoginController extends Controller
 {
     public function show()
     {
-        // Pokud je uživatel již přihlášený, přesměruj na dashboard
+        // if logged, goto dashboard
         if (auth()->check()) {
             return redirect()->route('dashboard');
         }

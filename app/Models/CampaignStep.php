@@ -37,16 +37,29 @@ class CampaignStep extends Model
         return $this->hasMany(Activity::class, 'step_id');
     }
 
+    /**
+     * Zkontroluje, zda jsou všechny aktivity kroku úspěšně dokončeny
+     * 
+     * @return bool true pokud VŠECHNY aktivity mají poslední zprávu s success = 1
+     */
     public function isCompletedSuccessfully(): bool
     {
-        foreach ($this->activities as $activity) {
-            $message = $activity->messages()->latest()->first();
+        // Pokud krok nemá žádné aktivity, nemůže být dokončen
+        if ($this->activities->count() === 0) {
+            return false;
+        }
 
-            if (!$message) {
+        foreach ($this->activities as $activity) {
+            $lastMessage = $activity->messages()->latest()->first();
+
+            // Pokud aktivita nemá žádnou zprávu, není dokončena
+            if (!$lastMessage) {
                 return false;
             }
 
-            if (!$message->success) {
+            // Pokud poslední zpráva není explicitně úspěšná (success !== 1), není dokončena
+            // To znamená, že success = 0 (neúspěch) nebo success = null (nedokončeno) = NESPLNĚNO
+            if ($lastMessage->success !== 1) {
                 return false;
             }
         }

@@ -82,7 +82,6 @@ class ActivityController extends Controller
     {
         $user = auth()->user();
 
-        // prihlasi se jednou
         if ($activity->workers()->where('user_id', $user->id)->exists()) {
             return back()->with('error', 'Už jsi k této aktivitě přihlášen.');
         }

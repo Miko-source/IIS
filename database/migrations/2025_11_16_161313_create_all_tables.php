@@ -135,7 +135,7 @@ return new class extends Migration
             $table->foreignId('user_id')            // podává (1:N)
                   ->constrained('users');
             $table->text('content');
-            $table->boolean('success')->default(false);
+            $table->boolean('success')->nullable()->default(null);
             $table->timestamps();
         });
     }
