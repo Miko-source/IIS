@@ -2,6 +2,13 @@
 
 @section('content')
 <div class="container">
+    <div class="mb-3">
+        @include('components.back-link', [
+            'target' => route('campaign.steps.show', [$campaign->id, $step->id]),
+            'label' => '← Zpět na krok'
+        ])
+    </div>
+
     <h1>Upravit aktivitu: {{ $activity->name }}</h1>
 
     <form action="{{ route('activities.update', [$campaign->id, $step->id, $activity->id]) }}" method="POST">
@@ -46,11 +53,6 @@
 
         <button class="btn btn-primary">Uložit změny</button>
     </form>
-    <a href="{{ route('campaign.steps.show', [$campaign->id, $step->id]) }}"
-    class="btn btn-secondary btn-sm mb-3">
-        ← Zpět na krok
-    </a>
-
 
 </div>
 @endsection

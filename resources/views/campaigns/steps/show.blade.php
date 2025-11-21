@@ -3,6 +3,12 @@
 @section('content')
 <div class="container">
 
+    <div class="mb-3">
+        @include('components.back-link', [
+            'target' => route('topics.campaigns.show', [$campaign->topic, $campaign]),
+            'label' => '← Zpět na kampaň'
+        ])
+    </div>
 
 
     {{-- Základní informace o kroku – minimalistický styl --}}
@@ -40,12 +46,6 @@
                 ]) }}"
             class="btn btn-warning">
                 Upravit krok
-            </a>
-
-                <!-- zpet-->
-            <a href="{{ route('topics.campaigns.show', [$campaign->topic, $campaign]) }}"
-            class="btn btn-outline-secondary btn-sm mb-3">
-                ← Zpět na kampaň
             </a>
 
         </div>

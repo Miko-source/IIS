@@ -3,16 +3,13 @@
 @section('content')
 <div class="container">
     <div class="mb-3">
-        @php
-            $backRoute = auth()->check() && auth()->user()->isAdmin()
+        @include('components.back-link', [
+            'target' => auth()->check() && auth()->user()->isAdmin()
                 ? route('admin.topics.index')
-                : route('topics.index');
-        @endphp
-        <a href="{{ $backRoute }}" class="btn btn-outline-secondary btn-sm">
-            ← Zpět na seznam
-        </a>
+                : route('topics.index'),
+            'label' => '← Zpět na seznam témat'
+        ])
     </div>
-
     <h1>{{ $topic->name }}</h1>
 
     @can('update', $topic)
@@ -115,10 +112,6 @@
             + Vytvořit novou kampaň
         </a>
     @endif
-    <br>
-    <a href="{{ route('topics.index') }}" class="btn btn-secondary">
-    ← Zpět na seznam témat
-    </a>
 
 </div>
 @endsection

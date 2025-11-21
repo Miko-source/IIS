@@ -1,6 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
+<div>
+    @include('components.back-link', [
+        'target' => route('dashboard'),
+        'label' => '← Zpět na dashboard'
+    ])
+</div>
+
 <h1>Témata</h1>
 <a href="{{ route('admin.topics.create') }}" class="btn-app btn-app-primary">
     Přidat téma
