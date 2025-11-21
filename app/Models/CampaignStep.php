@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Enums\UserRole;
 
 class CampaignStep extends Model
 {
@@ -22,43 +24,37 @@ class CampaignStep extends Model
         'is_completed' => 'boolean',  
     ];
 
-    public function campaign()
+    public function campaign(): BelongsTo
     {
         return $this->belongsTo(Campaign::class);
     }
 
-    public function coordinator()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function activities()
+    public function activities(): HasMany
     {
         return $this->hasMany(Activity::class, 'step_id');
     }
 
     /**
-     * Zkontroluje, zda jsou všechny aktivity kroku úspěšně dokončeny
-     * 
-     * @return bool true pokud VŠECHNY aktivity mají poslední zprávu s success = 1
+     * this steps activities were all finished successfully
      */
     public function isCompletedSuccessfully(): bool
     {
-        // Pokud krok nemá žádné aktivity, nemůže být dokončen
-        if ($this->activities->count() === 0) {
+        if ($this->activities->isEmpty()) {
             return false;
         }
 
         foreach ($this->activities as $activity) {
             $lastMessage = $activity->messages()->latest()->first();
 
-            // Pokud aktivita nemá žádnou zprávu, není dokončena
             if (!$lastMessage) {
                 return false;
             }
 
-            // Pokud poslední zpráva není explicitně úspěšná (success !== 1), není dokončena
-            // To znamená, že success = 0 (neúspěch) nebo success = null (nedokončeno) = NESPLNĚNO
             if ($lastMessage->success !== 1) {
                 return false;
             }
@@ -67,8 +63,16 @@ class CampaignStep extends Model
         return true;
     }
 
-    public function user()
+    public function scopeVisibleFor($query, User $user, Campaign $campaign)
     {
-        return $this->belongsTo(\App\Models\User::class, 'user_id');
+        if ($user->hasRoleOrHigher(UserRole::ADMIN)) {
+            return $query;
+        }
+
+        if ($campaign->user_id === $user->id) {
+            return $query;
+        }
+
+        return $query->where('user_id', $user->id);
     }
 }

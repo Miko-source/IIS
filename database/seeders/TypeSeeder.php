@@ -29,6 +29,12 @@ class TypeSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'name' => 'Jiný',
+                'description' => 'Volný typ pro aktivity, které nespadají do předchozích kategorií.',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
     }
 }

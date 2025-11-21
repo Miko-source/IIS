@@ -8,10 +8,10 @@
         </a>
     </div>
 
-    {{-- Hlavička kampaně --}}
+    {{-- header --}}
     @include('campaigns.header', ['campaign' => $campaign, 'topic' => $topic])
 
-    {{-- Sekce pro správu správce (pouze pro adminy) --}}
+    {{-- managing campaign managers - only for admins --}}
     @can('manageManager', App\Models\Campaign::class)
         @include('campaigns.managers.section', [
             'campaign' => $campaign, 
@@ -21,10 +21,10 @@
         
     @endcan
 
-    {{-- Akce / inline edit kampaně --}}
+    {{-- inline edit --}}
     @include('campaigns.crud.section', ['campaign' => $campaign, 'topic' => $topic])
     
-    {{-- kroky  --}}
+    {{-- steps  --}}
     <div class="d-flex flex-wrap gap-2 my-3">
         <a href="{{ route('campaign.steps.index', $campaign->id) }}" class="btn-app btn-app-primary">
             Spravovat kroky kampaně
@@ -34,7 +34,8 @@
 
 
     @include('campaigns.overview', [
-        'campaign' => $campaign
+        'campaign' => $campaign,
+        'stepStates' => $stepStates ?? []
     ])
 </div>
 @endsection

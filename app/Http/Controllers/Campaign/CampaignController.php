@@ -12,17 +12,19 @@ use Illuminate\Http\Request;
 use App\Models\Topic;
 use App\Models\Campaign;
 use App\Models\User;
-use App\Enums\UserRole; 
+use App\Enums\UserRole;
+use App\Services\StepStateService;
 
 
 class CampaignController extends Controller
 {
+    public function __construct(
+        private StepStateService $stepStateService
+    ) {}
 
-
-    //tvori novou kampan na TopicsView
+    //creates new campaign 
     public function create(Topic $topic )
     {
-        //kontrola prav na kampane
         $this->authorize('create', Campaign::class);
         return view('campaigns.create', compact('topic'));
     }
@@ -35,26 +37,40 @@ class CampaignController extends Controller
             'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
         ]);
 
-        $validated['topic_id'] = $topic->id;
-        $validated['user_id'] = $request->user()->id;
-
-        $campaign = Campaign::create($validated);
+        $campaign = $topic->campaigns()->create([
+            ...$validated,
+            'user_id' => $request->user()->id,
+        ]);
 
         return redirect()
             ->route('topics.campaigns.show', [$topic, $campaign])
             ->with('success', 'Kampaň byla vytvořena.');
     }
-//tvori novou kampan na TopicsView
 
     public function show(Topic $topic, Campaign $campaign)
     {
-        //kontrola prav na konretni isntanci kampane
+        //check policys
         $this->authorize('view', $campaign);
-        
-        // vybrat všechno kde role není admin
-        $users = User::where('role', '!=', UserRole::ADMIN)->get();
-        
-        return view('campaigns.show', compact('topic', 'campaign', 'users'));
+        $users = User::where('role', '!=', UserRole::ADMIN)
+            ->select('id', 'name', 'surname', 'email')
+            ->get();
+
+        // přednačíst kroky a potřebné relace
+        $campaign->load([
+            'steps' => function ($query) {
+                $query->with([
+                    'user:id,name,surname',
+                    'activities.latestMessage',
+                ])->orderBy('order');
+            },
+        ]);
+
+        return view('campaigns.show', [
+            'topic' => $topic,
+            'campaign' => $campaign,
+            'users' => $users,
+            'stepStates' => $this->stepStateService->calculateStepStates($campaign),
+        ]);
     }
 
     public function edit(Topic $topic, Campaign $campaign)
@@ -64,9 +80,6 @@ class CampaignController extends Controller
             ->route('topics.campaigns.show', [$topic, $campaign, 'edit_campaign' => 1]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Topic $topic, Campaign $campaign)
     {
         $this->authorize('update', $campaign);
@@ -82,9 +95,7 @@ class CampaignController extends Controller
             ->with('success', 'Kampaň byla upravena.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(Topic $topic, Campaign $campaign)
     {
         $this->authorize('delete', $campaign);

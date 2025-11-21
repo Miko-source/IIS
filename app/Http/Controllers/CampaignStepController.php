@@ -2,64 +2,81 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserRole;
 use Illuminate\Http\Request;
 use App\Models\Campaign;    
 use App\Models\CampaignStep;     
-use App\Models\User; 
+use App\Models\User;
+use App\Services\StepCompletionService;
 
 class CampaignStepController extends Controller
 {
+    public function __construct(
+        private StepCompletionService $completionService
+    ) {}
+
     public function index(Campaign $campaign)
     {
-        $steps = $campaign->steps()->orderBy('order')->get();
+        $this->authorize('viewAny', [CampaignStep::class, $campaign]);
+
+        // Použij scope pro filtrování kroků podle oprávnění
+        $steps = $campaign->steps()
+            ->visibleFor(auth()->user(), $campaign)
+            ->with('user:id,name,surname')
+            ->orderBy('order')
+            ->get();
+
         return view('campaigns.steps.index', compact('campaign', 'steps'));
     }
 
     public function create(Campaign $campaign)
     {
-        $coordinators = User::where('role', 'coordinator')->get();
+        $this->authorize('create', [CampaignStep::class, $campaign]);
+
+        $coordinators = User::where('role', UserRole::COORDINATOR)
+            ->select('id', 'name', 'surname')
+            ->get();
+
         return view('campaigns.steps.create', compact('campaign', 'coordinators'));
     }
 
     public function store(Request $request, Campaign $campaign)
     {
-        $request->validate([
-            'name'        => 'required|string|max:255',
-            'order'       => 'required|integer|min:1',
-            'user_id'     => 'required|exists:users,id',
-            'description' => 'nullable|string',
+        $this->authorize('create', [CampaignStep::class, $campaign]);
+
+        $validated = $request->validate([
+            'name'        => ['required', 'string', 'max:255'],
+            'order'       => ['required', 'integer', 'min:1'],
+            'user_id'     => ['required', 'exists:users,id'],
+            'description' => ['nullable', 'string'],
         ]);
 
-        CampaignStep::create([
-            'campaign_id' => $campaign->id,
-            'name'        => $request->name,
-            'order'       => $request->order,
-            'user_id'     => $request->user_id,
-            'description' => $request->description,
-        ]);
+        $campaign->steps()->create($validated);
 
         return redirect()
-            ->route('campaign.steps.index', $campaign->id)
+            ->route('campaign.steps.index', $campaign)
             ->with('success', 'Krok kampaně byl vytvořen.');
     }
 
     public function show(Campaign $campaign, CampaignStep $step)
     {
-        $activities = $step->activities;
+        $this->authorize('view', $step);
 
-        // seznam možných koordinátorů
-        // můžeš omezit podle rolí nebo používat všichni
-        $coordinators = \App\Models\User::where('id', '!=', $campaign->user_id)->get();
+        $step->load(['activities', 'user:id,name,surname']);
 
         $previousStep = $campaign->steps()
             ->where('order', '<', $step->order)
             ->orderByDesc('order')
             ->first();
 
+        $coordinators = User::where('id', '!=', $campaign->user_id)
+            ->select('id', 'name', 'surname')
+            ->get();
+
         return view('campaigns.steps.show', [
             'campaign'     => $campaign,
             'step'         => $step,
-            'activities'   => $activities,
+            'activities'   => $step->activities,
             'coordinators' => $coordinators,
             'previousStep' => $previousStep,
         ]);
@@ -67,95 +84,55 @@ class CampaignStepController extends Controller
 
     public function edit(Campaign $campaign, CampaignStep $step)
     {
-        $coordinators = User::where('role', 'coordinator')->get();
+        $this->authorize('update', $step);
+
+        $coordinators = User::where('role', UserRole::COORDINATOR)
+            ->select('id', 'name', 'surname')
+            ->get();
 
         return view('campaigns.steps.edit', compact('campaign', 'step', 'coordinators'));
     }
 
     public function update(Request $request, Campaign $campaign, CampaignStep $step)
     {
-        $request->validate([
-            'name'        => 'required|string|max:255',
-            'order'       => 'required|integer|min:1',
-            'user_id'     => 'required|exists:users,id',
-            'description' => 'nullable|string',
+        $this->authorize('update', $step);
+
+        $validated = $request->validate([
+            'name'        => ['required', 'string', 'max:255'],
+            'order'       => ['required', 'integer', 'min:1'],
+            'user_id'     => ['required', 'exists:users,id'],
+            'description' => ['nullable', 'string'],
         ]);
 
-        $step->update($request->only(['name', 'order', 'user_id', 'description']));
+        $step->update($validated);
 
         return redirect()
-            ->route('campaign.steps.show', [$campaign->id, $step->id])
+            ->route('campaign.steps.show', [$campaign, $step])
             ->with('success', 'Krok kampaně byl upraven.');
     }
 
     public function destroy(Campaign $campaign, CampaignStep $step)
     {
-        $user = auth()->user();
-
-        if (
-            !$user->hasRoleOrHigher(\App\Enums\UserRole::ADMIN) &&
-            $campaign->user_id !== $user->id &&
-            $step->user_id !== $user->id
-        ) {
-            abort(403);
-        }
+        $this->authorize('delete', $step);
 
         $step->delete();
 
         return redirect()
-            ->route('campaign.steps.index', $campaign->id)
+            ->route('campaign.steps.index', $campaign)
             ->with('success', 'Krok byl smazán.');
     }
 
-
     public function markComplete(Campaign $campaign, CampaignStep $step)
     {
-        $user = auth()->user();
+        $this->authorize('markComplete', $step);
 
-        // kontrola roli
-        if (
-            !$user->hasRoleOrHigher(\App\Enums\UserRole::ADMIN) &&
-            $campaign->user_id !== $user->id &&
-            $step->user_id !== $user->id
-        ) {
-            abort(403);
+        $result = $this->completionService->canComplete($step);
+        
+        if (!$result['can_complete']) {
+            return back()->with('error', $result['error']);
         }
 
-        // předchozí kroky musí být dokončené
-        $hasUnfinishedPrevious = $campaign->steps()
-            ->where('order', '<', $step->order)
-            ->where(function ($q) {
-                $q->whereNull('is_completed')->orWhere('is_completed', false);
-            })
-            ->exists();
-
-        if ($hasUnfinishedPrevious) {
-            return back()->with('error', 'Neplatné pořadí: nejprve dokončete předchozí kroky.');
-        }
-
-        foreach ($step->activities as $activity) {
-            $lastMessage = $activity->messages()->latest()->first();
-            
-            // atleast one message must exist
-            if (!$lastMessage) {
-                return back()->with('error', 
-                    "Aktivita '{$activity->name}' ještě nemá žádnou zprávu. Všechny aktivity musí být vyhodnoceny.");
-            }
-            
-            // Zpráva musí existovat; úspěch i neúspěch jsou akceptovány, null znamená nepodáno
-            if ($lastMessage->success === null) {
-                return back()->with('error', 
-                    "Aktivita '{$activity->name}' nemá vyhodnocení. Všechny aktivity musí mít podanou zprávu.");
-            }
-        }
-
-        // Pokud krok nemá žádné aktivity, nelze jej označit jako splněný
-        if ($step->activities->count() === 0) {
-            return back()->with('error', 'Krok nemá žádné aktivity. Nelze jej označit jako splněný.');
-        }
-
-        // aktualizace stavu kroku
-        $step->update(['is_completed' => true]);
+        $this->completionService->complete($step);
 
         return back()->with('success', 'Krok byl označen jako splněný.');
     }
