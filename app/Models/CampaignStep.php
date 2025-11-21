@@ -48,6 +48,11 @@ class CampaignStep extends Model
 
         return true;
     }
+    public function user()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'user_id');
+    }
+    
 
     
 

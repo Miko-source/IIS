@@ -47,11 +47,20 @@ public function store(Request $request, Campaign $campaign)
 
 public function show(Campaign $campaign, CampaignStep $step)
 {
-    // nacteni aktivit
     $activities = $step->activities;
 
-    return view('campaigns.steps.show', compact('campaign', 'step', 'activities'));
+    // seznam možných koordinátorů
+    // můžeš omezit podle rolí nebo použít všichni
+    $coordinators = \App\Models\User::where('id', '!=', $campaign->user_id)->get();
+
+    return view('campaigns.steps.show', [
+        'campaign'     => $campaign,
+        'step'         => $step,
+        'activities'   => $activities,
+        'coordinators' => $coordinators,
+    ]);
 }
+
 public function edit(Campaign $campaign, CampaignStep $step)
 {
     $coordinators = User::where('role', 'coordinator')->get();
