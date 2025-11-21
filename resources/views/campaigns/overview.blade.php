@@ -25,11 +25,16 @@
 
                 <div class="d-flex gap-2">
 
-                    {{-- Upravit krok --}}
-                    <a href="{{ route('campaign.steps.edit', [$campaign->id, $step->id]) }}"
-                       class="btn btn-sm btn-warning">
+                    <a href="{{ route('campaign.steps.edit', [
+                            $campaign->id,
+                            $step->id,
+                            'back' => 'campaign'
+                        ]) }}"
+                    class="btn btn-sm btn-warning">
                         Upravit krok
                     </a>
+
+                    
 
                     {{-- Detail kroku --}}
                     <a href="{{ route('campaign.steps.show', [$campaign->id, $step->id]) }}"

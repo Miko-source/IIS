@@ -33,10 +33,15 @@
             </button>
 
             {{-- Tlačítko Upravit krok --}}
-            <a href="{{ route('campaign.steps.edit', [$campaign->id, $step->id]) }}"
-            class="btn btn-warning btn-sm">
+            <a href="{{ route('campaign.steps.edit', [
+                    $campaign->id,
+                    $step->id,
+                    'back' => 'step'
+                ]) }}"
+            class="btn btn-warning">
                 Upravit krok
             </a>
+
                 <!-- zpet-->
             <a href="{{ route('topics.campaigns.show', [$campaign->topic, $campaign]) }}"
             class="btn btn-outline-secondary btn-sm mb-3">

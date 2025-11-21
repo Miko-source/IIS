@@ -39,10 +39,24 @@
 
         <button class="btn btn-primary">Uložit změny</button>
 
-        <a href="{{ route('campaign.steps.show', [$campaign->id, $step->id]) }}"
-           class="btn btn-secondary">
-            Zpět na detail
-        </a>
+        @php
+            $back = request('back');
+        @endphp
+
+        @if($back === 'campaign')
+            {{-- prisel jsem z detailu kampane --}}
+            <a href="{{ route('topics.campaigns.show', [$campaign->topic, $campaign]) }}"
+            class="btn btn-outline-secondary mb-3">
+                ← Zpět na kampaň
+            </a>
+        @else
+            {{-- default: z detailu kroku --}}
+            <a href="{{ route('campaign.steps.show', [$campaign->id, $step->id]) }}"
+            class="btn btn-outline-secondary mb-3">
+                ← Zpět na detail kroku
+            </a>
+        @endif
+
 
     </form>
 </div>

@@ -18,5 +18,10 @@
             {{ $topics->links() }}
         </div>
     @endif
+
+    <a href="{{ route('dashboard') }}" class="btn btn-secondary">
+    ← Zpět na dashboard
+    </a>
+
 </div>
 @endsection

@@ -99,11 +99,17 @@
 
                             @endforeach
 
-                            {{-- DETAIL KAMPANĚ --}}
-                            <a href="{{ route('topics.campaigns.show', [$campaign->topic, $campaign]) }}"
-                               class="btn btn-primary btn-sm mt-2">
-                                Otevřít detail kampaně
+                            <a href="{{ route('topics.campaigns.show', [
+                                $topic,
+                                $campaign,
+                                'back' => 'campaigns'
+                            ]) }}">
+                                Detail kampaně
                             </a>
+
+
+
+
 
                             {{-- SCHOVAT KROKY / KAMPAŇ --}}
                             <button class="btn btn-outline-secondary btn-sm mt-2"

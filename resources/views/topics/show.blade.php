@@ -65,10 +65,14 @@
                     <div class="d-flex gap-2">
 
                         {{-- Detail --}}
-                        <a href="{{ route('topics.campaigns.show', [$topic, $campaign]) }}" 
-                           class="btn btn-secondary btn-sm">
-                            Detail
+                        <a href="{{ route('topics.campaigns.show', [
+                            $topic,
+                            $campaign,
+                            'back' => 'topic'
+                        ]) }}">
+                            Detail kampaně
                         </a>
+
 
                         {{-- Správa pracovníků --}}
                         @can('manageWorkers', $campaign)
@@ -111,5 +115,10 @@
             + Vytvořit novou kampaň
         </a>
     @endif
+    <br>
+    <a href="{{ route('topics.index') }}" class="btn btn-secondary">
+    ← Zpět na seznam témat
+    </a>
+
 </div>
 @endsection
