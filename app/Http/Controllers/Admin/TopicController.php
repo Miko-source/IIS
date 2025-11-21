@@ -11,7 +11,7 @@ class TopicController extends Controller
 {
     public function index()
     {
-        $topics = Topic::all();
+        $topics = Topic::orderBy('name')->paginate(10);
         return view('admin.topics.index', compact('topics'));
     }
 

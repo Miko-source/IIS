@@ -46,6 +46,88 @@
             padding: 8px 0 16px;
             text-align: center;
         }
+
+        /* Buttony  */
+        .btn-app {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+            padding: 0.35rem 0.9rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border: 1px solid transparent;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-app-sm {
+            padding: 0.25rem 0.7rem;
+            font-size: 0.8rem;
+        }
+
+        .btn-app-primary {
+            background-color: #2563eb;
+            border-color: #2563eb;
+            color: #ffffff;
+        }
+        .btn-app-primary:hover {
+            background-color: #1d4ed8;
+            border-color: #1d4ed8;
+            color: #ffffff;
+        }
+
+        .btn-app-secondary {
+            background-color: #e5e7eb;
+            border-color: #d1d5db;
+            color: #111827;
+        }
+        .btn-app-secondary:hover {
+            background-color: #d1d5db;
+            border-color: #9ca3af;
+            color: #111827;
+        }
+
+        .btn-app-edit {
+            background-color: #facc15;
+            border-color: #facc15;
+            color: #1f2937;
+        }
+        .btn-app-edit:hover {
+            background-color: #eab308;
+            border-color: #eab308;
+            color: #111827;
+        }
+
+        .btn-app-danger {
+            background-color: #ef4444;
+            border-color: #ef4444;
+            color: #ffffff;
+        }
+        .btn-app-danger:hover {
+            background-color: #dc2626;
+            border-color: #dc2626;
+            color: #ffffff;
+        }
+
+        .btn-topic {
+            display: block;
+            width: 100%;
+            padding: 12px 18px;
+            border-radius: 0.5rem;
+            border: 1px solid #2563eb;
+            background-color: #f9fafb;
+            color: #2563eb;
+            font-weight: 600;
+            font-size: 16px;
+            text-align: left;
+            text-decoration: none;
+        }
+        .btn-topic:hover {
+            background-color: #2563eb;
+            color: #ffffff;
+        }
     </style>
 </head>
 

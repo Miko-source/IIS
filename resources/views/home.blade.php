@@ -5,390 +5,429 @@
     <title>DisinfoCamp Manager</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    >
+
     <style>
         body {
             margin: 0;
+            min-height: 100vh;
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: #f3f4f6;
+            background: radial-gradient(circle at top, #dbeafe 0, #f3f4f6 45%, #f9fafb 100%);
             color: #111827;
         }
 
-        .page {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Navbar */
-        .navbar {
-            background: #ffffff;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-            padding: 12px 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .navbar-title {
-            font-weight: 700;
-            font-size: 20px;
-        }
-
-        .navbar-nav {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .btn-link {
-            font-size: 14px;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-primary {
-            font-size: 14px;
-            padding: 8px 16px;
-            border-radius: 6px;
+        .landing-navbar {
             background: #111827;
-            color: #ffffff;
-            border: none;
-            cursor: pointer;
+            color: #fff;
+            box-shadow: 0 1px 4px rgba(0,0,0,.15);
         }
 
-        .btn-outline {
+        .landing-navbar .navbar-brand {
+            font-weight: 700;
+            letter-spacing: .02em;
+        }
+
+        .landing-navbar .nav-link {
+            color: #e5e7eb;
             font-size: 14px;
-            padding: 8px 16px;
-            border-radius: 6px;
-            background: #ffffff;
-            border: 1px solid #d1d5db;
-            cursor: pointer;
         }
 
-        /* Hero */
-        .main {
-            flex: 1;
+        .landing-navbar .nav-link.active {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .hero-wrap {
+            min-height: calc(100vh - 64px);
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 40px 16px;
-        }
-
-        .hero {
-            max-width: 800px;
-            text-align: center;
-            margin-bottom: 40px;
+            justify-content: flex-start;
+            padding: 48px 16px 32px;
         }
 
         .hero-title {
-            font-size: 32px;
+            font-size: clamp(24px, 3vw, 32px);
             font-weight: 700;
-            margin-bottom: 16px;
+            text-align: center;
+            margin-bottom: 8px;
         }
 
-        .hero-text {
-            font-size: 18px;
+        .hero-subtitle {
+            text-align: center;
+            max-width: 680px;
+            margin: 0 auto 32px;
             color: #4b5563;
-            margin-bottom: 24px;
+            font-size: 15px;
         }
 
-        .hero-buttons {
-            display: flex;
+        .auth-card {
+            width: 100%;
+            max-width: 480px;
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 28px 28px 22px;
+            box-shadow: 0 18px 45px rgba(15,23,42,.18);
+            border: 1px solid rgba(148,163,184,.25);
+        }
+
+        .auth-card h2 {
+            font-size: 20px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 4px;
+        }
+
+        .auth-card p.small {
+            text-align: center;
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            font-size: 13px;
+            margin-bottom: 4px;
+            color: #374151;
+        }
+
+        .form-control {
+            border-radius: 9999px;
+            padding: 8px 14px;
+            font-size: 14px;
+        }
+
+        .form-check-label {
+            font-size: 13px;
+        }
+
+        .auth-submit-btn {
+            width: 100%;
+            border-radius: 9999px;
+            padding: 10px 16px;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            background: linear-gradient(135deg, #111827, #020617);
+            color: #ffffff;            
+        }
+
+        .auth-submit-btn:hover {
+            filter: brightness(1.05);
+        }
+
+        .auth-switch-line {
+            margin-top: 10px;
+            font-size: 13px;
+            text-align: center;
+            color: #6b7280;
+        }
+
+        .auth-switch-link {
+            border: none;
+            background: transparent;
+            color: #111827;
+            font-weight: 600;
+            text-decoration: underline;
+            cursor: pointer;
+            padding: 0 2px;
+        }
+
+        .roles-toggle-btn {
+            background: transparent;
+            border: none;
+            margin-top: 18px;
+            font-size: 13px;
+            text-align: center;
+            color: #272424ff;
+        }
+
+        .roles-grid {
+            max-width: 960px;
+            margin: 18px auto 0;
+            display: none;
             gap: 16px;
-            justify-content: center;
-            flex-wrap: wrap;
         }
 
-        /* Role cards */
-        .roles {
+        .roles-grid.visible {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 16px;
-            width: 100%;
-            max-width: 1000px;
         }
 
         .role-card {
             background: #ffffff;
-            border-radius: 8px;
-            padding: 16px;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-            text-align: left;
+            border-radius: 16px;
+            padding: 16px 18px;
+            box-shadow: 0 10px 30px rgba(15,23,42,.12);
         }
 
-        .role-title {
-            font-weight: 600;
-            margin-bottom: 8px;
+        .role-card h3 {
+            font-size: 16px;
+            margin-bottom: 6px;
         }
 
-        .role-text {
-            font-size: 14px;
+        .role-card p {
+            font-size: 13px;
             color: #4b5563;
+            margin: 0;
         }
 
-        /* Footer */
-        .footer {
-            padding: 12px 0;
-            text-align: center;
-            font-size: 11px;
-            color: #6b7280;
-        }
-
-        /* LOGIN MODAL */
-
-        .modal-backdrop {
-            position: fixed;
-            inset: 0;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 50;
-        }
-
-        .modal-backdrop.is-visible {
-            display: flex;
-        }
-
-        .modal {
-            background: #ffffff;
-            border-radius: 10px;
-            padding: 24px;
-            width: 100%;
-            max-width: 420px;
-            position: relative;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            border: none;
-            background: transparent;
-            cursor: pointer;
-            font-size: 18px;
-            color: #6b7280;
-        }
-
-        .modal-title {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 16px;
-        }
-
-        .form-group {
-            margin-bottom: 12px;
-        }
-
-        .form-label {
-            display: block;
-            font-size: 14px;
-            margin-bottom: 4px;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 8px 10px;
-            font-size: 14px;
-            border-radius: 6px;
-            border: 1px solid #d1d5db;
-        }
-
-        .form-error {
+        .error-text {
             font-size: 12px;
-            color: red;
+            color: #dc2626;
             margin-top: 4px;
-        }
-
-        .form-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 12px;
-            margin-top: 4px;
-        }
-
-        .link-button {
-            border: none;
-            background: transparent;
-            text-decoration: underline;
-            cursor: pointer;
-            padding: 0;
-            font-size: 12px;
-        }
-
-        .flash-message {
-            font-size: 12px;
-            color: red;
-            margin-bottom: 8px;
         }
     </style>
 </head>
 <body>
-<div class="page">
 
-    
-    <header class="navbar">
-        <div class="navbar-title">
+<nav class="navbar navbar-expand landing-navbar">
+    <div class="container">
+        <a class="navbar-brand text-danger fw-bold" href="{{ route('home') }}">
             DisinfoCamp Manager
-        </div>
-        <nav class="navbar-nav">
-            <button class="btn-link">Domů</button>
-            <button class="btn-link">Kampaně</button>
+        </a>
 
-            {{-- tlačidlo otvorí login modal --}}
-            <button class="btn-primary js-open-login">Přihlásit se</button>
-
-            <a href="{{ route('register') }}" class="btn-outline" style="text-decoration:none;display:inline-block;">
-                Registrovat se
-            </a>
-        </nav>
-    </header>
-
-    <!-- HLAVNÍ OBSAH -->
-    <main class="main">
-        <section class="hero">
-            <h1 class="hero-title">Systém pro správu dezinformačních kampaní</h1>
-            <p class="hero-text">
-                Plánujte témata, kroky kampaní a spravujte pracovníky, kteří se podílejí na šíření dezinformací.
-            </p>
-            <div class="hero-buttons">
-                <button class="btn-primary js-open-login">Začít – přihlásit se</button>
-                <a href="{{ route('register') }}" class="btn-outline" style="text-decoration:none;display:inline-block;">
-                    Registrovat účet pracovníka
-                </a>
-            </div>
-        </section>
-
-        <section class="roles">
-            <div class="role-card">
-                <h2 class="role-title">Administrátor</h2>
-                <p class="role-text">
-                    Spravuje uživatele, role, témata a přiřazuje správce kampaní.
-                </p>
-            </div>
-            <div class="role-card">
-                <h2 class="role-title">Správce kampaně</h2>
-                <p class="role-text">
-                    Definuje kroky kampaně, přiděluje koordinátory a mění stav kampaně.
-                </p>
-            </div>
-            <div class="role-card">
-                <h2 class="role-title">Koordinátor</h2>
-                <p class="role-text">
-                    Spravuje aktivity v jednotlivých krocích kampaně a pracovníky.
-                </p>
-            </div>
-            <div class="role-card">
-                <h2 class="role-title">Pracovník</h2>
-                <p class="role-text">
-                    Hlásí se na aktivity, provádí je a vyplňuje úspěšnost.
-                </p>
-            </div>
-        </section>
-    </main>
-
-    <footer class="footer">
-        &copy; 2025 DisinfoCamp Manager – váš tým
-    </footer>
-</div>
-
-<div class="modal-backdrop" id="login-backdrop">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="login-title">
-        <button class="modal-close" id="login-close" aria-label="Zavřít">
-            ×
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#landingNavbar">
+            <span class="navbar-toggler-icon"></span>
         </button>
 
-        <h2 class="modal-title" id="login-title">Přihlášení do systému</h2>
+        <div class="collapse navbar-collapse" id="landingNavbar">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" href="{{ route('home') }}">Domů</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Kampaně</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
-        @if ($errors->has('login'))
-            <div class="flash-message">
-                {{ $errors->first('login') }}
-            </div>
-        @endif
+<main class="hero-wrap">
+    <h1 class="hero-title">Systém pro správu dezinformačních kampaní</h1>
+    <p class="hero-subtitle">
+        Plánujte témata, kroky kampaní a spravujte pracovníky, kteří se podílejí na šíření dezinformací.
+    </p>
 
-        <form id="login-form" method="POST" action="{{ route('login.post') }}" novalidate>
+    {{-- LOGIN / REGISTER CARD --}}
+    <section class="auth-card">
+
+        {{-- LOGIN FORM --}}
+        <form
+            id="login-form"
+            method="POST"
+            action="{{ route('login.post') }}"
+            novalidate
+            style="{{ $errors->any() && !old('form_mode') ? '' : '' }}"
+        >
             @csrf
+            <h2>Přihlášení do systému</h2>
+            <p class="small">Zadejte svůj e-mail a heslo.</p>
 
-            <div class="form-group">
-                <label class="form-label">
-                    E-mail <span style="color:red">*</span>
-                </label>
+            {{-- obecná chyba z LoginControlleru --}}
+            @if ($errors->has('login'))
+                <div class="error-text mb-2">
+                    {{ $errors->first('login') }}
+                </div>
+            @endif
+
+            <div class="mb-3">
+                <label class="form-label">E-mail</label>
                 <input
                     type="email"
                     name="email"
-                    id="login-email"
-                    class="form-input"
+                    class="form-control"
                     value="{{ old('email') }}"
                     placeholder="např. worker@disinfo.test"
                 >
                 @error('email')
-                    <div class="form-error">{{ $message }}</div>
+                    <div class="error-text">{{ $message }}</div>
                 @enderror
             </div>
 
-            <div class="form-group">
-                <label class="form-label">
-                    Heslo <span style="color:red">*</span>
-                </label>
+            <div class="mb-3">
+                <label class="form-label">Heslo</label>
                 <input
                     type="password"
                     name="password"
-                    id="login-password"
-                    class="form-input"
+                    class="form-control"
                 >
                 @error('password')
-                    <div class="form-error">{{ $message }}</div>
+                    <div class="error-text">{{ $message }}</div>
                 @enderror
             </div>
 
-            <div class="form-row">
-                <label style="display:flex; align-items:center; gap:4px;">
-                    <input type="checkbox" name="remember">
-                    <span>Zapamatovat si mě</span>
-                </label>
-                <button type="button" class="link-button">Zapomenuté heslo</button>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="remember" id="remember">
+                    <label class="form-check-label" for="remember">
+                        Zapamatovat si mě
+                    </label>
+                </div>
+                <button type="button" class="btn btn-link p-0 small">
+                    Zapomenuté heslo
+                </button>
             </div>
 
-            <button type="submit" class="btn-primary" style="width:100%; margin-top:8px;">
+            <button type="submit" class="auth-submit-btn">
                 Přihlásit se
             </button>
 
-            <p style="font-size:12px; text-align:center; margin-top:8px;">
+            <div class="auth-switch-line">
                 Nemáte účet?
-                <a href="{{ route('register') }}" class="link-button">Registrovat se</a>
-            </p>
+                <button type="button" class="auth-switch-link" id="show-register">
+                    Registrovat účet pracovníka
+                </button>
+            </div>
         </form>
-    </div>
-</div>
+
+        <form
+            id="register-form"
+            method="POST"
+            action="{{ route('register') }}"
+            style="display:none;"
+        >
+            @csrf
+            <h2>Registrace pracovníka</h2>
+            <p class="small">Vyplňte údaje pro vytvoření nového účtu.</p>
+
+            <div class="mb-3">
+                <label class="form-label">Jméno</label>
+                <input
+                    type="text"
+                    name="name"
+                    class="form-control"
+                    value="{{ old('name') }}"
+                >
+                @error('name')
+                    <div class="error-text">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Příjmení</label>
+                <input
+                    type="text"
+                    name="surname"
+                    class="form-control"
+                    value="{{ old('surname') }}"
+                >
+                @error('surname')
+                    <div class="error-text">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">E-mail</label>
+                <input
+                    type="email"
+                    name="email"
+                    class="form-control"
+                    value="{{ old('email') }}"
+                >
+                @error('email')
+                    <div class="error-text">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Heslo</label>
+                <input
+                    type="password"
+                    name="password"
+                    class="form-control"
+                >
+                @error('password')
+                    <div class="error-text">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Potvrzení hesla</label>
+                <input
+                    type="password"
+                    name="password_confirmation"
+                    class="form-control"
+                >
+                @error('password_confirmation')
+                    <div class="error-text">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <button type="submit" class="auth-submit-btn">
+                Registrovat se
+            </button>
+
+            <div class="auth-switch-line">
+                Už máte účet?
+                <button type="button" class="auth-switch-link" id="show-login">
+                    Přihlásit se
+                </button>
+            </div>
+        </form>
+    </section>
+
+    {{-- button na zobrazení rolí --}}
+    <button type="button" class="roles-toggle-btn" id="toggle-roles">
+        Zobrazit role v systému
+    </button>
+
+    <section id="roles-section" class="roles-grid">
+        <article class="role-card">
+            <h3>Administrátor</h3>
+            <p>Spravuje uživatele, role, témata a přiřazuje správce kampaní.</p>
+        </article>
+        <article class="role-card">
+            <h3>Správce kampaně</h3>
+            <p>Definuje kroky kampaně, přiděluje koordinátory a mění stav kampaně.</p>
+        </article>
+        <article class="role-card">
+            <h3>Koordinátor</h3>
+            <p>Spravuje aktivity v jednotlivých krocích kampaně a pracovníky.</p>
+        </article>
+        <article class="role-card">
+            <h3>Pracovník</h3>
+            <p>Hlásí se na aktivity, provádí je a vyplňuje úspěšnost.</p>
+        </article>
+    </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    const backdrop = document.getElementById('login-backdrop');
-    const closeBtn = document.getElementById('login-close');
-    const openButtons = document.querySelectorAll('.js-open-login');
-    const shouldOpen = {{ json_encode(($openLoginModal ?? false) || session('openLoginModal') || $errors->has('login')) }};
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+    const showRegisterBtn = document.getElementById('show-register');
+    const showLoginBtn = document.getElementById('show-login');
+    const rolesToggleBtn = document.getElementById('toggle-roles');
+    const rolesSection = document.getElementById('roles-section');
+    
 
-    openButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            backdrop.classList.add('is-visible');
+    if (showRegisterBtn) {
+        showRegisterBtn.addEventListener('click', () => {
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'block';
         });
-    });
-
-    if (shouldOpen) {
-        backdrop.classList.add('is-visible');
     }
 
-    closeBtn.addEventListener('click', () => {
-        backdrop.classList.remove('is-visible');
-    });
 
-    backdrop.addEventListener('click', (e) => {
-        if (e.target === backdrop) {
-            backdrop.classList.remove('is-visible');
-        }
-    });
+    if(showLoginBtn){
+        showLoginBtn.addEventListener('click', () => {
+            registerForm.style.display = 'none';
+            loginForm.style.display = 'block';
+        })
+    }
+
+    if (rolesToggleBtn) {
+        rolesToggleBtn.addEventListener('click', () => {
+            rolesSection.classList.toggle('visible');
+        });
+    }
 </script>
 
 </body>

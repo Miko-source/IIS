@@ -2,7 +2,9 @@
 
 @section('content')
 <h1>Témata</h1>
-<a href="{{ route('admin.topics.create') }}" class="btn btn-primary">Přidat téma</a>
+<a href="{{ route('admin.topics.create') }}" class="btn-app btn-app-primary">
+    Přidat téma
+</a>
 
 <table class="table mt-3">
     <thead>
@@ -24,15 +26,24 @@
                 </td>
                 <td>{{ $topic->target_group }}</td>
                 <td>
-                    <a href="{{ route('admin.topics.edit', $topic) }}" class="btn btn-warning btn-sm">Upravit</a>
+                    <a href="{{ route('admin.topics.edit', $topic) }}" class="btn-app btn-app-edit btn-app-sm">
+                        Upravit
+                    </a>
                     <form method="POST" action="{{ route('admin.topics.destroy', $topic) }}" class="d-inline">
                         @csrf
                         @method('DELETE')
-                        <button class="btn btn-danger btn-sm">Smazat</button>
+                        <button class="btn-app btn-app-danger btn-app-sm">
+                            Smazat
+                        </button>
                     </form>
                 </td>
             </tr>
         @endforeach
     </tbody>
 </table>
+@if ($topics instanceof \Illuminate\Pagination\LengthAwarePaginator)
+    <div class="mt-4 d-flex justify-content-center">
+        {{ $topics->links() }}
+    </div>
+@endif
 @endsection

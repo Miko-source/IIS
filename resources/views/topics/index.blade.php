@@ -9,9 +9,7 @@
     @else
         <div class="d-grid gap-2">
         @foreach($topics as $topic)
-            <a href="{{ route('topics.show', $topic) }}"
-                class="btn btn-outline-primary text-start fw-semibold"
-                style="padding: 12px 18px; font-size: 16px;">
+            <a href="{{ route('topics.show', $topic) }}" class="btn-topic">
                 {{ $topic->name }}
             </a>
         @endforeach

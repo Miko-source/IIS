@@ -20,10 +20,10 @@
     
     {{-- kroky  --}}
     <div class="d-flex flex-wrap gap-2 my-3">
-        <a href="{{ route('campaign.steps.index', $campaign->id) }}" class="btn btn-outline-primary">
+        <a href="{{ route('campaign.steps.index', $campaign->id) }}" class="btn-app btn-app-primary">
             Spravovat kroky kampaně
         </a>
-        <a href="{{ route('topics.show', $topic) }}" class="btn btn-secondary">
+        <a href="{{ route('topics.show', $topic) }}" class="btn-app btn-app-secondary">
             ← Zpět na téma
         </a>
     </div>

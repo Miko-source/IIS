@@ -25,7 +25,7 @@
                             onsubmit="return confirm('Opravdu chcete odstranit tento krok?');">
                             @csrf
                             @method('DELETE')
-                            <button class="btn btn-danger btn-sm mb-3">
+                            <button class="btn-app btn-app-danger btn-app-sm mb-3">
                                 Odebrat krok
                             </button>
                         </form>
