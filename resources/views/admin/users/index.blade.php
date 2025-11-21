@@ -27,19 +27,18 @@
                     <td>{{ $user->email }}</td>
                     <td>{{ $user->role?->value}}</td>
                     <td>
-                        <a href="{{ route('admin.users.edit', $user) }}" class="btn-app btn-app-edit btn-app-sm">
-                            Upravit
-                        </a>
+                        @include('components.edit-button', [
+                            'href' => route('admin.users.edit', $user),
+                            'label' => 'Upravit',
+                            'small' => true
+                        ])
 
-                        <form action="{{ route('admin.users.destroy', $user) }}" method="POST"
-                              class="d-inline"
-                              onsubmit="return confirm('Opravdu smazat/deaktivovat?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn-app btn-app-danger btn-app-sm">
-                                Smazat/Deaktivovat
-                            </button>
-                        </form>
+                        @include('components.delete-button', [
+                            'action' => route('admin.users.destroy', $user),
+                            'label' => 'Smazat/Deaktivovat',
+                            'confirm' => 'Opravdu smazat/deaktivovat?',
+                            'small' => true
+                        ])
                     </td>
                 </tr>
             @endforeach

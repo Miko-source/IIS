@@ -24,16 +24,28 @@
                         @csrf
 
                         <div class="mb-3">
-                            <label>Úspěšné provedení?</label>
-                            <select name="success" class="form-control" required>
-                                <option value="1">Ano</option>
-                                <option value="0">Ne</option>
+                            <label class="form-label">Stav dokončení aktivity:</label>
+                            <select name="success" class="form-control @error('success') is-invalid @enderror" required>
+                                <option value="">-- Vyberte stav --</option>
+                                <option value="1">✓ Úspěšně dokončeno</option>
+                                <option value="0">✗ Neúspěšné / selhalo</option>
                             </select>
+                            @error('success')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="mb-3">
-                            <label>Zpráva / komentář</label>
-                            <textarea name="content" class="form-control" rows="3" required></textarea>
+                            <label class="form-label">Zpráva / komentář</label>
+                            <textarea 
+                                name="content" 
+                                class="form-control @error('content') is-invalid @enderror" 
+                                rows="4" 
+                                required
+                                placeholder="Popište průběh aktivity..."></textarea>
+                            @error('content')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <button class="btn btn-success">Odeslat zprávu</button>
@@ -63,9 +75,21 @@
                     {{-- zprávy uživatele k této aktivitě --}}
                     <h5>Moje zprávy:</h5>
                     @foreach($activity->messages->where('user_id', auth()->id()) as $msg)
-                        <div class="border p-2 mt-2">
-                            <strong>{{ $msg->success ? 'Úspěch' : 'Neúspěch' }}</strong>
-                            <p>{{ $msg->content }}</p>
+                        <div class="border-start border-3 ps-3 mb-2 p-2
+                            @if($msg->success === 1) border-success
+                            @elseif($msg->success === 0) border-danger
+                            @else border-warning
+                            @endif">
+                            <strong>
+                                @if($msg->success === 1)
+                                    <span class="text-success">✓ Úspěch</span>
+                                @elseif($msg->success === 0)
+                                    <span class="text-danger">✗ Neúspěch</span>
+                                @else
+                                    <span class="text-warning">⏳ Čeká na vyhodnocení</span>
+                                @endif
+                            </strong>
+                            <p class="mb-1">{{ $msg->content }}</p>
                             <small class="text-muted">{{ $msg->created_at->format('d.m.Y H:i') }}</small>
                         </div>
                     @endforeach

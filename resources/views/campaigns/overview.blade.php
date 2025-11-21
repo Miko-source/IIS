@@ -19,22 +19,21 @@
 
                     {{-- stav kroku --}}
                     @if($step->is_completed)
-                        <span class="text-success fw-bold ms-3">✔ Krok splněn</span>
+                        <span class="text-success fw-bold ms-3">✓ Krok splněn</span>
                     @endif
                 </div>
 
                 <div class="d-flex gap-2">
-
-                    <a href="{{ route('campaign.steps.edit', [
-                            $campaign->id,
-                            $step->id,
-                            'back' => 'campaign'
-                        ]) }}"
-                    class="btn btn-sm btn-warning">
-                        Upravit krok
-                    </a>
-
-                    
+                    @include('components.edit-button', [
+                        'href' => route('campaign.steps.show', [
+                        $campaign->id,
+                        $step->id,
+                        'edit' => 1,
+                        'back' => 'campaign'
+                    ]),
+                        'label' => 'Upravit krok',
+                        'small' => true
+                    ])
 
                     {{-- Detail kroku --}}
                     <a href="{{ route('campaign.steps.show', [$campaign->id, $step->id]) }}"
@@ -44,30 +43,47 @@
 
                     {{-- TLAČÍTKO OZNAČIT JAKO SPLNĚNÝ --}}
                     @php
-                        // všechny aktivity mají poslední message success = 1
-                        $allDone = $step->activities->every(function($activity) {
-                            if ($activity->messages->count()) {
-                                return $activity->messages->last()->success === 1;
+                        // OPRAVENÁ LOGIKA - kontrola všech aktivit (stačí mít podanou zprávu; success může být 1 nebo 0)
+                        $allDone = true;
+                        $hasActivities = $step->activities->count() > 0;
+                        
+                        if (!$hasActivities) {
+                            $allDone = false;
+                        } else {
+                            foreach ($step->activities as $activity) {
+                                $lastMessage = $activity->messages()->latest()->first();
+                                
+                                // Pokud aktivita nemá zprávu nebo zpráva nemá vyhodnocení (success === null)
+                                if (!$lastMessage || $lastMessage->success === null) {
+                                    $allDone = false;
+                                    break;
+                                }
                             }
-                            return false;
-                        });
+                        }
 
                         // kdo může označit krok jako splněný
                         $canMark =
                             auth()->user()->hasRoleOrHigher(\App\Enums\UserRole::ADMIN) ||
                             $campaign->user_id === auth()->id() ||
                             $step->user_id === auth()->id();
+
+                        // Kontrola, že všechny předchozí kroky jsou dokončené
+                        $previousCompleted = $campaign->steps
+                            ->where('order', '<', $step->order)
+                            ->every(function($s) {
+                                return (bool) $s->is_completed;
+                            });
                     @endphp
 
                     {{-- pokud je krok dokončený, NEZOBRAZUJE se tlačítko --}}
-                    @if($allDone && $canMark && !$step->is_completed)
+                    @if($allDone && $canMark && !$step->is_completed && $previousCompleted)
                         <form method="POST"
                               action="{{ route('campaigns.steps.complete', [$campaign->id, $step->id]) }}">
                             @csrf
                             @method('PATCH')
 
                             <button class="btn btn-sm btn-success">
-                                ✔ Označit jako splněný
+                                ✓ Označit jako splněný
                             </button>
                         </form>
                     @endif

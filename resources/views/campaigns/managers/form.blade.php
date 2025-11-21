@@ -1,9 +1,6 @@
 {{-- Formulář pro změnu nebo přiřazení správce --}}
 <div class="border-top pt-3 mt-3">
-    @if($campaign->user_id)
-        <h6 class="mb-3">Aktuální správce: <strong>{{ $campaign->manager->name }}</strong></h6>
-        <h6 class="mb-3">Změnit správce</h6>
-    @else
+    @if(!$campaign->user_id)
         <h6 class="mb-3">Přiřadit správce</h6>
     @endif
 
@@ -30,7 +27,7 @@
 
         <div class="d-flex gap-2">
             <button type="submit" class="btn btn-primary">
-                {{ $campaign->user_id ? 'Změnit správce' : 'Přiřadit správce' }}
+                Uložit
             </button>
             <a href="{{ route('topics.campaigns.show', [$topic, $campaign]) }}" class="btn btn-secondary">
                 Zrušit

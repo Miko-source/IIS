@@ -14,9 +14,11 @@
 
     @can('update', $topic)
         <div class="d-flex gap-2 my-2">
-            <a href="{{ route('admin.topics.edit', $topic) }}" class="btn btn-warning btn-sm">
-                Upravit téma
-            </a>
+            @include('components.edit-button', [
+                'href' => route('admin.topics.edit', $topic),
+                'label' => 'Upravit téma',
+                'small' => true
+            ])
             <form action="{{ route('admin.topics.destroy', $topic) }}" 
                   method="POST" 
                   onsubmit="return confirm('Opravdu chcete téma smazat?');" 
@@ -81,23 +83,21 @@
 
                         {{-- Upravit --}}
                         @can('update', $campaign)
-                            <a href="{{ route('topics.campaigns.show', [$topic, $campaign]) }}?edit_campaign=1" 
-                               class="btn btn-warning btn-sm">
-                                Upravit
-                            </a>
+                            @include('components.edit-button', [
+                                'href' => route('topics.campaigns.show', [$topic, $campaign]) . '?edit_campaign=1',
+                                'label' => 'Upravit',
+                                'small' => true
+                            ])
                         @endcan
 
                         {{-- Smazat --}}
                         @can('delete', $campaign)
-                            <form action="{{ route('topics.campaigns.destroy', [$topic, $campaign]) }}"
-                                  method="POST"
-                                  onsubmit="return confirm('Opravdu chcete kampaň smazat?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm">
-                                    Smazat
-                                </button>
-                            </form>
+                            @include('components.delete-button', [
+                                'action' => route('topics.campaigns.destroy', [$topic, $campaign]),
+                                'label' => 'Smazat',
+                                'confirm' => 'Opravdu chcete kampaň smazat?',
+                                'small' => true
+                            ])
                         @endcan
 
                     </div>

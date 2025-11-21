@@ -4,9 +4,11 @@
     <span class="text-muted">({{ $campaign->manager->email }})</span>
 </p>
 <div class="d-flex gap-2">
-    <a href="{{ route('topics.campaigns.show', [$topic, $campaign]) }}?edit_manager=1" class="btn btn-warning btn-sm">
-        Změnit správce
-    </a>
+    @include('components.ghost-button', [
+        'small' => true,
+        'label' => 'Změnit správce',
+        'href' => route('topics.campaigns.show', [$topic, $campaign]) . '?edit_manager=1'
+    ])
     <form method="POST" action="{{ route('topics.campaigns.manager.destroy', [$topic, $campaign]) }}" class="d-inline">
         @csrf
         @method('DELETE')

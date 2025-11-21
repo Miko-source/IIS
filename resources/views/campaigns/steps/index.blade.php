@@ -21,16 +21,16 @@
                 </div>
                 <div>
                                 
-                    <a href="{{ route('campaign.steps.show', [$campaign->id, $step->id]) }}"
-                       class="btn btn-info btn-sm">
-                        Aktivity
-                    </a>
-
-
-                <a href="{{ route('campaign.steps.edit', [$campaign->id, $step->id]) }}"
-                   class="btn btn-sm btn-warning">
-                    Upravit
+                <a href="{{ route('campaign.steps.show', [$campaign->id, $step->id]) }}"
+                   class="btn btn-info btn-sm">
+                    Aktivity
                 </a>
+
+                @include('components.edit-button', [
+                    'href' => route('campaign.steps.show', [$campaign->id, $step->id, 'edit' => 1]),
+                    'label' => 'Upravit',
+                    'small' => true
+                ])
             </div>
 
             </li>

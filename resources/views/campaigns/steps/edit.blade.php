@@ -2,13 +2,21 @@
 
 @section('content')
 <div class="container">
-    <h1>Upravit krok</h1>
+
+    <div>
+        @include('components.back-link', [
+            'target' => route('topics.campaigns.show', [$campaign->topic, $campaign]),
+            'label' => '← Zpět na kampaň'
+        ])
+    </div>
+
+    <h1 class="mb-3">Upravit krok</h1>
 
     <form method="POST" action="{{ route('campaign.steps.update', [$campaign->id, $step->id]) }}">
         @csrf
         @method('PUT')
 
-        <div class="mb-3">
+        <div>
             <label class="form-label">Název kroku</label>
             <input type="text" name="name" class="form-control"
                    value="{{ old('name', $step->name) }}" required>
@@ -36,28 +44,7 @@
             <label class="form-label">Popis</label>
             <textarea name="description" class="form-control">{{ old('description', $step->description) }}</textarea>
         </div>
-
         <button class="btn btn-primary">Uložit změny</button>
-
-        @php
-            $back = request('back');
-        @endphp
-
-        @if($back === 'campaign')
-            {{-- prisel jsem z detailu kampane --}}
-            <a href="{{ route('topics.campaigns.show', [$campaign->topic, $campaign]) }}"
-            class="btn btn-outline-secondary mb-3">
-                ← Zpět na kampaň
-            </a>
-        @else
-            {{-- default: z detailu kroku --}}
-            <a href="{{ route('campaign.steps.show', [$campaign->id, $step->id]) }}"
-            class="btn btn-outline-secondary mb-3">
-                ← Zpět na detail kroku
-            </a>
-        @endif
-
-
     </form>
 </div>
 @endsection

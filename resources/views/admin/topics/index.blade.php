@@ -33,16 +33,17 @@
                 </td>
                 <td>{{ $topic->target_group }}</td>
                 <td>
-                    <a href="{{ route('admin.topics.edit', $topic) }}" class="btn-app btn-app-edit btn-app-sm">
-                        Upravit
-                    </a>
-                    <form method="POST" action="{{ route('admin.topics.destroy', $topic) }}" class="d-inline">
-                        @csrf
-                        @method('DELETE')
-                        <button class="btn-app btn-app-danger btn-app-sm">
-                            Smazat
-                        </button>
-                    </form>
+                    @include('components.edit-button', [
+                        'href' => route('admin.topics.edit', $topic),
+                        'label' => 'Upravit',
+                        'small' => true
+                    ])
+                    @include('components.delete-button', [
+                        'action' => route('admin.topics.destroy', $topic),
+                        'label' => 'Smazat',
+                        'confirm' => 'Opravdu chcete téma smazat?',
+                        'small' => true
+                    ])
                 </td>
             </tr>
         @endforeach

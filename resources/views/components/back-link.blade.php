@@ -1,5 +1,5 @@
 @php
-    //back-link: givi it target (oute) and label.
+    //back-link: giv it target (route) and label.
     $target = $target ?? ($fallback ?? url()->previous());
     $label = $label ?? '← Zpět';
 @endphp
