@@ -13,7 +13,6 @@
         </a>
     </div>
 
-
     <h1>{{ $topic->name }}</h1>
 
     @can('update', $topic)
@@ -21,7 +20,10 @@
             <a href="{{ route('admin.topics.edit', $topic) }}" class="btn btn-warning btn-sm">
                 Upravit téma
             </a>
-            <form action="{{ route('admin.topics.destroy', $topic) }}" method="POST" onsubmit="return confirm('Opravdu chcete téma smazat?');" class="d-inline">
+            <form action="{{ route('admin.topics.destroy', $topic) }}" 
+                  method="POST" 
+                  onsubmit="return confirm('Opravdu chcete téma smazat?');" 
+                  class="d-inline">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn btn-danger btn-sm">Smazat téma</button>
@@ -41,15 +43,17 @@
         <p><strong>Zdroje:</strong> {{ $topic->sources }}</p>
     @endif
 
-
-        <h3>Kampaně k tomuto tématu</h3>
+    <h3>Kampaně k tomuto tématu</h3>
 
     @if($campaigns->isEmpty())
         <p>Zatím nejsou žádné kampaně.</p>
     @else
         <ul class="list-group">
+
             @foreach($campaigns as $campaign)
                 <li class="list-group-item d-flex justify-content-between align-items-center">
+
+                    {{-- Název a datum --}}
                     <div>
                         <strong>{{ $campaign->name }}</strong>
                         @if($campaign->start_date)
@@ -57,17 +61,36 @@
                         @endif
                     </div>
 
+                    {{-- Ovládací tlačítka --}}
                     <div class="d-flex gap-2">
-                        <a href="{{ route('topics.campaigns.show', [$topic, $campaign]) }}" class="btn btn-primary btn-sm">
-                            Otevřít
+
+                        {{-- Detail --}}
+                        <a href="{{ route('topics.campaigns.show', [$topic, $campaign]) }}" 
+                           class="btn btn-secondary btn-sm">
+                            Detail
                         </a>
+
+                        {{-- Správa pracovníků --}}
+                        @can('manageWorkers', $campaign)
+                            <a href="{{ route('campaigns.workers', $campaign) }}" 
+                               class="btn btn-primary btn-sm">
+                                Spravovat pracovníky
+                            </a>
+                        @endcan
+
+                        {{-- Upravit --}}
                         @can('update', $campaign)
-                            <a href="{{ route('topics.campaigns.show', [$topic, $campaign]) }}?edit_campaign=1" class="btn btn-warning btn-sm">
+                            <a href="{{ route('topics.campaigns.show', [$topic, $campaign]) }}?edit_campaign=1" 
+                               class="btn btn-warning btn-sm">
                                 Upravit
                             </a>
                         @endcan
+
+                        {{-- Smazat --}}
                         @can('delete', $campaign)
-                            <form action="{{ route('topics.campaigns.destroy', [$topic, $campaign]) }}" method="POST" onsubmit="return confirm('Opravdu chcete kampaň smazat?');">
+                            <form action="{{ route('topics.campaigns.destroy', [$topic, $campaign]) }}"
+                                  method="POST"
+                                  onsubmit="return confirm('Opravdu chcete kampaň smazat?');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger btn-sm">
@@ -75,9 +98,11 @@
                                 </button>
                             </form>
                         @endcan
+
                     </div>
                 </li>
             @endforeach
+
         </ul>
     @endif
 
@@ -87,6 +112,4 @@
         </a>
     @endif
 </div>
-
-
 @endsection

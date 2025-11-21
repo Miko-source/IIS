@@ -27,5 +27,9 @@
             ← Zpět na téma
         </a>
     </div>
+
+    @include('campaigns.overview', [
+        'campaign' => $campaign
+    ])
 </div>
 @endsection

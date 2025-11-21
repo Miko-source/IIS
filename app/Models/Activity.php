@@ -35,7 +35,7 @@ class Activity extends Model
     public function users()
 {
     return $this->belongsToMany(User::class, 'activity_user')
-        ->withPivot('is_confirmed', 'success_rate')
+        ->withPivot('is_confirmed')
         ->withTimestamps();
 }
     public function messages()

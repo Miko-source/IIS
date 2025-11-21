@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
+
 // Home
 Route::get('/', function () {
     return auth()->check()
@@ -9,7 +10,7 @@ Route::get('/', function () {
         : view('home');
 })->name('home');
 
-// Include route files
+// Include route file
 require __DIR__.'/auth.php';
 require __DIR__.'/admin.php';
 require __DIR__.'/topics.php';
@@ -19,3 +20,4 @@ require __DIR__.'/activities.php';
 require __DIR__.'/workers.php';
 require __DIR__.'/dashboard.php';
 require __DIR__.'/profile.php';
+
