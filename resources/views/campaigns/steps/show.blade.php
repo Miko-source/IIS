@@ -94,10 +94,11 @@
         Upravit krok
     </a>
 
-    <a href="{{ route('campaign.steps.index', $campaign->id) }}"
-       class="btn btn-secondary">
-        Zpět na seznam kroků
+    <a href="{{ route('topics.campaigns.show', [$campaign->topic, $campaign]) }}"
+    class="btn btn-secondary btn-sm mb-3">
+        ← Zpět na kampaň
     </a>
+
 
 </div>
 @endsection

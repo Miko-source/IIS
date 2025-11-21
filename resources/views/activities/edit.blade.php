@@ -46,5 +46,10 @@
 
         <button class="btn btn-primary">Uložit změny</button>
     </form>
+    <a href="{{ route('topics.campaigns.show', [$campaign->topic, $campaign]) }}"
+   class="btn btn-secondary btn-sm mb-3">
+    ← Zpět na kampaň
+</a>
+
 </div>
 @endsection

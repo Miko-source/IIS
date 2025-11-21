@@ -5,6 +5,12 @@
 
     <h1>Správa pracovníků kampaně</h1>
     <h3 class="text-muted">{{ $campaign->name }}</h3>
+        Správce: 
+    @if($campaign->manager)
+        {{ $campaign->manager->name }} {{ $campaign->manager->surname }}
+    @else
+        — žádný —
+    @endif
 
     {{-- ===========================
          Přidání pracovníka
@@ -34,7 +40,7 @@
     </div>
 
 
-
+<!-- 
     {{-- ===========================
          Správce kampaně (1 správce)
        =========================== --}}
@@ -72,7 +78,7 @@
             </form>
 
         </div>
-    </div>
+    </div> -->
 
 
 
