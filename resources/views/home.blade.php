@@ -303,11 +303,7 @@
 
         <h2 class="modal-title" id="login-title">Přihlášení do systému</h2>
 
-        @if ($errors->has('login'))
-            <div class="flash-message">
-                {{ $errors->first('login') }}
-            </div>
-        @endif
+        @include('components.flash-message')
 
         <form id="login-form" method="POST" action="{{ route('login.post') }}" novalidate>
             @csrf

@@ -6,16 +6,6 @@
     <h1>Správa pracovníků kampaně</h1>
     <h3 class="text-muted">{{ $campaign->name }}</h3>
 
-    {{-- Flash zprávy --}}
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-
-    @if(session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
-
-
     {{-- ===========================
          Přidání pracovníka
        =========================== --}}
