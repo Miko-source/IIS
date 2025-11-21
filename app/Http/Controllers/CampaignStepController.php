@@ -85,6 +85,36 @@ public function update(Request $request, Campaign $campaign, CampaignStep $step)
 }
 
 
+public function markComplete(Campaign $campaign, CampaignStep $step)
+{
+    $user = auth()->user();
+
+    // kontrola roli
+    if (
+        !$user->hasRoleOrHigher(\App\Enums\UserRole::ADMIN) &&
+        $campaign->user_id !== $user->id &&
+        $step->user_id !== $user->id
+    ) {
+        abort(403);
+    }
+
+    // over aktivity
+    $allDone = $step->activities->every(function($activity) {
+        return $activity->messages->count() &&
+               $activity->messages->last()->success === 1;
+    });
+
+    if (!$allDone) {
+        return back()->with('error', 'Nelze označit krok za splněný: některé aktivity nejsou dokončeny.');
+    }
+
+    // aktualizace stavu kroku 
+    $step->update(['is_completed' => true]);
+
+    return back()->with('success', 'Krok byl označen jako splněný.');
+}
+
+
 
 }
 

@@ -67,9 +67,11 @@ return new class extends Migration
             $table->foreignId('user_id')
                 ->nullable()
                 ->constrained('users');
+            $table->boolean('is_completed')->default(false);
             $table->string('name'); 
             $table->integer('order');
             $table->text('description')->nullable();
+
             $table->timestamps();
         });
         Schema::create('types', function (Blueprint $table) {

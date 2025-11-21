@@ -10,4 +10,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/campaigns/{campaign}/steps/{step}', [CampaignStepController::class, 'show'])->name('campaign.steps.show');
     Route::get('/campaigns/{campaign}/steps/{step}/edit', [CampaignStepController::class, 'edit'])->name('campaign.steps.edit');
     Route::put('/campaigns/{campaign}/steps/{step}', [CampaignStepController::class, 'update'])->name('campaign.steps.update');
+    Route::patch('campaigns/{campaign}/steps/{step}/complete',
+    [\App\Http\Controllers\CampaignStepController::class, 'markComplete'])
+    ->name('campaigns.steps.complete');
+
 });

@@ -127,31 +127,33 @@ class DashboardController extends Controller
             return back()->with('status', 'Zpráva byla odeslána a aktivita byla uzavřena.');
         }
 
-    public function campaigns()
-    {
-        $user = Auth::user();
+        public function campaigns()
+        {
+            $user = Auth::user();
 
-        // kampane + temata
-        $query = Campaign::with('topic');
+            // společný dotaz pro ADMINA i ostatní:
+            $query = Campaign::with([
+                'topic',
+                'steps.activities.users'  // 🔥 toto doplňuje aktivity + přiřazené uživatele
+            ]);
 
-        // ADMIN vse
-        if ($user->hasRoleOrHigher(UserRole::ADMIN)) {
-            // bezomezeni
-        } else {
-            // jen jeho kampane
-            $query->where('user_id', $user->id);
+            // ADMIN vidí VŠE
+            if (!$user->hasRoleOrHigher(UserRole::ADMIN)) {
+                // běžný uživatel vidí jen své kampaně
+                $query->where('user_id', $user->id);
+            }
+
+            $campaigns = $query
+                ->orderBy('topic_id')
+                ->orderBy('name')
+                ->get();
+
+            // seskupíme podle téma -> kvůli přehledu
+            $campaignsByTopic = $campaigns->groupBy('topic_id');
+
+            return view('dashboard.campaigns.index', compact('campaignsByTopic'));
         }
 
-        $campaigns = $query
-            ->orderBy('topic_id')
-            ->orderBy('name')
-            ->get();
-
-        // seskupíme kampaně podle témat
-        $campaignsByTopic = $campaigns->groupBy('topic_id');
-
-        return view('dashboard.campaigns.index', compact('campaignsByTopic'));
-    }
     public function campaignDetail(Campaign $campaign)
     {
         $user = Auth::user();
