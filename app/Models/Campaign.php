@@ -20,6 +20,11 @@ class Campaign extends Model
         'user_id',
         'start_date',
         'end_date',
+        'done',
+    ];
+
+    protected $casts = [
+        'done' => 'boolean',
     ];
 
 
@@ -47,7 +52,4 @@ class Campaign extends Model
         return $this->belongsToMany(User::class, 'campaign_user')
                     ->withTimestamps();
     }
-
-
-
 }
