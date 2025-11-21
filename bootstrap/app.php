@@ -8,6 +8,8 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Session\TokenMismatchException;
+use Illuminate\Auth\AuthenticationException;
 
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -34,9 +36,14 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         
-        //error handling
+        // ERROR HANDLING
+
         $exceptions->renderable(function (HttpException $e, $request) {
 
+            // abort
+            if ($e->getStatusCode() === 419) {
+                return back()->with('info', 'Platnost stránky vypršela.');
+            }
             // 403 Forbidden Handler 
             if ($e->getStatusCode() === 403) {
                 
@@ -52,6 +59,16 @@ return Application::configure(basePath: dirname(__DIR__))
                     ->route('dashboard')
                     ->with('error', 'Nemáte oprávnění pro přístup k této stránce.');
             }
+        });
+        // 419 – CSRF token mismatch
+            $exceptions->renderable(function (TokenMismatchException $e, $request) {
+            return back()->with('info','Platnost stránky vypršela.');
+        });
+        // authentication expired
+        $exceptions->renderable(function (AuthenticationException $e, $request) {
+            return redirect()
+                ->route('login')
+                ->with('error', 'Relace vypršela. Přihlas se znova.');
         });
 
         // 404 – record not found in DB (/topics/200)
@@ -80,4 +97,5 @@ return Application::configure(basePath: dirname(__DIR__))
                     ->with('error', 'Požadovaná stránka neexistuje.'),
             };
         });
+        
     })->create();
