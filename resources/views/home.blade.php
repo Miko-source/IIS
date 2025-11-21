@@ -209,6 +209,7 @@
 </nav>
 
 <main class="hero-wrap">
+    @include('components.flash-message')
     <h1 class="hero-title">Systém pro správu dezinformačních kampaní</h1>
     <p class="hero-subtitle">
         Plánujte témata, kroky kampaní a spravujte pracovníky, kteří se podílejí na šíření dezinformací.
