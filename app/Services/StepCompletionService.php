@@ -36,11 +36,10 @@ class StepCompletionService
                 continue;
             }
 
-            if (!$activity->latestMessage) {
-                return "Aktivita '{$activity->name}' ještě nemá žádnou zprávu. Všechny aktivity musí být vyhodnoceny.";
+            // no confirmed worker
+            if (! $activity->hasConfirmedWorkers()) {
+                return "Aktivita '{$activity->name}' nemá žádné potvrzené pracovníky. Musí být přiřazen alespoň jeden pracovník.";
             }
-
-            return "Aktivita '{$activity->name}' nemá vyhodnocení. Všechny aktivity musí mít podanou zprávu.";
         }
 
         return null;

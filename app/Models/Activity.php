@@ -39,7 +39,7 @@ class Activity extends Model
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'activity_user')
-            ->withPivot('is_confirmed')
+            ->withPivot('is_confirmed', 'is_completed')
             ->withTimestamps();
     }
 
@@ -60,15 +60,50 @@ class Activity extends Model
 
     public function isEvaluated(): bool
     {
-        return $this->latestMessage && $this->latestMessage->success !== null;
+        return $this->hasConfirmedWorkers();
+    }
+
+    public function hasIncompleteConfirmedWorkers(): bool
+    {
+        return $this->users()
+            ->wherePivot('is_confirmed', 1)
+            ->where(function($query) {
+                $query->where('activity_user.is_completed', false)
+                      ->orWhereNull('activity_user.is_completed');
+            })
+            ->exists();
+    }
+
+    public function hasConfirmedWorkers(): bool
+    {
+        return $this->users()
+            ->wherePivot('is_confirmed', 1)
+            ->exists();
+    }
+
+    public function hasPendingMessages(): bool
+    {
+        if ($this->relationLoaded('messages')) {
+            return $this->messages->contains(fn ($message) => $message->success === null);
+        }
+
+        return $this->messages()->whereNull('success')->exists();
+    }
+
+    public function hasMessages(): bool
+    {
+        if ($this->relationLoaded('messages')) {
+            return $this->messages->isNotEmpty();
+        }
+
+        return $this->messages()->exists();
     }
 
     public function approvedUsers()
-{
-    return $this->belongsToMany(User::class, 'activity_user')
-        ->withPivot('is_confirmed')
-        ->wherePivot('is_confirmed', 1)
-        ->withTimestamps();
-}
-
+    {
+        return $this->belongsToMany(User::class, 'activity_user')
+            ->withPivot('is_confirmed')
+            ->wherePivot('is_confirmed', 1)
+            ->withTimestamps();
+    }
 }
