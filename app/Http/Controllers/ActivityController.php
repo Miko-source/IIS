@@ -79,7 +79,14 @@ public function show(Campaign $campaign, CampaignStep $step, Activity $activity)
             'end_date' => 'nullable|date',
         ]);
 
-        $activity->update($request->all());
+        $activity->update([
+            'name' => $request->name,
+            'type_id' => $request->type_id,
+            'cost' => $request->cost,
+            'description' => $request->description,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+        ]);
 
         return redirect()
             ->route('campaign.steps.show', [$campaign->id, $step->id])
@@ -98,6 +105,9 @@ public function show(Campaign $campaign, CampaignStep $step, Activity $activity)
 public function signup(Activity $activity)
 {
     $user = auth()->user();
+    if ($activity->step->is_completed) {
+        return back()->with('error', 'Tento krok je již dokončen. Nelze se přihlásit.');
+    }
 
     $pivot = $activity->users()
         ->where('user_id', $user->id)
