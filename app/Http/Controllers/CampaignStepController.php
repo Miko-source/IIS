@@ -8,18 +8,19 @@ use App\Models\Campaign;
 use App\Models\CampaignStep;     
 use App\Models\User;
 use App\Services\StepCompletionService;
+use App\Services\StepStateService;
 
 class CampaignStepController extends Controller
 {
     public function __construct(
-        private StepCompletionService $completionService
+        private StepCompletionService $completionService,
+        private StepStateService $stepStateService
     ) {}
 
     public function index(Campaign $campaign)
     {
         $this->authorize('viewAny', [CampaignStep::class, $campaign]);
 
-        // Použij scope pro filtrování kroků podle oprávnění
         $steps = $campaign->steps()
             ->visibleFor(auth()->user(), $campaign)
             ->with('user:id,name,surname')
@@ -68,6 +69,8 @@ class CampaignStepController extends Controller
             ->where('order', '<', $step->order)
             ->orderByDesc('order')
             ->first();
+        
+        $stepStates = $this->stepStateService->calculateStepStates($campaign);
 
         $coordinators = User::where('id', '!=', $campaign->user_id)
             ->select('id', 'name', 'surname')
@@ -79,6 +82,7 @@ class CampaignStepController extends Controller
             'activities'   => $step->activities,
             'coordinators' => $coordinators,
             'previousStep' => $previousStep,
+            'canShowComplete' => $stepStates[$step->id]['show_complete'] ?? false,
         ]);
     }
 
@@ -137,5 +141,28 @@ class CampaignStepController extends Controller
         $this->completionService->complete($step);
 
         return back()->with('success', 'Krok byl označen jako splněný.');
+    }
+
+    public function markIncomplete(Campaign $campaign, CampaignStep $step)
+    {
+        $this->authorize('markComplete', $step);
+
+        if (! $step->is_completed) {
+            return back()->with('info', 'Krok již není označen jako splněný.');
+        }
+
+        // cannot revert if next steps are completed
+        $hasCompletedNextSteps = $campaign->steps()
+            ->where('order', '>', $step->order)
+            ->where('is_completed', true)
+            ->exists();
+
+        if ($hasCompletedNextSteps) {
+            return back()->with('error', 'Nelze zrušit dokončení, protože navazující kroky už jsou označeny jako splněné.');
+        }
+
+        $step->update(['is_completed' => false]);
+
+        return back()->with('success', 'Krok byl vrácen do rozpracovaného stavu.');
     }
 }

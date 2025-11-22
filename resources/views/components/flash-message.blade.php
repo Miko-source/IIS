@@ -1,19 +1,19 @@
 <!-- resources/views/components/flash-message.blade.php -->
 
 @if (session('error'))
-    <div class="flash-message error">
+    <div class="flash-message error auto-hide">
         {{ session('error') }}
     </div>
 @endif
 
 @if (session('success'))
-    <div class="flash-message success">
+    <div class="flash-message success auto-hide">
         {{ session('success') }}
     </div>
 @endif
 
 @if (session('info'))
-    <div class="flash-message info">
+    <div class="flash-message info auto-hide">
         {{ session('info') }}
     </div>
 @endif
@@ -30,7 +30,7 @@
     animation-name: fadeIn, fadeOut;
     animation-duration: 0.5s, 0.5s;
     animation-timing-function: ease-out, ease-in;
-    animation-delay: 0s, 8s;          /* tady je 8s viditelnosti */
+    animation-delay: 0s, 8s;          
     animation-fill-mode: forwards, forwards;
 }
 

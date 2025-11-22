@@ -43,17 +43,28 @@
 
                     @php($canShowComplete = $stepStates[$step->id]['show_complete'] ?? false)
 
-                    @if($canShowComplete)
-                        <form method="POST"
-                              action="{{ route('campaigns.steps.complete', [$campaign->id, $step->id]) }}">
-                            @csrf
-                            @method('PATCH')
+                    @can('markComplete', $step)
+                        @if($step->is_completed)
+                            <form method="POST"
+                                  action="{{ route('campaigns.steps.uncomplete', [$campaign->id, $step->id]) }}">
+                                @csrf
+                                @method('PATCH')
+                                <button class="btn btn-sm btn-danger">
+                                    ↺ Zrušit dokončení
+                                </button>
+                            </form>
+                        @elseif($canShowComplete)
+                            <form method="POST"
+                                  action="{{ route('campaigns.steps.complete', [$campaign->id, $step->id]) }}">
+                                @csrf
+                                @method('PATCH')
 
-                            <button class="btn btn-sm btn-success">
-                                ✓ Označit jako splněný
-                            </button>
-                        </form>
-                    @endif
+                                <button class="btn btn-sm btn-success">
+                                    ✓ Označit jako splněný
+                                </button>
+                            </form>
+                        @endif
+                    @endcan
 
                 </div>
             </div>

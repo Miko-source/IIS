@@ -15,4 +15,6 @@ Route::middleware(['auth', 'role_at_least:worker'])
         Route::delete('/{step}', [CampaignStepController::class, 'destroy'])->name('campaign.steps.destroy');
         Route::patch('/{step}/complete', [CampaignStepController::class, 'markComplete'])
             ->name('campaigns.steps.complete');
+        Route::patch('/{step}/uncomplete', [CampaignStepController::class, 'markIncomplete'])
+            ->name('campaigns.steps.uncomplete');
     });
