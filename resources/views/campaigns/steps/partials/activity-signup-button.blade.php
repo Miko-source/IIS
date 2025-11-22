@@ -8,6 +8,7 @@
         ?->pivot;
 @endphp
 
+<!-- ahojcommit -->
 
 {{-- === TLAČÍTKO PŘIHLÁŠENÍ / ODHÁŠENÍ === --}}
 @if(!$step->is_completed)

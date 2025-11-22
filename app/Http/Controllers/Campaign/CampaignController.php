@@ -14,6 +14,7 @@ use App\Models\Campaign;
 use App\Models\User;
 use App\Enums\UserRole;
 use App\Services\StepStateService;
+use Illuminate\Support\Facades\Log;
 
 
 class CampaignController extends Controller
@@ -84,14 +85,30 @@ class CampaignController extends Controller
     {
         $this->authorize('update', $campaign);
 
-        $validated = $request->validate([
+        $validated = $request->validateWithBag('campaignEdit', [
             'name' => ['required', 'string', 'max:255'],
             'start_date' => ['required', 'date'],
             'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
         ]);
+
+        // DEBUG
+        \Log::info('Campaign update before', [
+            'campaign_id' => $campaign->id,
+            'start_date_old' => $campaign->start_date,
+            'start_date_new' => $validated['start_date'] ?? null,
+        ]);
+
         $campaign->update($validated);
+
+        // DEBUG
+        $campaign->refresh();
+        \Log::info('Campaign update after', [
+            'campaign_id' => $campaign->id,
+            'start_date_db' => $campaign->start_date,
+        ]);
+
         return redirect()
-            ->route('topics.campaigns.show', [$topic, $campaign])
+            ->route('topics.campaigns.show', [$topic, $campaign, 'edit_campaign' => 1])
             ->with('success', 'Kampaň byla upravena.');
     }
 
