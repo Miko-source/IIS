@@ -256,16 +256,6 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    // Flash messages hide automatically after 2 seconds
-    setTimeout(() => {
-        document.querySelectorAll('.auto-hide').forEach(el => {
-            el.classList.remove('show');  // Bootstrap fade-out
-            setTimeout(() => el.remove(), 500); // remove DOM element after fade
-        });
-    }, 2000);
-</script>
-
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/cs.js"></script>
 <script>

@@ -1,4 +1,5 @@
 <!-- resources/views/components/flash-message.blade.php -->
+
 @if (session('error'))
     <div class="alert alert-danger fade show auto-hide mt-3" role="alert">
         {{ session('error') }}
@@ -17,7 +18,6 @@
     </div>
 @endif
 
-
 <style>
     .flash-message {
         padding: 12px 16px;
@@ -25,6 +25,27 @@
         margin-bottom: 16px;
         border: 1px solid;
     }
+
+.auto-hide {
+    animation-name: fadeIn, fadeOut;
+    animation-duration: 0.5s, 0.5s;
+    animation-timing-function: ease-out, ease-in;
+    animation-delay: 0s, 8s;          /* tady je 8s viditelnosti */
+    animation-fill-mode: forwards, forwards;
+}
+
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeOut {
+        from { opacity: 1; transform: translateY(0); }
+        to { opacity: 0; transform: translateY(-8px); }
+    }
+
+    /* style of buttons*/
     .flash-message.error {
         background: #71679cff;
         color: #991b1b;

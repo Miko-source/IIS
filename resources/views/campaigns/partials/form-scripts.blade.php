@@ -30,10 +30,6 @@
             if (!nameInput || !nameError || !startDisplay || !startHidden || !startError || !endDisplay || !endHidden || !endError) {
                 return;
             }
-
-            // --- TVRDÝ RESET CACHE ---
-            // Okamžitě vymažeme vizuální inputy, aby prohlížeč nemohl nic "předvyplnit" špatně.
-            // Správná data tam za milisekundu vrátíme ze serverových (hidden) dat.
             startDisplay.value = '';
             endDisplay.value = '';
             // -------------------------
@@ -104,7 +100,6 @@
                 endHidden.value = isoDate;
             }
 
-            // Manuální synchronizace pro případ, že Flatpickr selže (Fallback)
             if (startHidden.value) {
                 startDisplay.value = convertFromISO(startHidden.value);
             }
@@ -208,9 +203,6 @@
                     }
                 });
 
-                // --- KLÍČOVÁ OPRAVA (FORCE UPDATE) ---
-                // Pokud máme data ze serveru (hidden input), vnutíme je Flatpickru natvrdo.
-                // To přebije jakoukoliv cache prohlížeče.
                 if (startDateISO) {
                     fpStart.setDate(startDateISO, true); 
                 }
