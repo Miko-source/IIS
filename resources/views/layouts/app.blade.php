@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="cs">
 <head>
@@ -130,6 +129,32 @@
             background-color: #2563eb;
             color: #ffffff;
         }
+
+        /* Flatpickr - lepší zobrazení */
+        .flatpickr-months .flatpickr-month {
+            height: 40px;
+        }
+
+        .flatpickr-current-month {
+            font-size: 16px;
+            padding: 10px 0;
+        }
+
+        .flatpickr-current-month .flatpickr-monthDropdown-months,
+        .flatpickr-current-month .numInputWrapper {
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .flatpickr-current-month input.cur-year {
+            font-weight: 700;
+            cursor: pointer;
+            padding: 0 5px;
+        }
+
+        .flatpickr-current-month input.cur-year:hover {
+            background: rgba(0,0,0,0.05);
+        }
     </style>
 </head>
 
@@ -229,8 +254,15 @@
     &copy; 2025 DisinfoCamp Manager – tým IIS
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/flatpickr" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/cs.js" defer></script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/cs.js"></script>
+<script>
+
+    if (typeof flatpickr !== 'undefined' && flatpickr.l10ns && flatpickr.l10ns.cs) {
+        flatpickr.localize(flatpickr.l10ns.cs);
+    }
+</script>
 </body>
 </html>
