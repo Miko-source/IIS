@@ -16,15 +16,13 @@ use App\Enums\UserRole;
 use App\Services\StepStateService;
 use Illuminate\Support\Facades\Log;
 
-
 class CampaignController extends Controller
 {
     public function __construct(
         private StepStateService $stepStateService
     ) {}
 
-    //creates new campaign 
-    public function create(Topic $topic )
+    public function create(Topic $topic)
     {
         $this->authorize('create', Campaign::class);
         return view('campaigns.create', compact('topic'));
@@ -32,6 +30,8 @@ class CampaignController extends Controller
 
     public function store(Request $request, Topic $topic)
     {
+        $this->authorize('create', Campaign::class);
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'start_date' => ['required', 'date'],
@@ -50,13 +50,12 @@ class CampaignController extends Controller
 
     public function show(Topic $topic, Campaign $campaign)
     {
-        //check policys
         $this->authorize('view', $campaign);
+
         $users = User::where('role', '!=', UserRole::ADMIN)
             ->select('id', 'name', 'surname', 'email')
             ->get();
 
-        // přednačíst kroky a potřebné relace
         $campaign->load([
             'steps' => function ($query) {
                 $query->with([
@@ -91,27 +90,12 @@ class CampaignController extends Controller
             'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
         ]);
 
-        // DEBUG
-        \Log::info('Campaign update before', [
-            'campaign_id' => $campaign->id,
-            'start_date_old' => $campaign->start_date,
-            'start_date_new' => $validated['start_date'] ?? null,
-        ]);
-
         $campaign->update($validated);
-
-        // DEBUG
-        $campaign->refresh();
-        \Log::info('Campaign update after', [
-            'campaign_id' => $campaign->id,
-            'start_date_db' => $campaign->start_date,
-        ]);
 
         return redirect()
             ->route('topics.campaigns.show', [$topic, $campaign, 'edit_campaign' => 1])
             ->with('success', 'Kampaň byla upravena.');
     }
-
 
     public function destroy(Topic $topic, Campaign $campaign)
     {
@@ -123,5 +107,4 @@ class CampaignController extends Controller
             ->route('topics.show', $topic)
             ->with('success', 'Kampaň byla smazána.');
     }
-
 }

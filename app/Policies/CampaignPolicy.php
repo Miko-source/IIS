@@ -35,8 +35,15 @@ class CampaignPolicy
         }
 
         // přidělený uživatel (viditelnost přes pivot tabulku)
-        return $campaign->users()
+        if ($campaign->users()
             ->where('campaign_user.user_id', $user->id)
+            ->exists()) {
+            return true;
+        }
+
+        // koordinátor kroku této kampaně
+        return $campaign->steps()
+            ->where('user_id', $user->id)
             ->exists();
     }
     
