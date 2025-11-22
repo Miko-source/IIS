@@ -3,38 +3,27 @@
     <h6 class="mb-3">Upravit kampaň</h6>
 
     @php
-        // ZJEDNODUŠENÁ LOGIKA:
-        // Pokud existují jakékoli chyby validace ($errors->any()), znamená to, 
-        // že se formulář vrátil po neúspěšném odeslání -> musíme zobrazit old() hodnoty.
-        // V opačném případě (čisté načtení) zobrazujeme data z DB ($campaign).
         $useOld = $errors->any();
         
-        // --- Název ---
         $nameValue = $useOld ? old('name') : $campaign->name;
         
-        // --- Datum začátku ---
         if ($useOld) {
-            // Pokud je chyba, bereme hodnotu, kterou uživatel odeslal (Y-m-d z hidden inputu)
             $startDateHidden = old('start_date');
             
-            // Pokusíme se vytvořit hezký formát pro zobrazení
             try {
                 $startDateDisplay = $startDateHidden 
                     ? \Carbon\Carbon::createFromFormat('Y-m-d', $startDateHidden)->format('d/m/Y') 
                     : '';
             } catch (\Exception $e) {
-                // Fallback, pokud by hodnota nebyla validní datum
                 $startDateDisplay = ''; 
             }
         } else {
-            // Načtení z DB
             $startDateHidden = $campaign->start_date;
             $startDateDisplay = $campaign->start_date 
                 ? \Carbon\Carbon::parse($campaign->start_date)->format('d/m/Y') 
                 : '';
         }
 
-        // --- Datum konce ---
         if ($useOld) {
             $endDateHidden = old('end_date');
             try {
@@ -55,8 +44,6 @@
     <form method="POST" action="{{ route('topics.campaigns.update', [$topic, $campaign]) }}" id="campaignEditForm" novalidate>
         @csrf
         @method('PUT')
-
-        {{-- Název kampaně --}}
         <div class="mb-3">
             <label for="campaign_edit_name" class="form-label">Název kampaně <span class="text-danger">*</span></label>
             <input
@@ -77,7 +64,6 @@
         {{-- Datum začátku --}}
         <div class="mb-3">
             <label for="campaign_edit_start_date_display" class="form-label">Datum začátku <span class="text-danger">*</span></label>
-            {{-- Viditelný input pro uživatele (DD/MM/RRRR) --}}
             <input
                 type="text"
                 id="campaign_edit_start_date_display"
@@ -87,7 +73,6 @@
                 required
                 autocomplete="off"
             >
-            {{-- Skrytý input pro odeslání na server (YYYY-MM-DD) --}}
             <input 
                 type="hidden" 
                 id="campaign_edit_start_date" 
@@ -101,7 +86,6 @@
             @enderror
         </div>
 
-        {{-- Datum konce --}}
         <div class="mb-3">
             <label for="campaign_edit_end_date_display" class="form-label">Datum konce</label>
             <input
@@ -137,12 +121,10 @@
     </form>
 </div>
 
-{{-- Vložení skriptů pro DatePicker/validaci --}}
 @include('campaigns.partials.form-scripts')
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Inicializace JS logiky formuláře
         if (typeof initCampaignForm === 'function') {
             initCampaignForm({
                 formId: 'campaignEditForm',
