@@ -10,7 +10,7 @@
         ])
     </div>
 
-    {{-- Základní informace o kroku --}}
+    {{-- step info --}}
     <div class="mb-4">
         <h2 class="mb-2">{{ $step->order }}. {{ $step->name }}</h2>
         <p class="mb-2"><strong>Pořadí:</strong> {{ $step->order }}</p>
@@ -20,9 +20,9 @@
             @if($step->is_completed)
                 <span class="text-success fw-bold">Dokončeno</span>
             @elseif($step->isCompletedSuccessfully())
-                <span class="text-warning fw-bold">Čeká na potvrzení / dokončení</span>
+                <span class="text-muted fw-bold">Čeká na dokončení předchozího kroku</span>
             @else
-                <span class="text-muted">Probíhá</span>
+                <span class="text-warning">Probíhá</span>
             @endif
         </p>
 
@@ -54,7 +54,7 @@
                 Upravit krok
             </button>
 
-            {{-- Smazat krok --}}
+            {{-- delete step --}}
             @include('components.delete-button', [
                 'action' => route('campaign.steps.destroy', [$campaign->id, $step->id]),
                 'label' => 'Smazat krok',
@@ -70,7 +70,7 @@
         ])
     </div>
 
-    {{-- Seznam aktivit --}}
+    {{-- aktivity list --}}
     @include('campaigns.steps.partials.activities-list', [
         'activities' => $activities,
         'campaign' => $campaign,
