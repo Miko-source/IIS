@@ -22,7 +22,7 @@ class MessageSeeder extends Seeder
                 'activity_id' => 2,
                 'user_id' => 6, // Petr
                 'content' => 'Struktura narativu byla vytvořena a čeká na schválení koordinátora.',
-                'success' => null,
+                'success' => false,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -62,7 +62,7 @@ class MessageSeeder extends Seeder
                 'activity_id' => 12,
                 'user_id' => 9, // Lukáš
                 'content' => 'Technický audit odhalil tři přetížené uzly, čeká se na potvrzení zásahu.',
-                'success' => null,
+                'success' => false,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -78,7 +78,7 @@ class MessageSeeder extends Seeder
                 'activity_id' => 19,
                 'user_id' => 5, // David
                 'content' => 'Kurátorský seznam obsahuje 18 vhodných příspěvků k replikaci.',
-                'success' => null,
+                'success' => true,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -86,7 +86,7 @@ class MessageSeeder extends Seeder
                 'activity_id' => 21,
                 'user_id' => 2, // Alex
                 'content' => 'Plán publikace byl schválen, čekáme na metriky prvních odrazů.',
-                'success' => null,
+                'success' => true,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

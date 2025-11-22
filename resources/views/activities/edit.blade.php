@@ -13,16 +13,14 @@
     <h1>Upravit aktivitu: {{ $activity->name }}</h1>
 
     @php
-        $today = now()->format('Y-m-d');
-        $startValue = old('start_date', optional($activity->start_date)->format('Y-m-d') ?? $today);
-        $endValue = old('end_date', optional($activity->end_date)->format('Y-m-d'));
+        $startValue = old('start_date', $activity->start_date?->format('Y-m-d'));
+        $endValue = old('end_date', $activity->end_date?->format('Y-m-d'));
     @endphp
 
     <form action="{{ route('activities.update', [$campaign->id, $step->id, $activity->id]) }}" method="POST" novalidate>
         @csrf
         @method('PUT')
 
-        {{-- Název --}}
         <div class="mb-3">
             <label class="form-label">Název *</label>
             <input 
@@ -38,8 +36,6 @@
                 <div class="invalid-feedback">Prosím vyplňte toto pole.</div>
             @enderror
         </div>
-
-        {{-- Typ aktivity --}}
         <div class="mb-3">
             <label class="form-label">Typ aktivity *</label>
             <select 
@@ -62,7 +58,6 @@
             @enderror
         </div>
 
-        {{-- Náklady --}}
         <div class="mb-3">
             <label class="form-label">Náklady (Kč)</label>
             <input 
@@ -78,7 +73,6 @@
             @enderror
         </div>
 
-        {{-- Popis --}}
         <div class="mb-3">
             <label class="form-label">Popis</label>
             <textarea 
@@ -92,7 +86,6 @@
             @enderror
         </div>
 
-        {{-- Začátek --}}
         <div class="mb-3">
             <label class="form-label">Začátek *</label>
             <input 
@@ -110,8 +103,6 @@
             @enderror
         </div>
 
-        {{-- Konec --}}
-        {{-- Konec --}}
         <div class="mb-3">
             <label class="form-label">Konec</label>
             <input 
@@ -134,8 +125,6 @@
 
 </div>
 
-{{-- JS validace konce >= začátku --}}
-{{-- JS: hlidani, aby konec nebyl driv nez zacatek, i pri rucnim prepisu --}}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const startInput = document.getElementById('start_date');
@@ -155,7 +144,6 @@
             // nastavime minimalni povolene datum konce
             endInput.min = startInput.value;
 
-            // pokud je konec vyplnen a je mensi nez zacatek -> automaticky ho posuneme
             if (endInput.value && endInput.value < startInput.value) {
                 endInput.value = startInput.value;
             }
