@@ -1,19 +1,19 @@
 <!-- resources/views/components/flash-message.blade.php -->
 
 @if (session('error'))
-    <div class="alert alert-danger fade show auto-hide mt-3" role="alert">
+    <div class="flash-message error">
         {{ session('error') }}
     </div>
 @endif
 
 @if (session('success'))
-    <div class="alert alert-success fade show auto-hide mt-3" role="alert">
+    <div class="flash-message success">
         {{ session('success') }}
     </div>
 @endif
 
 @if (session('info'))
-    <div class="alert alert-info fade show auto-hide mt-3" role="alert">
+    <div class="flash-message info">
         {{ session('info') }}
     </div>
 @endif

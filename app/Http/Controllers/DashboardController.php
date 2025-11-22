@@ -80,6 +80,7 @@ class DashboardController extends Controller
             ])
             ->where('user_id', $user->id)
             ->where('is_confirmed', true)
+            ->where('is_completed', false)
             ->get();
 
         // Uzavřené aktivity
@@ -120,8 +121,11 @@ class DashboardController extends Controller
                 'success'     => $request->success,
             ]);
 
-            // smazat všechny přihlášené uživatele k této aktivitě
-            ActivityUser::where('activity_id', $activityUser->activity_id)->delete();
+            // // smazat všechny přihlášené uživatele k této aktivitě
+            // ActivityUser::where('activity_id', $activityUser->activity_id)->delete();
+                $activityUser->update([
+                    'is_completed' => true,
+                    ]);
 
             // hotovo – aktivita zmizí všem workerům
             return back()->with('status', 'Zpráva byla odeslána a aktivita byla uzavřena.');

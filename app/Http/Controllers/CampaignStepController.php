@@ -111,16 +111,18 @@ class CampaignStepController extends Controller
             ->with('success', 'Krok kampaně byl upraven.');
     }
 
-    public function destroy(Campaign $campaign, CampaignStep $step)
+    public function destroy(\App\Models\Campaign $campaign, \App\Models\CampaignStep $step)
     {
         $this->authorize('delete', $step);
+        // $step = CampaignStep::findOrFail($stepId);
+        // $campaign = $step->campaign;
 
         $step->delete();
 
         return redirect()
-            ->route('campaign.steps.index', $campaign)
-            ->with('success', 'Krok byl smazán.');
-    }
+            ->route('topics.campaigns.show', [$campaign->topic_id, $campaign->id])
+            ->with('success', 'Krok byl úspěšně smazán.');
+        }
 
     public function markComplete(Campaign $campaign, CampaignStep $step)
     {

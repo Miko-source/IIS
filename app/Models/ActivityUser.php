@@ -16,7 +16,8 @@ class ActivityUser extends Model
     protected $fillable = [
         'activity_id',
         'user_id',
-        'is_confirmed'
+        'is_confirmed',
+        'is_completed'
     ];
 
     public function activity()

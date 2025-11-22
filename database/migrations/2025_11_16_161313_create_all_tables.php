@@ -108,6 +108,7 @@ return new class extends Migration
                   ->onDelete('cascade');
             $table->tinyInteger('is_confirmed')->default(0);  // 0 = pending
                 // koordinátor musí potvrdit
+            $table->boolean('is_completed')->default(false); //pro messages
             $table->timestamps();
             $table->unique(['activity_id', 'user_id']);
         });
