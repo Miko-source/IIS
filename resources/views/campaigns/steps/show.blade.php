@@ -31,6 +31,7 @@
         </p>
 
         <div class="d-flex align-items-center gap-2 mt-2">
+            
 
             {{-- Tlačítko: Změnit koordinátora --}}
             <button class="btn btn-outline-primary btn-sm"
@@ -102,6 +103,23 @@
 
             {{-- PRAVÁ STRANA – tlačítka --}}
             <div class="d-flex gap-2 align-items-center">
+                {{-- Tlačítko POTVRDIT AKTIVITU (koordinátor + aktivita splněna) --}}
+                @php
+                    $allReportsDone = $activity->is_completed;
+                    $isCoordinator = auth()->id() === $step->coordinator?->id;
+                @endphp
+
+                @if($allReportsDone && $isCoordinator)
+                    <form method="POST"
+                        action="{{ route('activities.confirm', [$campaign->id, $step->id, $activity->id]) }}">
+                        @csrf
+                        @method('PATCH')
+                        <button class="btn btn-success btn-sm">
+                            ✔ Potvrdit aktivitu
+                        </button>
+                    </form>
+                @endif
+
 
                 {{-- Upravit --}}
                 <a href="{{ route('activities.edit', [$campaign->id, $step->id, $activity->id]) }}"

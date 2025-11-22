@@ -22,3 +22,8 @@ require __DIR__.'/dashboard.php';
 require __DIR__.'/profile.php';
 require __DIR__.'/errors.php';
 
+Route::patch('/campaigns/{campaign}/steps/{step}/activities/{activity}/confirm',
+    [ActivityController::class, 'confirm'])
+    ->name('activities.confirm');
+
+

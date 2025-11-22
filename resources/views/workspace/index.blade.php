@@ -20,7 +20,8 @@
                     <hr>
 
                     {{-- formulář --}}
-                    <form method="post" action="{{ route('workspace.report', $item->id) }}">
+                    <form method="post" action="{{ route('workspace.report', $item->activity->id) }}">
+
                         @csrf
 
                         <div class="mb-3">

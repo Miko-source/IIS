@@ -8,6 +8,9 @@ use App\Models\Campaign;
 use App\Models\CampaignStep;
 use Illuminate\Http\Request;
 use App\Models\ActivityUser;
+use App\Models\Message;
+use Illuminate\Support\Facades\Auth;
+
 
 class ActivityController extends Controller
 {
@@ -108,15 +111,17 @@ class ActivityController extends Controller
     }
 
 
-    public function confirm(ActivityUser $activityUser)
-    {
-        $this->authorize('manage', $activityUser);
+public function confirm(ActivityUser $activityUser)
+{
+    $this->authorize('manage', $activityUser);
 
-        $activityUser->is_confirmed = 1;
-        $activityUser->save();
+    $activityUser->is_confirmed = 1;
+    $activityUser->save();
 
-        return back()->with('success', 'Uživatel byl potvrzen.');
-    }
+    return back()->with('success', 'Uživatel byl potvrzen.');
+}
+
+
 
     public function reject(ActivityUser $activityUser)
     {
@@ -127,5 +132,66 @@ class ActivityController extends Controller
 
         return back()->with('success', 'Uživatel byl odmítnut.');
     }
+
+//     public function submitReport(Request $request, Activity $activity)
+// {
+//     $request->validate([
+//         'success_rate' => 'required|integer|min:0|max:100',
+//         'report_text' => 'nullable|string|max:2000',
+//     ]);
+
+//     $activity->users()->updateExistingPivot(auth()->id(), [
+//         'success_rate' => $request->success_rate,
+//         'report_text' => $request->report_text,
+//         'submitted_at' => now(),
+//     ]);
+
+//     // zkus vyhodnotit, zda je aktivita už splněná
+//     $this->tryCompleteActivity($activity);
+
+//     return back()->with('success', 'Tvoje zprava byla odeslana.');
+// }
+
+// public function submitReport(Request $request, Activity $activity)
+// {
+//     $user = Auth::user();
+
+//     // případně autorizace – pokud máš policy:
+//     // $this->authorize('report', $activity);
+
+//     // musí být přihlášený k aktivitě a potvrzený
+//     $isParticipant = $activity->users()
+//         ->where('users.id', $user->id)
+//         ->wherePivot('is_confirmed', 1)   // jen potvrzeni
+//         ->exists();
+
+//     if (! $isParticipant) {
+//         abort(403, 'K této aktivitě nemůžete posílat zprávu.');
+//     }
+
+//     $validated = $request->validate([
+//         'content' => 'required|string|max:2000',
+//         'success' => 'required|boolean',  // např. checkbox
+//     ]);
+
+//     // 1 zprava na kombinaci activity_id + user_id
+//     Message::updateOrCreate(
+//         [
+//             'activity_id' => $activity->id,
+//             'user_id' => $user->id,
+//         ],
+//         [
+//             'content' => $validated['content'],
+//             'success' => $validated['success'],
+//         ]
+//     );
+
+//     // po uložení přepočítáme stav aktivity
+//     $this->recalculateActivityCompletion($activity);
+
+//     return back()->with('success', 'Zprava o aktivite byla ulozena.');
+// }
+
+
 
 }

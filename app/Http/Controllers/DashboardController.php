@@ -69,90 +69,101 @@ class DashboardController extends Controller
     }
 
     public function workspace()
-    {
-        $user = Auth::user();
+{
+    $user = Auth::user();
 
-        // Aktivní
-        $assigned = ActivityUser::with([
-                'activity',
-                'activity.step',
-                'activity.step.campaign',
-            ])
-            ->where('user_id', $user->id)
-            ->where('is_confirmed', true)
-            ->get();
+    // Uzavřené aktivity (tj. ty, na které uživatel poslal zprávu)
+    $closedActivityIds = Message::where('user_id', $user->id)
+        ->pluck('activity_id')
+        ->unique();
 
-        // Uzavřené aktivity
-        $closedActivityIds = Message::where('user_id', $user->id)
-            ->pluck('activity_id')
-            ->unique();
+    // Aktivní aktivity (pouze potvrzené a bez zprávy)
+    $assigned = ActivityUser::with([
+            'activity',
+            'activity.step',
+            'activity.step.campaign',
+        ])
+        ->where('user_id', $user->id)
+        ->where('is_confirmed', true)
+        ->whereNotIn('activity_id', $closedActivityIds)
+        ->get();
 
-        $closedActivities = \App\Models\Activity::with([
-                'step',
-                'step.campaign',
-                'messages'  
-            ])
-            ->whereIn('id', $closedActivityIds)
-            ->get();
+    // Uzavřené aktivity s detaily
+    $closedActivities = \App\Models\Activity::with([
+            'step',
+            'step.campaign',
+            'messages'
+        ])
+        ->whereIn('id', $closedActivityIds)
+        ->get();
 
-        return view('workspace.index', compact('assigned', 'closedActivities'));
+    return view('workspace.index', compact('assigned', 'closedActivities'));
+}
+
+
+public function submitReport(Request $request, \App\Models\Activity $activity)
+{
+    $user = Auth::user();
+
+    // Validace
+    $request->validate([
+        'content' => 'required|string|min:5|max:5000',
+        'success' => 'required|boolean',
+    ]);
+
+    // Musí být přihlášený a potvrzený
+    $isParticipant = $activity->users()
+        ->where('users.id', $user->id)
+        ->wherePivot('is_confirmed', true)
+        ->exists();
+
+    if (! $isParticipant) {
+        abort(403, 'K této aktivitě nemůžete posílat zprávu.');
     }
 
+    // Uložit nebo aktualizovat zprávu
+    Message::updateOrCreate(
+        [
+            'activity_id' => $activity->id,
+            'user_id'     => $user->id,
+        ],
+        [
+            'content' => $request->content,
+            'success' => $request->success,
+        ]
+    );
+
+    // přepočet stavu aktivity
+    $this->recalculateActivityCompletion($activity);
+
+    return back()->with('status', 'Tvoje zpráva byla uložena.');
+}
+
+private function recalculateActivityCompletion(\App\Models\Activity $activity): void
+{
+    // potvrzení uživatelé
+    $confirmedUsers = $activity->users()
+        ->wherePivot('is_confirmed', true)
+        ->pluck('users.id')
+        ->toArray();
+
+    if (count($confirmedUsers) === 0) {
+        $activity->update(['is_completed' => false]);
+        return;
+    }
+
+    // kolik z nás poslalo zprávu
+    $usersWithMessage = Message::where('activity_id', $activity->id)
+        ->whereIn('user_id', $confirmedUsers)
+        ->distinct()
+        ->count('user_id');
+
+    $activity->update([
+        'is_completed' => ($usersWithMessage === count($confirmedUsers))
+    ]);
+}
 
 
-    public function submitReport(Request $request, ActivityUser $activityUser)
-        {
-            $request->validate([
-                'content' => 'required|string|min:5|max:5000',
-                'success' => 'required|boolean',
-            ]);
-
-            // jen uzivatel, ktery je prihlasen
-            if ($activityUser->user_id !== Auth::id()) {
-                abort(403);
-            }
-
-            // report
-            Message::create([
-                'activity_id' => $activityUser->activity_id,
-                'user_id'     => Auth::id(),
-                'content'     => $request->content,
-                'success'     => $request->success,
-            ]);
-
-            // smazat všechny přihlášené uživatele k této aktivitě
-            ActivityUser::where('activity_id', $activityUser->activity_id)->delete();
-
-            // hotovo – aktivita zmizí všem workerům
-            return back()->with('status', 'Zpráva byla odeslána a aktivita byla uzavřena.');
-        }
-
-        public function campaigns()
-        {
-            $user = Auth::user();
-
-            // společný dotaz pro ADMINA i ostatní:
-            $query = Campaign::with([
-                'topic',
-                'steps.activities.users'  // 🔥 toto doplňuje aktivity + přiřazené uživatele
-            ]);
-
-            // ADMIN vidí VŠE
-            if (!$user->hasRoleOrHigher(UserRole::ADMIN)) {
-                // běžný uživatel vidí jen své kampaně
-                $query->where('user_id', $user->id);
-            }
-
-            $campaigns = $query
-                ->orderBy('topic_id')
-                ->orderBy('name')
-                ->get();
-
-            // seskupíme podle téma -> kvůli přehledu
-            $campaignsByTopic = $campaigns->groupBy('topic_id');
-
-            return view('dashboard.campaigns.index', compact('campaignsByTopic'));
-        }
 
     public function campaignDetail(Campaign $campaign)
     {
@@ -191,6 +202,34 @@ class DashboardController extends Controller
 
         return back()->with('status', 'Krok byl úspěšně odstraněn.');
     }
+
+    public function campaigns()
+{
+    $user = Auth::user();
+
+    // dotaz pro zobrazení kampaní
+    $query = Campaign::with([
+        'topic',
+        'steps.activities.users',
+    ]);
+
+    // ADMIN → vidí vše
+    if (!$user->hasRoleOrHigher(UserRole::ADMIN)) {
+        // Správce kampaně → vidí jen kampaně, které vlastní
+        $query->where('user_id', $user->id);
+    }
+
+    $campaigns = $query
+        ->orderBy('topic_id')
+        ->orderBy('name')
+        ->get();
+
+    // seskupíme kampaně podle témat pro přehledné zobrazení
+    $campaignsByTopic = $campaigns->groupBy('topic_id');
+
+    return view('dashboard.campaigns.index', compact('campaignsByTopic'));
+}
+
 
 
 

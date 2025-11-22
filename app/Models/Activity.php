@@ -10,6 +10,7 @@ class Activity extends Model
         'name',
         'step_id',
         'type_id',
+        'is_completed',
         'cost',
         'description',
         'start_date',

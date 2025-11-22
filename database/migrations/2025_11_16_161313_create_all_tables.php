@@ -87,6 +87,7 @@ return new class extends Migration
             $table->foreignId('step_id')
                   ->constrained('steps')
                   ->onDelete('cascade');
+            $table->boolean('is_completed')->default(false);
             // podléhá (1:N)
             $table->foreignId('type_id')
                   ->constrained('types');
@@ -134,6 +135,7 @@ return new class extends Migration
                   ->onDelete('cascade');            //pripadne upravit    
             $table->foreignId('user_id')            // podává (1:N)
                   ->constrained('users');
+            $table->unique(['activity_id', 'user_id']);
             $table->text('content');
             $table->boolean('success')->default(false);
             $table->timestamps();
