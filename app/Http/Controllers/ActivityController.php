@@ -11,6 +11,23 @@ use App\Models\ActivityUser;
 
 class ActivityController extends Controller
 {
+public function show(Campaign $campaign, CampaignStep $step, Activity $activity)
+{
+    // bezpečnost – kontrola, že to k sobě patří
+    if ($activity->step_id !== $step->id || $step->campaign_id !== $campaign->id) {
+        abort(404);
+    }
+
+
+    $activity->load(['step.campaign', 'users', 'messages']);
+
+
+
+    return view('activities.show', compact('campaign', 'step', 'activity'));
+}
+
+
+
     public function create(Campaign $campaign, CampaignStep $step)
     {
         $types = Type::all();
@@ -78,18 +95,33 @@ class ActivityController extends Controller
             ->with('success', 'Aktivita byla smazána.');
     }
 
-    public function signup(Activity $activity)
-    {
-        $user = auth()->user();
+public function signup(Activity $activity)
+{
+    $user = auth()->user();
 
-        if ($activity->workers()->where('user_id', $user->id)->exists()) {
-            return back()->with('error', 'Už jsi k této aktivitě přihlášen.');
-        }
-        $activity->users()->attach($user->id, ['is_confirmed' => 0]);
-      
+    $pivot = $activity->users()
+        ->where('user_id', $user->id)
+        ->first();
 
-        return back()->with('success', 'Úspěšně jsi se přihlásil, čeká se na potvrzení koordinátora.');
+    // Pokud už existuje odmítnutý záznam → jen update
+    if ($pivot && $pivot->pivot->is_confirmed == 2) {
+        $activity->users()->updateExistingPivot($user->id, [
+            'is_confirmed' => 0
+        ]);
+
+        return back()->with('success', 'Přihlášení obnoveno, čeká se na potvrzení.');
     }
+
+    // Pokud existuje pending/approved → nelze
+    if ($pivot) {
+        return back()->with('error', 'Už jsi k této aktivitě přihlášen.');
+    }
+
+    // Nové přihlášení
+    $activity->users()->attach($user->id, ['is_confirmed' => 0]);
+
+    return back()->with('success', 'Úspěšně jsi se přihlásil, čeká se na potvrzení koordinátora.');
+}
 
     public function leave(Activity $activity)
     {

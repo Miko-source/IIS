@@ -6,14 +6,20 @@
     <div>
         <strong>{{ $activity->name }}</strong><br>
         <small class="text-muted">
-            {{ $activity->start_date ?? '—' }}
+            {{ $activity->start_date ? $activity->start_date->format('d. m. Y') : '—' }}
             –
-            {{ $activity->end_date ?? 'konec neznámý' }}
+            {{ $activity->end_date ? $activity->end_date->format('d. m. Y') : 'konec neznámý' }}
         </small>
+
     </div>
 
     {{-- PRAVÁ STRANA – tlačítka --}}
     <div class="d-flex gap-2 align-items-center">
+        <a href="{{ route('activities.show', [$campaign->id, $step->id, $activity->id]) }}"
+            class="btn btn-sm btn-outline-primary">
+                Detail
+            </a>
+
 
         {{-- Upravit --}}
         @include('components.edit-button', [

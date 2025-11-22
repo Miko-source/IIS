@@ -35,5 +35,7 @@ class ActivityUserPolicy
         // WORKER – nikdy
         return false;
     }
+
+    
 }
 

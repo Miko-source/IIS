@@ -134,7 +134,7 @@ class DashboardController extends Controller
             // společný dotaz pro ADMINA i ostatní:
             $query = Campaign::with([
                 'topic',
-                'steps.activities.users'  // 🔥 toto doplňuje aktivity + přiřazené uživatele
+                'steps.activities.users'  
             ]);
 
             // ADMIN vidí VŠE

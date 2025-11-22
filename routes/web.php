@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ActivityController;
 
 
 // Home
@@ -22,3 +23,6 @@ require __DIR__.'/dashboard.php';
 require __DIR__.'/profile.php';
 require __DIR__.'/errors.php';
 
+Route::get('/campaigns/{campaign}/steps/{step}/activities/{activity}', 
+    [ActivityController::class, 'show']
+)->name('activities.show');

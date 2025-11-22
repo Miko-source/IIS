@@ -62,4 +62,13 @@ class Activity extends Model
     {
         return $this->latestMessage && $this->latestMessage->success !== null;
     }
+
+    public function approvedUsers()
+{
+    return $this->belongsToMany(User::class, 'activity_user')
+        ->withPivot('is_confirmed')
+        ->wherePivot('is_confirmed', 1)
+        ->withTimestamps();
+}
+
 }
