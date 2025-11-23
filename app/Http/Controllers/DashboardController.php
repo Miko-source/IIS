@@ -137,32 +137,45 @@ class DashboardController extends Controller
         return back()->with('status', 'Zpráva byla odeslána a aktivita byla uzavřena.');
     }
 
-        public function campaigns()
-        {
-            $user = Auth::user();
+    public function campaigns()
+    {
+        $user = Auth::user();
 
-            // společný dotaz pro ADMINA i ostatní:
-            $query = Campaign::with([
-                'topic',
-                'steps.activities.users'  
-            ]);
+        
+        $query = Campaign::with([
+            'topic',
+            'steps.activities.users',
+        ]);
 
-            // ADMIN vidí VŠE
-            if (!$user->hasRoleOrHigher(UserRole::ADMIN)) {
-                // běžný uživatel vidí jen své kampaně
-                $query->where('user_id', $user->id);
-            }
+        // ADMIN 
+        if (!$user->hasRoleOrHigher(UserRole::ADMIN)) {
+            // ostatní vidí kampaně, ke kterým mají právo
+            $query->where(function ($q) use ($user) {
 
-            $campaigns = $query
-                ->orderBy('topic_id')
-                ->orderBy('name')
-                ->get();
+                // správce kampaně 
+                $q->where('user_id', $user->id)
 
-            // seskupíme podle téma -> kvůli přehledu
-            $campaignsByTopic = $campaigns->groupBy('topic_id');
+                // campaign_user
+                ->orWhereHas('users', function ($q) use ($user) {
+                    $q->where('campaign_user.user_id', $user->id);
+                })
 
-            return view('dashboard.campaigns.index', compact('campaignsByTopic'));
+                // koordinator
+                ->orWhereHas('steps', function ($q) use ($user) {
+                    $q->where('user_id', $user->id);
+                });
+            });
         }
+
+        $campaigns = $query
+            ->orderBy('topic_id')
+            ->orderBy('name')
+            ->get();
+
+        $campaignsByTopic = $campaigns->groupBy('topic_id');
+
+        return view('dashboard.campaigns.index', compact('campaignsByTopic'));
+    }
 
     public function campaignDetail(Campaign $campaign)
     {
