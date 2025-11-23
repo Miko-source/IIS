@@ -41,23 +41,33 @@ class CampaignStepController extends Controller
         return view('campaigns.steps.create', compact('campaign', 'coordinators'));
     }
 
-    public function store(Request $request, Campaign $campaign)
-    {
-        $this->authorize('create', [CampaignStep::class, $campaign]);
+   public function store(Request $request, Campaign $campaign)
+{
+    $this->authorize('create', [CampaignStep::class, $campaign]);
 
-        $validated = $request->validate([
-            'name'        => ['required', 'string', 'max:255'],
-            'order'       => ['required', 'integer', 'min:1'],
-            'user_id'     => ['required', 'exists:users,id'],
-            'description' => ['nullable', 'string'],
-        ]);
+    $validated = $request->validate([
+        'name'        => ['required', 'string', 'max:255'],
+        'order'       => ['required', 'integer', 'min:1'],
+        'user_id'     => ['required', 'exists:users,id'],
+        'description' => ['nullable', 'string'],
+    ]);
 
-        $campaign->steps()->create($validated);
+    $newOrder = $validated['order'];
 
-        return redirect()
-            ->route('campaign.steps.index', $campaign)
-            ->with('success', 'Krok kampaně byl vytvořen.');
-    }
+    // POSUNOUT všechny existující kroky >= newOrder
+    CampaignStep::where('campaign_id', $campaign->id)
+        ->where('order', '>=', $newOrder)
+        ->increment('order');
+
+    // vytvořit nový krok s požadovaným pořadím
+    $campaign->steps()->create($validated);
+
+    return redirect()
+        ->route('campaign.steps.index', $campaign)
+        ->with('success', 'Krok byl vytvořen a pořadí ostatních kroků bylo automaticky upraveno.');
+}
+
+
 
     public function show(Campaign $campaign, CampaignStep $step)
     {
@@ -98,35 +108,56 @@ class CampaignStepController extends Controller
     }
 
     public function update(Request $request, Campaign $campaign, CampaignStep $step)
-    {
-        $this->authorize('update', $step);
+{
+    $this->authorize('update', $step);
 
-        $validated = $request->validate([
-            'name'        => ['required', 'string', 'max:255'],
-            'order'       => ['required', 'integer', 'min:1'],
-            'user_id'     => ['required', 'exists:users,id'],
-            'description' => ['nullable', 'string'],
-        ]);
+    $validated = $request->validate([
+        'name'        => ['required', 'string', 'max:255'],
+        'order'       => ['required', 'integer', 'min:1'],
+        'user_id'     => ['required', 'exists:users,id'],
+        'description' => ['nullable', 'string'],
+    ]);
 
-        $step->update($validated);
+    // DUPLIKÁT PŘI EDITACI?
+    $exists = CampaignStep::where('campaign_id', $campaign->id)
+        ->where('order', $validated['order'])
+        ->where('id', '!=', $step->id)
+        ->exists();
 
-        return redirect()
-            ->route('campaign.steps.show', [$campaign, $step])
-            ->with('success', 'Krok kampaně byl upraven.');
+    if ($exists) {
+        return back()
+            ->withErrors(['order' => 'Krok s tímto pořadím již existuje.'])
+            ->withInput();
     }
 
-    public function destroy(\App\Models\Campaign $campaign, \App\Models\CampaignStep $step)
-    {
-        $this->authorize('delete', $step);
-        // $step = CampaignStep::findOrFail($stepId);
-        // $campaign = $step->campaign;
+    $step->update($validated);
 
-        $step->delete();
+    return redirect()
+        ->route('campaign.steps.show', [$campaign, $step])
+        ->with('success', 'Krok kampaně byl upraven.');
+}
 
-        return redirect()
-            ->route('topics.campaigns.show', [$campaign->topic_id, $campaign->id])
-            ->with('success', 'Krok byl úspěšně smazán.');
-        }
+
+public function destroy(Campaign $campaign, CampaignStep $step)
+{
+    $this->authorize('delete', $step);
+
+    $deletedOrder = $step->order;
+
+    // smažeme krok
+    $step->delete();
+
+    // přečíslování kroků za ním
+    CampaignStep::where('campaign_id', $campaign->id)
+        ->where('order', '>', $deletedOrder)
+        ->decrement('order');
+
+    return redirect()
+        ->route('campaign.steps.index', $campaign->id)
+        ->with('success', 'Krok byl úspěšně smazán.');
+}
+
+
 
     public function markComplete(Campaign $campaign, CampaignStep $step)
     {

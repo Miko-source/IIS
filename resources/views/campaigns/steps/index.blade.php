@@ -2,6 +2,15 @@
 
 @section('content')
 <div class="container">
+     <div class="mb-3">
+        @include('components.back-link', [
+    'target' => auth()->check() && auth()->user()->isAdmin()
+        ? route('admin.topics.index')
+        : route('topics.campaigns.show', [$campaign->topic, $campaign]),
+    'label' => '← Zpět na detail kampaně'
+])
+
+    </div>
     <h1>Kroky kampaně: {{ $campaign->name }}</h1>
 
     <a href="{{ route('campaign.steps.create', $campaign->id) }}" class="btn btn-primary mb-3">
@@ -19,19 +28,29 @@
                         {{ $step->name }}
                     </a>
                 </div>
-                <div>
-                                
-                <a href="{{ route('campaign.steps.show', [$campaign->id, $step->id]) }}"
-                   class="btn btn-info btn-sm">
-                    Aktivity
-                </a>
 
-                @include('components.edit-button', [
-                    'href' => route('campaign.steps.show', [$campaign->id, $step->id, 'edit' => 1]),
-                    'label' => 'Upravit',
-                    'small' => true
-                ])
-            </div>
+                <div class="d-flex gap-2 align-items-center">
+
+                    {{-- Upravit --}}
+                    @include('components.edit-button', [
+                        'href' => route('campaign.steps.show', [
+                            $campaign->id,
+                            $step->id,
+                            'edit' => 1
+                        ]),
+                        'label' => 'Upravit',
+                        'small' => true
+                    ])
+
+                    {{-- Smazat krok --}}
+                    @include('components.delete-button', [
+                        'action' => route('campaign.steps.destroy', [$campaign->id, $step->id]),
+                        'label'  => 'Smazat',
+                        'confirm' => 'Opravdu chcete tento krok smazat?',
+                        'small' => true
+                    ])
+
+                </div>
 
             </li>
         @endforeach

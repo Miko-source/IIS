@@ -2,6 +2,15 @@
 
 @section('content')
 <div class="container">
+         <div class="mb-3">
+        @include('components.back-link', [
+    'target' => auth()->check() && auth()->user()->isAdmin()
+        ? route('admin.topics.index')
+        :route('campaign.steps.index', $campaign->id),
+    'label' => '← Zpět na správu kroků'
+])
+
+    </div>
     <h1>Přidat krok ke kampani: {{ $campaign->name }}</h1>
 
     <form action="{{ route('campaign.steps.store', $campaign->id) }}" method="POST">
