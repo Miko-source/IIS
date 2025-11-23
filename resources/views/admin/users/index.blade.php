@@ -1,7 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>Správa uživatelů</h1>>
+    <h1>Správa uživatelů</h1>
+    <div class="mb-3">
+    <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
+        + Přidat uživatele
+        </a>
+    </div>
+
 
     <table border="1" cellpadding="8">
         <thead>

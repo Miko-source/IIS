@@ -19,7 +19,7 @@ class CampaignPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user !== null; // přihlášený uživatel
     }
 
     public function view(User $user, Campaign $campaign): bool

@@ -9,6 +9,40 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+
+    public function create()
+    {
+        // povolíme pouze dvě role pro vytvoření účtu
+        $roles = [
+            UserRole::WORKER,
+        ];
+
+        return view('admin.users.create', compact('roles'));
+    }
+    public function store(Request $request)
+{
+    $validated = $request->validate([
+        'name'    => ['required', 'string', 'max:255'],
+        'surname' => ['required', 'string', 'max:255'],
+        'email'   => ['required', 'email', 'max:255', 'unique:users,email'],
+        'password' => ['required', 'string', 'min:6', 'confirmed'],
+        'role'    => ['required', 'in:worker'],
+    ]);
+
+    // Vytvoření uživatele
+    // Laravel sám zahashuje heslo díky castu "password"
+    $user = User::create([
+        'name'     => $validated['name'],
+        'surname'  => $validated['surname'],
+        'email'    => $validated['email'],
+        'password' => $validated['password'],
+        'role'     => $validated['role'],
+    ]);
+
+    return redirect()
+        ->route('admin.users.index')
+        ->with('success', "Uživatel {$user->name} byl vytvořen.");
+}
     public function index()
     {
         $users = User::where('id', '!=', auth()->id())

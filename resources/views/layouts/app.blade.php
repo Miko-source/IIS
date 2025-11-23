@@ -186,14 +186,16 @@
                             Dashboard
                         </a>
                     </li>
+                    <li class="nav-item">
+                        @if (in_array($role, ['campaign_manager', 'admin','worker','coordinator']))
+                         <a class="nav-link {{ request()->routeIs('dashboard.campaigns') ? 'active' : '' }}" href="{{ route('dashboard.campaigns') }}">
+                            Přehled 
+                        </a>
+                        @endif
+                    </li>
 
                     @if($role === 'admin')
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('admin.topics.*') ? 'active' : '' }}"
-                               href="{{ route('admin.topics.index') }}">
-                                Správa témat
-                            </a>
-                        </li>
+
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
                                href="{{ route('admin.users.index') }}">

@@ -22,11 +22,12 @@
     Správa pracovníků kampaní
 </a>
     <a href="{{ route('workspace') }}" class="btn btn-primary mt-3">
-        Můj pracovní prostor
+        Vyhodnocení mojich aktivit
     </a>
-    @if (in_array($role, ['campaign_manager', 'admin']))
-    <a href="{{ route('dashboard.campaigns') }}" class="btn btn-primary mt-3">
-        Přehled kampaní
+    @if (($role === 'admin') )
+    <a href="{{ route('admin.topics.index') }}"
+        class="btn btn-secondary mt-3 {{ request()->routeIs('admin.topics.*') ? 'active' : '' }}">
+            Správa témat
     </a>
 @endif
 

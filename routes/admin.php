@@ -8,6 +8,8 @@ Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-        Route::resource('users', UserController::class)->except(['show', 'create', 'store']);
+        // odstraníme create & store ze seznamu
+        Route::resource('users', UserController::class)->except(['show']);
         Route::resource('topics', TopicController::class);
     });
+
