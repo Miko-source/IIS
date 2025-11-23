@@ -9,7 +9,7 @@
          @if($activity->completed)
                 <span class="text-success">Dokončeno</span>
             @else
-                <span class="text-muted">Probíhá</span>
+                <span class="text-muted">Čeká na dokončení</span>
             @endif
         <small class="text-muted">
             {{ $activity->start_date ? $activity->start_date->format('d. m. Y') : '—' }}

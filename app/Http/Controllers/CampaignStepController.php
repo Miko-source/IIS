@@ -73,7 +73,12 @@ class CampaignStepController extends Controller
     {
         $this->authorize('view', $step);
 
-        $step->load(['activities', 'user:id,name,surname']);
+        $step->load([
+                    'activities',
+                    'user:id,name,surname,email'
+                ]);
+
+        
 
         $previousStep = $campaign->steps()
             ->where('order', '<', $step->order)
@@ -83,7 +88,7 @@ class CampaignStepController extends Controller
         $stepStates = $this->stepStateService->calculateStepStates($campaign);
 
         $coordinators = User::where('id', '!=', $campaign->user_id)
-            ->select('id', 'name', 'surname')
+            ->select('id', 'name', 'surname', 'email')
             ->get();
 
         return view('campaigns.steps.show', [

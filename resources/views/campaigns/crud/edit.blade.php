@@ -48,6 +48,7 @@
             <label for="campaign_edit_name" class="form-label">Název kampaně <span class="text-danger">*</span></label>
             <input
                 type="text"
+                placeholder="např. Zachraňme lesy"
                 id="campaign_edit_name"
                 name="name"
                 class="form-control @error('name') is-invalid @enderror"

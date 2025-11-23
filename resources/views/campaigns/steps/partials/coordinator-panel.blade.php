@@ -1,13 +1,15 @@
 {{-- resources/views/steps/partials/coordinator-panel.blade.php --}}
 
 @component('components.panel', ['title' => 'Koordinátor kroku'])
-    <p class="mb-2">
-        @if($step->user)
-            <strong>{{ $step->user->name }} {{ $step->user->surname }}</strong>
-        @else
-            <span class="text-muted fst-italic">není přiřazen</span>
-        @endif
-    </p>
+  <p class="mb-2">
+    @if($step->user)
+        <strong>{{ $step->user->name }} {{ $step->user->surname }}</strong>
+        <span class="text-muted">({{ $step->user->email }})</span>
+    @else
+        <span class="text-muted fst-italic">není přiřazen</span>
+    @endif
+</p>
+
 
     @can('update', $step)
         <div class="d-flex gap-2 flex-wrap">

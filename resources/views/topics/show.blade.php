@@ -10,7 +10,7 @@
             'label' => '← Zpět na seznam témat'
         ])
     </div>
-    <h1>{{ $topic->name }}</h1>
+    <h1>Téma: {{ $topic->name }}</h1>
 
     @can('update', $topic)
         <div class="d-flex gap-2 my-2">

@@ -43,12 +43,12 @@
     <small class="text-muted fst-italic">Nejste přihlášen</small>
 
 @elseif ($pivot->is_confirmed === 1)
-    <small class="text-success fw-bold">✔ potvrzeno</small>
+    <small class="text-success fw-bold">✔ Přiděleno</small>
 
 @elseif ($pivot->is_confirmed === 2)
-    <small class="text-danger fw-bold">✖ odmítnuto</small>
+    <small class="text-danger fw-bold">✖ Zamítnuto</small>
 
 @else
-    <small class="text-warning fw-bold">⏳ čeká na potvrzení</small>
+    <small class="text-warning fw-bold">⏳ Čeká na přiřazení</small>
 @endif
 

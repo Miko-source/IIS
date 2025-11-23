@@ -25,6 +25,7 @@
             <label class="form-label">Název *</label>
             <input 
                 type="text" 
+                placeholder="mytí auta, úklid parku, ... "
                 name="name" 
                 class="form-control @error('name') is-invalid @enderror"
                 value="{{ old('name', $activity->name) }}"
@@ -62,6 +63,7 @@
             <label class="form-label">Náklady (Kč)</label>
             <input 
                 type="number" 
+                placeholder="např. 1500.50"
                 step="0.01" 
                 min="0"
                 name="cost" 
@@ -77,6 +79,7 @@
             <label class="form-label">Popis</label>
             <textarea 
                 name="description" 
+                placeholder="Popis aktivity"
                 class="form-control @error('description') is-invalid @enderror"
                 rows="4"
             >{{ old('description', $activity->description) }}</textarea>

@@ -265,14 +265,14 @@
 
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="remember" id="remember">
+                    <!-- <input class="form-check-input" type="checkbox" name="remember" id="remember">
                     <label class="form-check-label" for="remember">
                         Zapamatovat si mě
-                    </label>
+                    </label> -->
                 </div>
-                <button type="button" class="btn btn-link p-0 small">
+                <!-- <button type="button" class="btn btn-link p-0 small">
                     Zapomenuté heslo
-                </button>
+                </button> -->
             </div>
 
             <button type="submit" class="auth-submit-btn">
