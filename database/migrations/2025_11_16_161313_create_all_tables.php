@@ -133,8 +133,7 @@ return new class extends Migration
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
             $table->foreignId('activity_id')        // patří k (1:N)
-                  ->constrained('activities')   
-                  ->onDelete('cascade');            //pripadne upravit    
+                  ->constrained('activities');      
             $table->foreignId('user_id')            // podává (1:N)
                   ->constrained('users');
             $table->text('content');
@@ -156,6 +155,5 @@ return new class extends Migration
         Schema::dropIfExists('campaign_user');
         Schema::dropIfExists('campaigns');
         Schema::dropIfExists('topics');
-        // Schema::dropIfExists('users');
     }
 };

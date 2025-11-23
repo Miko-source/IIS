@@ -95,6 +95,12 @@ public function show(Campaign $campaign, CampaignStep $step, Activity $activity)
 
     public function destroy(Campaign $campaign, CampaignStep $step, Activity $activity)
     {
+        $this->authorize('delete', $activity);
+
+        if ($activity->step_id !== $step->id || $step->campaign_id !== $campaign->id) {
+            abort(404);
+        }
+
         $activity->delete();
 
         return redirect()

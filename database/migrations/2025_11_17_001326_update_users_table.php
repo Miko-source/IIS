@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // Doplníme všechny dodatečné sloupce, které v defaultní migraci chybí
+            // updating default user migration
             $table->string('surname')->after('name');
             $table->string('contact')->nullable()->after('password');
             $table->string('address')->nullable()->after('contact');
@@ -19,7 +19,6 @@ return new class extends Migration
                 'coordinator',
                 'worker',
                 'deactivated'
-                // 'guest' bude resen pomoci cookies
             ])->default('worker')->after('address');
         });
     }

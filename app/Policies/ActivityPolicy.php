@@ -3,7 +3,6 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\ActivityUser;
 use App\Enums\UserRole;
 
 use App\Models\Activity;
@@ -18,20 +17,15 @@ public function view(User $user, Activity $activity)
         return true;
     }
 
-    // musí mít možnost vidět kampaň
+    // user must be allowed to view the parent campaign
     if ($activity->step && $activity->step->campaign) {
         if (! $user->can('view', $activity->step->campaign)) {
             return false;
         }
-        // pokud uživatel může vidět kampaň, další kontroly nejsou potřeba
+        // if campaign is viewable, no further checks are needed
         if ($user->can('view', $activity->step->campaign)) {
             return true;
         }
-    }
-
-    // pokud krok chybí, povolit zobrazení
-    if (!$activity->step) {
-        return true;
     }
 
     $step = $activity->step;
@@ -54,17 +48,17 @@ public function view(User $user, Activity $activity)
         $step = $activity->step;
         $campaign = $step?->campaign;
 
-        // ADMIN → vždy může
+        // ADMIN → always allowed
         if ($user->hasRoleOrHigher(UserRole::ADMIN)) {
             return true;
         }
 
-        // Správce kampaně (owner kampaně)
+        // Campaign manager (campaign owner)
         if ($campaign && $campaign->user_id === $user->id) {
             return true;
         }
 
-        // Koordinátor kroku (owner kroku)
+        // Step coordinator (step owner)
         if ($step && $step->user_id === $user->id) {
             return true;
         }
@@ -74,7 +68,7 @@ public function view(User $user, Activity $activity)
 
         public function manageWorkers(User $user, Activity $activity): bool
     {
-        $step     = $activity->step;
+        $step = $activity->step;
         $campaign = $step?->campaign;
 
         // ADMIN
@@ -82,13 +76,36 @@ public function view(User $user, Activity $activity)
             return true;
         }
 
-        // SPRÁVCE KAMPANĚ
+        // CAMPAIGN MANAGER
         if ($campaign && $campaign->user_id === $user->id) {
             return true;
         }
 
-        // KOORDINÁTOR KROKU
+        // STEP COORDINATOR
         if ($user->hasRole(UserRole::COORDINATOR) && $step && $step->user_id === $user->id) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function delete(User $user, Activity $activity): bool
+    {
+        $step = $activity->step;
+        $campaign = $step?->campaign;
+
+        // ADMIN
+        if ($user->hasRoleOrHigher(UserRole::ADMIN)) {
+            return true;
+        }
+
+        // CAMPAIGN MANAGER
+        if ($campaign && $campaign->user_id === $user->id) {
+            return true;
+        }
+
+        // STEP COORDINATOR
+        if ($step && $step->user_id === $user->id) {
             return true;
         }
 
