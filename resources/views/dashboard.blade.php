@@ -22,7 +22,7 @@
     Správa pracovníků kampaní
 </a>
     <a href="{{ route('workspace') }}" class="btn btn-primary mt-3">
-        Vyhodnocení mojich aktivit
+        Vyhodnocení mých aktivit
     </a>
     @if (($role === 'admin') )
     <a href="{{ route('admin.topics.index') }}"

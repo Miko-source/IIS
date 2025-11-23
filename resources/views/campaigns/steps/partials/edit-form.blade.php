@@ -26,18 +26,6 @@
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Koordinátor</label>
-            <select name="user_id" class="form-select" required>
-                @foreach($coordinators as $coord)
-                    <option value="{{ $coord->id }}"
-                        @selected($coord->id == $step->user_id)>
-                        {{ $coord->name }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-
-        <div class="mb-3">
             <label class="form-label">Popis</label>
             <textarea name="description" class="form-control">{{ old('description', $step->description) }}</textarea>
         </div>

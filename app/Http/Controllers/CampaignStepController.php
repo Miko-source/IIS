@@ -105,11 +105,7 @@ class CampaignStepController extends Controller
     {
         $this->authorize('update', $step);
 
-        $coordinators = User::where('role', UserRole::COORDINATOR)
-            ->select('id', 'name', 'surname')
-            ->get();
-
-        return view('campaigns.steps.edit', compact('campaign', 'step', 'coordinators'));
+        return view('campaigns.steps.edit', compact('campaign', 'step'));
     }
 
     public function update(Request $request, Campaign $campaign, CampaignStep $step)
@@ -119,7 +115,6 @@ class CampaignStepController extends Controller
     $validated = $request->validate([
         'name'        => ['required', 'string', 'max:255'],
         'order'       => ['required', 'integer', 'min:1'],
-        'user_id'     => ['required', 'exists:users,id'],
         'description' => ['nullable', 'string'],
     ]);
 
@@ -135,7 +130,11 @@ class CampaignStepController extends Controller
             ->withInput();
     }
 
-    $step->update($validated);
+    $step->update([
+        'name'        => $validated['name'],
+        'order'       => $validated['order'],
+        'description' => $validated['description'] ?? null,
+    ]);
 
     return redirect()
         ->route('campaign.steps.show', [$campaign, $step])
