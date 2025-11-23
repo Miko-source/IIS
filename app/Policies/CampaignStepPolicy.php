@@ -31,7 +31,12 @@ class CampaignStepPolicy
             return true;
         }
 
-        // worker assigned to this campaign (read-only access to steps)
+        // coordinator of any step in this campaign
+        if ($campaign->steps()->where('user_id', $user->id)->exists()) {
+            return true;
+        }
+
+        // worker assigned to this campaign
         if ($campaign->users()->where('campaign_user.user_id', $user->id)->exists()) {
             return true;
         }
@@ -57,6 +62,12 @@ class CampaignStepPolicy
 
         // campaign_manager
         if ($step->campaign?->user_id === $user->id) {
+            return true;
+        }
+
+        // coordinator of any step in this campaign (read-only access)
+        if ($step->campaign
+            && $step->campaign->steps()->where('user_id', $user->id)->exists()) {
             return true;
         }
 
