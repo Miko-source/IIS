@@ -14,11 +14,22 @@ class ActivityPolicy
 public function view(User $user, Activity $activity)
 {
     // admin 
-    if ($user->role === 'admin') {
+    if ($user->hasRoleOrHigher(UserRole::ADMIN)) {
         return true;
     }
 
-    // pokud aktivity nemají step, povolit aby to nespadlo
+    // has to be able to see campaign
+    if ($activity->step && $activity->step->campaign) {
+        if (! $user->can('view', $activity->step->campaign)) {
+            return false;
+        }
+        // if user can see campaign, no further checks needed
+        if ($user->can('view', $activity->step->campaign)) {
+            return true;
+        }
+    }
+
+    // if step is missing, allow viewing
     if (!$activity->step) {
         return true;
     }
@@ -26,28 +37,12 @@ public function view(User $user, Activity $activity)
     $step = $activity->step;
     $campaign = $step->campaign;
 
-    //pokud step nemá kampaň
     if (!$campaign) {
-        return true;
+        return false;
     }
 
-    // správce kampaně
+    // campaign manager
     if ($campaign->user_id === $user->id) {
-        return true;
-    }
-
-    // koordinátor kroku
-    if ($step->user_id === $user->id) {
-        return true;
-    }
-
-    // realizátor
-    if ($activity->users->contains($user->id)) {
-        return true;
-    }
-
-    // pracovník
-    if ($campaign->workers->contains($user->id)) {
         return true;
     }
 
@@ -57,4 +52,3 @@ public function view(User $user, Activity $activity)
 
     
 }
-

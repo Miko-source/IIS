@@ -38,39 +38,54 @@
             {{ $step->description ?: '—' }}
         </p>
 
-        @include('campaigns.steps.partials.coordinator-panel', [
-            'step' => $step,
-            'coordinators' => $coordinators,
-            'campaign' => $campaign
-        ])
-
-        <div class="d-flex gap-2 flex-wrap mb-3">
-            <button type="button"
-                    class="btn btn-warning btn-sm rounded-pill"
-                    id="toggle-step-edit"
-                    onclick="
-                        document.getElementById('step-edit-form').classList.toggle('d-none');
-                    ">
-                Upravit krok
-            </button>
-
-            {{-- delete step --}}
-            @include('components.delete-button', [
-                'action' => route('campaign.steps.destroy', [$campaign->id, $step->id]),
-                'label' => 'Smazat krok',
-                'confirm' => 'Opravdu chcete krok smazat?',
-                'small' => true
+        @can('update', $campaign)
+            @include('campaigns.steps.partials.coordinator-panel', [
+                'step' => $step,
+                'coordinators' => $coordinators,
+                'campaign' => $campaign
             ])
-        </div>
+        @else
+            <p class="mb-3">
+                <strong>Koordinátor kroku:</strong>
+                @if($step->user)
+                    {{ $step->user->name }} {{ $step->user->surname }}
+                @else
+                    <span class="text-muted fst-italic">není přiřazen</span>
+                @endif
+            </p>
+        @endcan
 
-        @include('campaigns.steps.partials.edit-form', [
-            'step' => $step,
-            'coordinators' => $coordinators,
-            'campaign' => $campaign
-        ])
+        @can('update', $step)
+            <div class="d-flex gap-2 flex-wrap mb-3">
+                <button type="button"
+                        class="btn btn-warning btn-sm rounded-pill"
+                        id="toggle-step-edit"
+                        onclick="
+                            document.getElementById('step-edit-form').classList.toggle('d-none');
+                        ">
+                    Upravit krok
+                </button>
+
+                {{-- delete step --}}
+                @can('delete', $step)
+                    @include('components.delete-button', [
+                        'action' => route('campaign.steps.destroy', [$campaign->id, $step->id]),
+                        'label' => 'Smazat krok',
+                        'confirm' => 'Opravdu chcete krok smazat?',
+                        'small' => true
+                    ])
+                @endcan
+            </div>
+
+            @include('campaigns.steps.partials.edit-form', [
+                'step' => $step,
+                'coordinators' => $coordinators,
+                'campaign' => $campaign
+            ])
+        @endcan
     </div>
 
-    {{-- aktivity list --}}
+    {{-- activities list --}}
     @include('campaigns.steps.partials.activities-list', [
         'activities' => $activities,
         'campaign' => $campaign,

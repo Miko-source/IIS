@@ -2,7 +2,7 @@
 
 <div class="d-flex justify-content-between align-items-center border rounded p-3 mb-2 bg-white shadow-sm">
 
-    {{-- LEVÁ STRANA – název + datum --}}
+    {{-- LEFT SIDE – name + dates --}}
     <div>
 
         <strong>{{ $activity->name }}</strong><br>
@@ -20,7 +20,7 @@
 
     </div>
 
-    {{-- PRAVÁ STRANA – tlačítka --}}
+    {{-- RIGHT SIDE – buttons --}}
     <div class="d-flex gap-2 align-items-center">
         <a href="{{ route('activities.show', [$campaign->id, $step->id, $activity->id]) }}"
             class="btn btn-sm btn-outline-primary">
@@ -28,21 +28,25 @@
             </a>
 
 
-        {{-- Upravit --}}
-        @include('components.edit-button', [
-            'href' => route('activities.edit', [$campaign->id, $step->id, $activity->id]),
-            'small' => true
-        ])
+        @can('update', $activity)
+            {{-- Edit --}}
+            @include('components.edit-button', [
+                'href' => route('activities.edit', [$campaign->id, $step->id, $activity->id]),
+                'small' => true
+            ])
+        @endcan
 
-        {{-- Smazat --}}
-        @include('components.delete-button', [
-            'action' => route('activities.destroy', [$campaign->id, $step->id, $activity->id]),
-            'label' => 'Smazat',
-            'confirm' => 'Opravdu chcete aktivitu smazat?',
-            'small' => true
-        ])
+        @can('delete', $activity)
+            {{-- Delete --}}
+            @include('components.delete-button', [
+                'action' => route('activities.destroy', [$campaign->id, $step->id, $activity->id]),
+                'label' => 'Smazat',
+                'confirm' => 'Opravdu chcete aktivitu smazat?',
+                'small' => true
+            ])
+        @endcan
 
-        {{-- Přihlášení / odhlášení --}}
+        {{-- Sign up / leave --}}
         @if(auth()->check())
             @include('campaigns.steps.partials.activity-signup-button', [
                 'activity' => $activity

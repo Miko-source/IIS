@@ -1,7 +1,7 @@
 <?php
 /**
  * ---------------------------------------------------------
- * Autor:  Martin Bureš
+ * Author:  Martin Bureš
  * Login:  xbures38
  * ---------------------------------------------------------
  */
@@ -29,22 +29,9 @@ class CampaignPolicy
             return true;
         }
 
-        // správce kampaně
-        if ($campaign->user_id === $user->id) {
-            return true;
-        }
-
-        // přidělený uživatel (viditelnost přes pivot tabulku)
-        if ($campaign->users()
-            ->where('campaign_user.user_id', $user->id)
-            ->exists()) {
-            return true;
-        }
-
-        // koordinátor kroku této kampaně
-        return $campaign->steps()
-            ->where('user_id', $user->id)
-            ->exists();
+        // campaign manager with role at least campaign_manager
+        return $user->hasRoleOrHigher(UserRole::CAMPAIGN_MANAGER)
+            && $campaign->user_id === $user->id;
     }
     
     public function create(User $user): bool
@@ -52,7 +39,7 @@ class CampaignPolicy
         return $user->hasRoleOrHigher(UserRole::ADMIN);
     }
 
-    // admin nebo přiřazený správce kampaně
+    // admin or assigned campaign manager
     public function update(User $user, Campaign $campaign): bool
     {
         return $user->hasRoleOrHigher(UserRole::ADMIN)
@@ -65,7 +52,7 @@ class CampaignPolicy
         return $user->hasRoleOrHigher(UserRole::ADMIN);
     }
 
- // správce kampaně nebo admin může upravovat kampaň
+ // campaign manager or admin can edit campaign
 
     public function manageManager(User $user): bool
     {
@@ -103,7 +90,7 @@ class CampaignPolicy
     {
         return $user->hasRoleOrHigher(UserRole::ADMIN);
     }
-////////////////////////////////addded///////////////////////////////////////
+//////////////////////////////// added ///////////////////////////////////////
 
 
     public function manageWorkers(User $user, Campaign $campaign)
@@ -113,7 +100,7 @@ class CampaignPolicy
             return true;
         }
 
-        // Správce kampaně (user_id kampaně)
+        // Campaign manager (campaign owner)
         if ($user->id === $campaign->user_id) {
             return true;
         }

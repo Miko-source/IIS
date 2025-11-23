@@ -15,26 +15,19 @@ class CampaignStepPolicy
      */
     public function viewAny(User $user, Campaign $campaign): bool
     {
+        // must be allowed to view the campaign first
+        if (! $user->can('view', $campaign)) {
+            return false;
+        }
+
         // Admin
         if ($user->hasRoleOrHigher(UserRole::ADMIN)) {
             return true;
         }
 
-        // campaign_manager
-        if ($campaign->user_id === $user->id) {
-            return true;
-        }
-
-        // worker assigned to the campaign
-        if ($campaign->users()->where('campaign_user.user_id', $user->id)->exists()) {
-            return true;
-        }
-
-        // coordinator who has at least one step in the campaign
-        if ($campaign->steps()->where('user_id', $user->id)->exists()) {
-            return true;
-        }
-        return false;
+        // only the manager of this campaign (role campaign_manager or higher)
+        return $user->hasRoleOrHigher(UserRole::CAMPAIGN_MANAGER)
+            && $campaign->user_id === $user->id;
     }
 
     /**
@@ -42,6 +35,11 @@ class CampaignStepPolicy
      */
     public function view(User $user, CampaignStep $step): bool
     {
+        // must be allowed to view the campaign first
+        if (! $step->campaign || ! $user->can('view', $step->campaign)) {
+            return false;
+        }
+
         // Admin 
         if ($user->hasRoleOrHigher(UserRole::ADMIN)) {
             return true;
@@ -49,20 +47,6 @@ class CampaignStepPolicy
 
         // campaign_manager
         if ($step->campaign?->user_id === $user->id) {
-            return true;
-        }
-
-        // worker assigned to the campaign
-        if ($step->campaign
-            && $step->campaign->users()->where('campaign_user.user_id', $user->id)->exists()
-        ) {
-            return true;
-        }
-
-        // coordinator who has at least one step in the campaign
-        if ($step->campaign
-            && $step->campaign->steps()->where('user_id', $user->id)->exists()
-        ) {
             return true;
         }
 

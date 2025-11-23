@@ -13,7 +13,7 @@ class ActivityController extends Controller
 {
 public function show(Campaign $campaign, CampaignStep $step, Activity $activity)
 {
-    // bezpečnost – kontrola, že to k sobě patří
+    $this->authorize('view', $activity);
     if ($activity->step_id !== $step->id || $step->campaign_id !== $campaign->id) {
         abort(404);
     }
@@ -106,17 +106,16 @@ public function signup(Activity $activity)
 {
     $user = auth()->user();
 
-    // Nelze se přihlásit ke kroku, který je hotový
+    // step is done, cant sign up
     if ($activity->step->is_completed) {
         return back()->with('error', 'Tento krok je již dokončen. Nelze se přihlásit.');
     }
 
-    // Najdeme existující pivot pro uživatele
     $pivot = $activity->users()
         ->where('user_id', $user->id)
         ->first();
 
-    // === 1) Uživatel byl dříve odmítnut -> znovu pending ===
+    // pending -> rejected -> pending again
     if ($pivot && $pivot->pivot->is_confirmed == 2) {
 
         $activity->users()->updateExistingPivot($user->id, [
@@ -124,7 +123,6 @@ public function signup(Activity $activity)
             'is_completed' => 0,
         ]);
 
-        // Přihlášením (pending) se aktivita MUSÍ otevřít
         if ($activity->completed) {
             $activity->completed = false;
             $activity->save();
@@ -132,19 +130,18 @@ public function signup(Activity $activity)
 
         return back()->with('success', 'Přihlášení obnoveno, čeká se na potvrzení.');
     }
-
-    // === 2) Pokud existuje pending nebo approved -> přihlášen už je ===
+    // already signed up
     if ($pivot) {
         return back()->with('error', 'Už jsi k této aktivitě přihlášen.');
     }
 
-    // === 3) Nové přihlášení ===
+    // new signup
     $activity->users()->attach($user->id, [
         'is_confirmed' => 0,
         'is_completed' => 0,
     ]);
 
-    // Nové pending přihlášení musí aktivitu otevřít
+    // new signup affects activity completion
     $activity->recalculateCompletion();
 
 
@@ -155,12 +152,10 @@ public function signup(Activity $activity)
     {
         $userId = auth()->id();
 
-        // Zda je worker přihlášen k aktivitě
         if (! $activity->users()->where('user_id', $userId)->exists()) {
             return back()->with('error', 'Nejsi u této aktivity přihlášen.');
         }
 
-        // Smazání pivot záznamu → tím zmizí i jeho stav (pending/confirmed/rejected)
         $activity->users()->detach($userId);
 
         return back()->with('success', 'Byl jsi odhlášen z aktivity.');
@@ -195,7 +190,7 @@ public function signup(Activity $activity)
     {
         $activity = Activity::findOrFail($id);
 
-        // role kontrola
+        // role check
         $role = auth()->user()->role->value;
         if (!in_array($role, ['admin','campaign_manager','coordinator'])) {
             abort(403);

@@ -52,7 +52,7 @@
             @foreach($campaigns as $campaign)
                 <li class="list-group-item d-flex justify-content-between align-items-center">
 
-                    {{-- Název a datum --}}
+                    {{-- Name and date --}}
                     <div>
                         <strong>{{ $campaign->name }}</strong>
                         @if($campaign->start_date)
@@ -60,20 +60,24 @@
                         @endif
                     </div>
 
-                    {{-- Ovládací tlačítka --}}
+                    {{-- Action buttons --}}
                     <div class="d-flex gap-2">
 
                         {{-- Detail --}}
-                        <a href="{{ route('topics.campaigns.show', [
-                            $topic,
-                            $campaign,
-                            'back' => 'topic'
-                        ]) }}">
-                            Detail kampaně
-                        </a>
+                        @can('view', $campaign)
+                            <a href="{{ route('topics.campaigns.show', [
+                                $topic,
+                                $campaign,
+                                'back' => 'topic'
+                            ]) }}">
+                                Detail kampaně
+                            </a>
+                        @else
+                            <span class="text-muted">Detail nedostupný</span>
+                        @endcan
 
 
-                        {{-- Správa pracovníků --}}
+                        {{-- Manage workers --}}
                         @can('manageWorkers', $campaign)
                             <a href="{{ route('campaigns.workers', $campaign) }}" 
                                class="btn btn-primary btn-sm">
@@ -81,7 +85,7 @@
                             </a>
                         @endcan
 
-                        {{-- Upravit --}}
+                        {{-- Edit --}}
                         @can('update', $campaign)
                             @include('components.edit-button', [
                                 'href' => route('topics.campaigns.show', [$topic, $campaign]) . '?edit_campaign=1',
@@ -90,7 +94,7 @@
                             ])
                         @endcan
 
-                        {{-- Smazat --}}
+                        {{-- Delete --}}
                         @can('delete', $campaign)
                             @include('components.delete-button', [
                                 'action' => route('topics.campaigns.destroy', [$topic, $campaign]),

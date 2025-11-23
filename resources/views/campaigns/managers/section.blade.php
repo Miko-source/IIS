@@ -6,11 +6,13 @@
         @include('campaigns.managers.empty', ['campaign' => $campaign, 'topic' => $topic])
     @endif
 
-    @if(request()->has('edit_manager'))
-        @include('campaigns.managers.form', [
-            'campaign' => $campaign, 
-            'topic' => $topic,
-            'users' => $users
-        ])
-    @endif
+    @can('manageManager', App\Models\Campaign::class)
+        @if(request()->has('edit_manager'))
+            @include('campaigns.managers.form', [
+                'campaign' => $campaign, 
+                'topic' => $topic,
+                'users' => $users
+            ])
+        @endif
+    @endcan
 @endcomponent

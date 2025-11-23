@@ -2,10 +2,12 @@
 
 <h3 class="mt-4">Aktivity</h3>
 
-<a href="{{ route('activities.create', [$campaign->id, $step->id]) }}"
-   class="btn btn-success mb-3">
-    + Přidat aktivitu
-</a>
+@can('update', $step)
+    <a href="{{ route('activities.create', [$campaign->id, $step->id]) }}"
+       class="btn btn-success mb-3">
+        + Přidat aktivitu
+    </a>
+@endcan
 
 @forelse($activities as $activity)
     @include('campaigns.steps.partials.activity-item', [
