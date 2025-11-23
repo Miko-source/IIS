@@ -26,6 +26,13 @@
             class="btn btn-sm btn-outline-primary">
                 Detail
             </a>
+            @can('manageWorkers', $activity)
+            <a href="{{ route('activities.workers.index', $activity) }}"
+            class="btn btn-sm btn-outline-secondary">
+                Spravovat realizátory
+            </a>
+        @endcan
+
 
 
         @can('update', $activity)

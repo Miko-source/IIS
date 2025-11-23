@@ -5,131 +5,145 @@
 
     <h1 class="mb-4">Přehled kampaní</h1>
 
-    @forelse($campaignsByTopic as $topicId => $campaigns)
+    {{-- WRAPPER pro accordion přes témata --}}
+    <div id="topicsAccordion">
+        @forelse($campaignsByTopic as $topicId => $campaigns)
 
-        @php
-            $topic = $campaigns->first()->topic;
-            $topicCollapseId = 'topic_'.$topicId;
-        @endphp
+            @php
+                $topic = $campaigns->first()->topic;
+                $topicCollapseId = 'topic_'.$topicId;
+            @endphp
 
-        {{-- ======= TEMA ======= --}}
-        <div class="mb-3">
+            <div class="mb-3">
 
-            <button class="btn btn-outline-primary w-100 text-start"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#{{ $topicCollapseId }}">
-                <strong>{{ $topic->name }}</strong>
-            </button>
+                {{-- TÉMA --}}
+                <div class="d-flex align-items-center mb-1">
+                    <button class="btn btn-outline-primary w-100 text-start me-2"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#{{ $topicCollapseId }}">
+                        <strong>{{ $topic->name }}</strong>
+                    </button>
 
-            <div id="{{ $topicCollapseId }}" class="collapse mt-3">
+                    <a href="{{ route('topics.show', $topic) }}" class="btn btn-info btn-sm">
+                        Detail
+                    </a>
+                </div>
 
-                {{-- ======= Kampane pod tematem======= --}}
-                @foreach($campaigns as $campaign)
+                {{-- DŮLEŽITÉ: data-bs-parent zajistí, že se při otevření jiného tématu tohle zavře --}}
+                <div id="{{ $topicCollapseId }}" 
+                     class="collapse mt-3"
+                     data-bs-parent="#topicsAccordion">
 
-                    @php
-                        $campaignCollapseId = 'campaign_'.$campaign->id;
-                    @endphp
+                    @foreach($campaigns as $campaign)
 
-                    {{-- ======= KAMPAN ======= --}}
-                    <div class="border rounded mb-3 p-3 bg-white">
+                        @php
+                            $campaignCollapseId = 'campaign_'.$campaign->id;
+                        @endphp
 
-                        <button class="btn btn-outline-dark w-100 text-start"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#{{ $campaignCollapseId }}">
-                            <strong>{{ $campaign->name }}</strong>
-                        </button>
+                        {{-- KAMPAŇ --}}
+                        <div class="border rounded mb-3 p-3 bg-white">
 
-                        <div id="{{ $campaignCollapseId }}" class="collapse mt-3">
+                            <div class="d-flex align-items-center mb-1">
+                                <button class="btn btn-outline-dark w-100 text-start me-2"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#{{ $campaignCollapseId }}">
+                                    <strong>{{ $campaign->name }}</strong>
+                                </button>
 
-                            {{-- ======= KROKY KAMPANĚ ======= --}}
-                            @foreach($campaign->steps as $step)
+                                <a href="{{ route('topics.campaigns.show', [$topic, $campaign]) }}" 
+                                   class="btn btn-info btn-sm">
+                                    Detail
+                                </a>
+                            </div>
 
-                                @php
-                                    $stepCompleted = $step->is_completed ?? false;
-                                @endphp
+                            <div id="{{ $campaignCollapseId }}" class="collapse mt-3">
 
-                                <div class="mb-2 p-2 rounded {{ $stepCompleted ? 'bg-success bg-opacity-25' : '' }}">
-                                    <strong>
-                                        Krok {{ $step->order }}: {{ $step->name }}
-                                        @if($stepCompleted)
-                                            <span class="text-success ms-2 fw-bold">✔ splněno</span>
-                                        @endif
-                                    </strong>
+                                {{-- KROKY --}}
+                                @foreach($campaign->steps as $step)
+                                    @php
+                                        $stepCompleted = $step->is_completed ?? false;
+                                    @endphp
 
-                                    {{-- Aktivity --}}
-                                    <ul class="mt-1">
-                                        @forelse($step->activities as $activity)
+                                    <div class="mb-2 p-2 rounded {{ $stepCompleted ? 'bg-success bg-opacity-25' : '' }}">
 
-                                            @php
-                                                $now = now();
+                                        <div class="d-flex align-items-center">
+                                            <strong class="me-2">
+                                                Krok {{ $step->order }}: {{ $step->name }}
+                                                @if($stepCompleted)
+                                                    <span class="text-success ms-2 fw-bold">✔ splněno</span>
+                                                @endif
+                                            </strong>
 
+                                            <a href="{{ route('campaign.steps.show', [$campaign, $step]) }}" 
+                                               class="btn btn-info btn-sm ms-auto">
+                                                Detail
+                                            </a>
+                                        </div>
+
+                                        {{-- AKTIVITY --}}
+                                        <ul class="mt-1">
+                                            @forelse($step->activities as $activity)
+                                                @php
                                                     if ($activity->completed) {
                                                         $status = 'done';
                                                     } else {
                                                         $status = 'in_progress';
                                                     }
 
+                                                    $icons = [
+                                                        'done'        => '✔️ splněno',
+                                                        'failed'      => '❌ selhalo',
+                                                        'not_started' => '⚪ ještě nezačalo',
+                                                        'in_progress' => '⏳ probíhá',
+                                                        'overdue'     => '🔥 po termínu',
+                                                    ];
+                                                @endphp
 
-                                                $icons = [
-                                                    'done'        => '✔️ splněno',
-                                                    'failed'      => '❌ selhalo',
-                                                    'not_started' => '⚪ ještě nezačalo',
-                                                    'in_progress' => '⏳ probíhá',
-                                                    'overdue'     => '🔥 po termínu',
-                                                ];
-                                            @endphp
+                                                <li class="d-flex align-items-center">
+                                                    <span class="me-2">
+                                                        <strong>{{ $activity->name }}</strong>
+                                                        {{ $icons[$status] }}
+                                                    </span>
 
-                                            <li>
-                                                <strong>{{ $activity->name }}</strong>
-                                                <span class="ms-2">{{ $icons[$status] }}</span>
-                                            </li>
+                                                    {{-- nechávám zakomentováno jak máš --}}
+                                                    <!--
+                                                    <a href="{{ route('activities.show', [$campaign, $step, $activity]) }}"
+                                                       class="btn btn-info btn-sm ms-auto">
+                                                        Detail
+                                                    </a>
+                                                    -->
+                                                </li>
+                                            @empty
+                                                <li class="text-muted fst-italic">Žádné aktivity</li>
+                                            @endforelse
+                                        </ul>
 
-                                        @empty
-                                            <li class="text-muted fst-italic">Žádné aktivity</li>
-                                        @endforelse
-                                    </ul>
+                                    </div>
+                                @endforeach
 
-                                </div>
+                                <button class="btn btn-outline-secondary btn-sm mt-2"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#{{ $campaignCollapseId }}">
+                                    Schovat
+                                </button>
 
-                            @endforeach
-
-                            <a href="{{ route('topics.campaigns.show', [
-                                $topic,
-                                $campaign,
-                                'back' => 'campaigns'
-                            ]) }}">
-                                Detail kampaně
-                            </a>
-
-
-
-
-
-                            {{-- SCHOVAT KROKY / KAMPAŇ --}}
-                            <button class="btn btn-outline-secondary btn-sm mt-2"
-                                    data-bs-toggle="collapse"
-                                    data-bs-target="#{{ $campaignCollapseId }}">
-                                Schovat
-                            </button>
-
+                            </div>
                         </div>
-                    </div>
 
-                @endforeach
+                    @endforeach
 
-                {{-- SCHOVAT TÉMA --}}
-                <button class="btn btn-outline-secondary btn-sm mt-2"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#{{ $topicCollapseId }}">
-                    Schovat téma
-                </button>
+                    <button class="btn btn-outline-secondary btn-sm mt-2"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#{{ $topicCollapseId }}">
+                        Schovat téma
+                    </button>
 
+                </div>
             </div>
-        </div>
 
-    @empty
-        <p>Žádné kampaně k zobrazení.</p>
-    @endforelse
-
+        @empty
+            <p>Žádné kampaně k zobrazení.</p>
+        @endforelse
+    </div>
 </div>
 @endsection

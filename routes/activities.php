@@ -15,7 +15,10 @@ Route::middleware(['auth'])->group(function () {
     [ActivityController::class, 'confirm_activity']
 )->name('activities.confirm_activity');
 
-    
+        Route::post(
+        '/activities/{activity}/workers',
+        [ActivityController::class, 'addWorker']
+    )->name('activities.workers.add');
 });
 
 // signup / confirm / leave

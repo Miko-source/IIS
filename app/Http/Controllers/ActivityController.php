@@ -206,5 +206,50 @@ public function signup(Activity $activity)
         return back()->with('success', 'Aktivita byla úspěšně potvrzena.');
     }
 
+ public function addWorker(Request $request, Activity $activity)
+{
+    // oprávnění: admin / campaign_manager / koordinátor kroku
+    $this->authorize('assignWorker', $activity);
+
+    $data = $request->validate([
+        'user_id' => ['required', 'exists:users,id'],
+    ]);
+
+    $userId = $data['user_id'];
+    $campaign = $activity->step->campaign;
+
+    //
+    // pokud není uživatel v kampani, automaticky ho přidáme
+    //
+    $isInCampaign = $campaign->workers()
+        ->where('users.id', $userId)
+        ->exists();
+
+    if (!$isInCampaign) {
+        $campaign->workers()->attach($userId);
+    }
+
+    //
+    // zkontrolujeme, jestli už není přiřazen u aktivity
+    //
+    $alreadyAssigned = $activity->users()
+        ->where('users.id', $userId)
+        ->exists();
+
+    if ($alreadyAssigned) {
+        return back()->with('error', 'Uživatel je již k aktivitě přiřazen.');
+    }
+
+    //
+    // přiřadíme uživatele k aktivitě
+    //
+    $activity->users()->attach($userId, [
+        'is_confirmed' => 1,
+        'is_completed' => 0,
+    ]);
+
+    return back()->with('success', 'Uživatel byl přidán k aktivitě a automaticky i ke kampani.');
+}
+
 
 }

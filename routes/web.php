@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\CampaignStepController;
+use App\Http\Controllers\ActivityWorkerController;
 
 
 
@@ -34,3 +35,17 @@ Route::patch(
     '/campaigns/{campaign}/steps/{step}/order',
     [CampaignStepController::class, 'updateOrder']
 )->name('campaign.steps.order');
+
+
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/activities/{activity}/workers', [ActivityWorkerController::class, 'index'])
+        ->name('activities.workers.index');
+
+    Route::post('/activities/{activity}/workers', [ActivityWorkerController::class, 'store'])
+        ->name('activities.workers.store');
+
+    Route::delete('/activities/{activity}/workers/{user}', [ActivityWorkerController::class, 'destroy'])
+        ->name('activities.workers.destroy');
+});
