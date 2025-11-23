@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Topic;
 use Illuminate\Http\Request;
 use App\Models\CampaignStep;
+use App\Enums\UserRole;
 
 class CampaignWorkerController extends Controller
 {
@@ -15,10 +16,27 @@ class CampaignWorkerController extends Controller
      */
     public function selectTopic()
     {
-        $topics = Topic::with('campaigns')->get();
+        $user = auth()->user();
+
+        // ADMIN 
+        if ($user->hasRoleOrHigher(UserRole::ADMIN)) {
+            $topics = Topic::with('campaigns')->get();
+        }
+
+        // 
+        else {
+            $topics = Topic::with(['campaigns' => function ($q) use ($user) {
+                    // 
+                    $q->where('user_id', $user->id);
+                }])
+                ->whereHas('campaigns', function ($q) use ($user) {
+                    $q->where('user_id', $user->id);
+                })
+                ->get();
+        }
+
         return view('campaigns.manage', compact('topics'));
     }
-
 
     /**
      * Správa pracovníků dané kampaně – výpis přidaných, dostupných i koordinátorů

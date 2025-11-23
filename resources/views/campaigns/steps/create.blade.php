@@ -18,12 +18,12 @@
 
         <div class="mb-3">
             <label class="form-label">Název kroku</label>
-            <input type="text" name="name" class="form-control" required>
+            <input type="text" placeholder="Příprava materiálů" name="name" class="form-control" required>
         </div>
 
         <div class="mb-3">
             <label class="form-label">Pořadí kroku</label>
-            <input type="number" name="order" class="form-control" value="1" required>
+            <input type="number" placeholder="např. 1" name="order" class="form-control" value="1" required>
         </div>
 
         <div class="mb-3">
@@ -37,7 +37,7 @@
 
         <div class="mb-3">
             <label class="form-label">Popis</label>
-            <textarea name="description" class="form-control"></textarea>
+            <textarea name="description" placeholder="Popis kroku..." class="form-control"></textarea>
         </div>
 
         <button class="btn btn-success">Vytvořit krok</button>

@@ -202,13 +202,7 @@
                                 Uživatelé
                             </a>
                         </li>
-                    @else
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('topics.*') ? 'active' : '' }}"
-                               href="{{ route('topics.index') }}">
-                                Témata
-                            </a>
-                        </li>
+             
                     @endif
 
                     

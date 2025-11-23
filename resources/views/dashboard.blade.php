@@ -18,18 +18,27 @@
         ODKAZY PODLE ROLE
     -------------------------- --}}
 
+    @if ($role === 'admin' )
+      <a href="{{ route('admin.topics.index') }}"
+        class="btn btn-secondary mt-3 {{ request()->routeIs('admin.topics.*') ? 'active' : '' }}">
+            Správa témat
+            
+    </a>
+
+    @elseif ($role === 'admin'||$role === 'campaign_manager')
+  
     <a href="{{ route('campaigns.manage') }}" class="btn btn-warning mt-3">
     Správa pracovníků kampaní
 </a>
+@endif
+     @if ($role !== 'admin')  
+    <a href="{{ route('topics.index') }}" class="btn btn-primary mt-3 {{ request()->routeIs('topics.*') ? 'active' : '' }}">
+        Témata
+    </a>
+    @endif
     <a href="{{ route('workspace') }}" class="btn btn-primary mt-3">
         Vyhodnocení mých aktivit
     </a>
-    @if (($role === 'admin') )
-    <a href="{{ route('admin.topics.index') }}"
-        class="btn btn-secondary mt-3 {{ request()->routeIs('admin.topics.*') ? 'active' : '' }}">
-            Správa témat
-    </a>
-@endif
 
 
     <!-- @if ($role === 'admin')

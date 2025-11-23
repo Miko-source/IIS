@@ -10,6 +10,7 @@
         <div class="mb-3">
             <label class="form-label">Název kroku</label>
             <input type="text"
+                    placeholder="Příprava materiálů"
                    name="name"
                    class="form-control"
                    value="{{ old('name', $step->name) }}"
@@ -19,6 +20,7 @@
         <div class="mb-3">
             <label class="form-label">Pořadí</label>
             <input type="number"
+                placeholder="např. 1"
                    name="order"
                    class="form-control"
                    value="{{ old('order', $step->order) }}"
@@ -27,7 +29,7 @@
 
         <div class="mb-3">
             <label class="form-label">Popis</label>
-            <textarea name="description" class="form-control">{{ old('description', $step->description) }}</textarea>
+            <textarea name="description" class="form-control" placeholder="Popis kroku...">{{ old('description', $step->description) }}</textarea>
         </div>
 
         <div class="d-flex gap-2">

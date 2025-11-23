@@ -34,9 +34,14 @@ class CampaignStepController extends Controller
     {
         $this->authorize('create', [CampaignStep::class, $campaign]);
 
-        $coordinators = User::where('role', UserRole::COORDINATOR)
-            ->select('id', 'name', 'surname')
+        $coordinators = User::where('id', '!=', $campaign->user_id)
+            ->orderBy('surname')
+            ->orderBy('name')
+            ->select('id', 'name', 'surname', 'email')
             ->get();
+
+
+
 
         return view('campaigns.steps.create', compact('campaign', 'coordinators'));
     }
@@ -44,6 +49,9 @@ class CampaignStepController extends Controller
    public function store(Request $request, Campaign $campaign)
 {
     $this->authorize('create', [CampaignStep::class, $campaign]);
+    if ($request->order <= 0) {
+        return back()->with('error', 'Pořadí kroku musí být kladné číslo větší než 0.');
+    }
 
     $validated = $request->validate([
         'name'        => ['required', 'string', 'max:255'],
@@ -108,37 +116,43 @@ class CampaignStepController extends Controller
         return view('campaigns.steps.edit', compact('campaign', 'step'));
     }
 
-    public function update(Request $request, Campaign $campaign, CampaignStep $step)
+public function update(Request $request, Campaign $campaign, CampaignStep $step)
 {
-    $this->authorize('update', $step);
-
+    if ($request->order <= 0) {
+        return back()->with('error', 'Pořadí kroku musí být kladné číslo větší než 0.');
+    }
     $validated = $request->validate([
         'name'        => ['required', 'string', 'max:255'],
-        'order'       => ['required', 'integer', 'min:1'],
         'description' => ['nullable', 'string'],
+        'order'       => ['required', 'integer', 'min:1'],
     ]);
 
-    // DUPLIKÁT PŘI EDITACI?
-    $exists = CampaignStep::where('campaign_id', $campaign->id)
-        ->where('order', $validated['order'])
-        ->where('id', '!=', $step->id)
-        ->exists();
+    $newOrder = $validated['order'];
+    $oldOrder = $step->order;
 
-    if ($exists) {
-        return back()
-            ->withErrors(['order' => 'Krok s tímto pořadím již existuje.'])
-            ->withInput();
+    // Pokud se pořadí nezměnilo → uloží jen ostatní věci
+    if ($newOrder == $oldOrder) {
+        $step->update($validated);
+        return back()->with('success', 'Krok byl upraven.');
     }
 
-    $step->update([
-        'name'        => $validated['name'],
-        'order'       => $validated['order'],
-        'description' => $validated['description'] ?? null,
-    ]);
+    // Zkontrolujeme, jestli už existuje krok se stejným pořadím
+    $existingStep = $campaign->steps()
+        ->where('order', $newOrder)
+        ->where('id', '!=', $step->id)
+        ->first();
 
-    return redirect()
-        ->route('campaign.steps.show', [$campaign, $step])
-        ->with('success', 'Krok kampaně byl upraven.');
+    if ($existingStep) {
+        //  Prohození pořadí
+        $existingStep->update(['order' => $oldOrder]);
+        $step->update($validated);
+
+    } else {
+        //  žádný krok toto pořadí nemá → jen uložíme
+        $step->update($validated);
+    }
+
+    return back()->with('success', 'Pořadí kroku bylo aktualizováno.');
 }
 
 
