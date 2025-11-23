@@ -17,6 +17,15 @@
         </div>
 
         <div class="card-body">
+                    <p>
+            <strong>Stav:</strong>
+            @if($activity->completed)
+                <span class="text-success">Splněno</span>
+            @else
+                <span class="text-warning">Nesplněno</span>
+            @endif
+        </p>
+
 
             <p>
                 <strong>Popis:</strong><br>

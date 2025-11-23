@@ -14,6 +14,7 @@ class Activity extends Model
         'name',
         'step_id',
         'type_id',
+        'completed',
         'cost',
         'description',
         'start_date',
@@ -24,6 +25,7 @@ class Activity extends Model
         'cost' => 'decimal:2',
         'start_date' => 'date',
         'end_date' => 'date',
+        'completed' => 'boolean',
     ];
 
     public function step(): BelongsTo
@@ -36,12 +38,15 @@ class Activity extends Model
         return $this->belongsTo(Type::class, 'type_id');
     }
 
-    public function users(): BelongsToMany
-    {
-        return $this->belongsToMany(User::class, 'activity_user')
-            ->withPivot('is_confirmed', 'is_completed')
-            ->withTimestamps();
-    }
+        public function users(): BelongsToMany
+        {
+            return $this->belongsToMany(User::class, 'activity_user')
+                ->withPivot('is_confirmed', 'is_completed')
+                ->withTimestamps();
+        }
+
+        
+
 
     public function workers(): BelongsToMany
     {
@@ -102,8 +107,51 @@ class Activity extends Model
     public function approvedUsers()
     {
         return $this->belongsToMany(User::class, 'activity_user')
-            ->withPivot('is_confirmed')
+            ->withPivot('is_confirmed', 'is_completed')
             ->wherePivot('is_confirmed', 1)
             ->withTimestamps();
     }
+
+
+public function isCompleted(): bool
+{
+    return $this->completed === true;
+}
+
+public function allWorkersCompleted(): bool
+{
+    // // Pokud existuje pending uživatel → aktivita nemůže být dokončena
+    // if ($this->users()->wherePivot('is_confirmed', 0)->exists()) {
+    //     return false;
+    // }
+
+    // Pokud existuje potvrzený uživatel bez dokončení → aktivita nemůže být dokončena
+    if ($this->users()
+        ->wherePivot('is_confirmed', 1)
+        ->wherePivot('is_completed', 0)
+        ->exists()) 
+    {
+        return false;
+    }
+
+    // Pokud nemáme žádné potvrzené → aktivita nemůže být dokončena
+    if (!$this->users()->wherePivot('is_confirmed', 1)->exists()) {
+        return false;
+    }
+
+    return true;
+}
+    public function recalculateCompletion()
+{
+    if ($this->allWorkersCompleted()) {
+        $this->completed = true;
+    } else {
+        $this->completed = false;
+    }
+
+    $this->save();
+}
+
+
+
 }

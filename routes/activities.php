@@ -10,6 +10,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/campaigns/{campaign}/steps/{step}/activities/{activity}/edit', [ActivityController::class, 'edit'])->name('activities.edit');
     Route::put('/campaigns/{campaign}/steps/{step}/activities/{activity}', [ActivityController::class, 'update'])->name('activities.update');
     Route::delete('/campaigns/{campaign}/steps/{step}/activities/{activity}', [ActivityController::class, 'destroy'])->name('activities.destroy');
+    //zmenaaa
+    Route::post('/activities/{activity}/confirm-activity',
+    [ActivityController::class, 'confirm_activity']
+)->name('activities.confirm_activity');
+
+    
 });
 
 // signup / confirm / leave

@@ -63,18 +63,12 @@
                                             @php
                                                 $now = now();
 
-                                                if ($activity->messages->count()) {
-                                                    $last = $activity->messages->last();
-                                                    $status = $last->success ? 'done' : 'failed';
-                                                } else {
-                                                    if ($activity->start_date && $now->lt($activity->start_date)) {
-                                                        $status = 'not_started';
-                                                    } elseif ($activity->end_date && $now->gt($activity->end_date)) {
-                                                        $status = 'overdue';
+                                                    if ($activity->completed) {
+                                                        $status = 'done';
                                                     } else {
                                                         $status = 'in_progress';
                                                     }
-                                                }
+
 
                                                 $icons = [
                                                     'done'        => '✔️ splněno',
