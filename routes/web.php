@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\CampaignStepController;
+
 
 
 // Home
@@ -26,3 +28,9 @@ require __DIR__.'/errors.php';
 Route::get('/campaigns/{campaign}/steps/{step}/activities/{activity}', 
     [ActivityController::class, 'show']
 )->name('activities.show');
+
+
+Route::patch(
+    '/campaigns/{campaign}/steps/{step}/order',
+    [CampaignStepController::class, 'updateOrder']
+)->name('campaign.steps.order');

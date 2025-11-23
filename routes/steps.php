@@ -17,4 +17,5 @@ Route::middleware(['auth', 'role_at_least:worker'])
             ->name('campaigns.steps.complete');
         Route::patch('/{step}/uncomplete', [CampaignStepController::class, 'markIncomplete'])
             ->name('campaigns.steps.uncomplete');
+            
     });
