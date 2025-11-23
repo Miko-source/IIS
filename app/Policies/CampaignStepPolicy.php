@@ -25,12 +25,20 @@ class CampaignStepPolicy
             return true;
         }
 
-        // coordinator sees only their steps
-        return $campaign->steps()->where('user_id', $user->id)->exists();
+        // worker assigned to the campaign
+        if ($campaign->users()->where('campaign_user.user_id', $user->id)->exists()) {
+            return true;
+        }
+
+        // coordinator who has at least one step in the campaign
+        if ($campaign->steps()->where('user_id', $user->id)->exists()) {
+            return true;
+        }
+        return false;
     }
 
     /**
-     * view concrete step
+     * view concrete step, if we want to change the viewing logic
      */
     public function view(User $user, CampaignStep $step): bool
     {
@@ -44,8 +52,22 @@ class CampaignStepPolicy
             return true;
         }
 
-        // coordinator sees only their steps
-        return $step->user_id === $user->id;
+        // worker assigned to the campaign
+        if ($step->campaign
+            && $step->campaign->users()->where('campaign_user.user_id', $user->id)->exists()
+        ) {
+            return true;
+        }
+
+        // coordinator who has at least one step in the campaign
+        if ($step->campaign
+            && $step->campaign->steps()->where('user_id', $user->id)->exists()
+        ) {
+            return true;
+        }
+
+        // fallback
+        return false;
     }
 
     public function create(User $user, Campaign $campaign): bool

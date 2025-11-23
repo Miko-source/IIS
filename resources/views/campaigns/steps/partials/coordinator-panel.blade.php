@@ -2,8 +2,8 @@
 
 @component('components.panel', ['title' => 'Koordinátor kroku'])
     <p class="mb-2">
-        @if($step->coordinator)
-            <strong>{{ $step->coordinator->name }} {{ $step->coordinator->surname }}</strong>
+        @if($step->user)
+            <strong>{{ $step->user->name }} {{ $step->user->surname }}</strong>
         @else
             <span class="text-muted fst-italic">není přiřazen</span>
         @endif
