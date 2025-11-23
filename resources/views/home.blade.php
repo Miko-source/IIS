@@ -197,12 +197,6 @@
 
         <div class="collapse navbar-collapse" id="landingNavbar">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" href="{{ route('home') }}">Domů</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Kampaně</a>
-                </li>
             </ul>
         </div>
     </div>
