@@ -117,7 +117,6 @@ class CampaignPolicy
     {
         return $user->hasRoleOrHigher(UserRole::ADMIN);
     }
-//////////////////////////////// added ///////////////////////////////////////
 
 
     public function manageWorkers(User $user, Campaign $campaign)

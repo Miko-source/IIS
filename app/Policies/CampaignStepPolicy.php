@@ -25,9 +25,19 @@ class CampaignStepPolicy
             return true;
         }
 
-        // only the manager of this campaign (role campaign_manager or higher)
-        return $user->hasRoleOrHigher(UserRole::CAMPAIGN_MANAGER)
-            && $campaign->user_id === $user->id;
+        // campaign manager of this campaign (role campaign_manager or higher)
+        if ($user->hasRoleOrHigher(UserRole::CAMPAIGN_MANAGER)
+            && $campaign->user_id === $user->id) {
+            return true;
+        }
+
+        // worker assigned to this campaign (read-only access to steps)
+        if ($campaign->users()->where('campaign_user.user_id', $user->id)->exists()) {
+            return true;
+        }
+
+        // fallback (no access to manage/list steps)
+        return false;
     }
 
     /**
@@ -47,6 +57,12 @@ class CampaignStepPolicy
 
         // campaign_manager
         if ($step->campaign?->user_id === $user->id) {
+            return true;
+        }
+
+        // worker assigned to this campaign (read-only access to step detail)
+        if ($step->campaign
+            && $step->campaign->users()->where('campaign_user.user_id', $user->id)->exists()) {
             return true;
         }
 

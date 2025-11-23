@@ -34,7 +34,7 @@
     @include('campaigns.crud.section', ['campaign' => $campaign, 'topic' => $topic])
     
     {{-- steps  --}}
-    @can('viewAny', [App\Models\CampaignStep::class, $campaign])
+    @can('update', $campaign)
         <div class="d-flex flex-wrap gap-2 my-3">
             <a href="{{ route('campaign.steps.index', $campaign->id) }}" class="btn-app btn-app-primary">
                 Spravovat kroky kampaně
