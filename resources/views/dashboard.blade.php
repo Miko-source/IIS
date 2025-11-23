@@ -24,12 +24,13 @@
             Správa témat
             
     </a>
+    @endif
 
-    @elseif ($role === 'admin'||$role === 'campaign_manager')
+    @if ($role === 'admin'||$role === 'campaign_manager')
   
     <a href="{{ route('campaigns.manage') }}" class="btn btn-warning mt-3">
     Správa pracovníků kampaní
-</a>
+    </a>
 @endif
      @if ($role !== 'admin')  
     <a href="{{ route('topics.index') }}" class="btn btn-primary mt-3 {{ request()->routeIs('topics.*') ? 'active' : '' }}">
