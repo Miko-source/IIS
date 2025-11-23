@@ -17,7 +17,8 @@ return new class extends Migration
                 'admin',
                 'campaign_manager',
                 'coordinator',
-                'worker'
+                'worker',
+                'deactivated'
                 // 'guest' bude resen pomoci cookies
             ])->default('worker')->after('address');
         });

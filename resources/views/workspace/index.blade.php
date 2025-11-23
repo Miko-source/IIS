@@ -2,6 +2,13 @@
 
 @section('content')
 <div class="container">
+
+    <div>
+        @include('components.back-link', [
+            'target' => route('dashboard'),
+            'label' => '← Zpět na Dashboard'
+        ])
+    </div>
     <h1>Moje aktivity</h1>
 
     {{-- ===================  AKTIVNÍ AKTIVITY  =================== --}}
@@ -62,7 +69,11 @@
     @if($closedActivities->isEmpty())
         <p class="text-muted">Nemáte žádné uzavřené aktivity.</p>
     @else
-        @foreach($closedActivities as $activity)
+        @foreach($closedActivities->filter(function($a) {
+    return $a->workers()
+             ->where('user_id', auth()->id())
+             ->where('is_completed', 1)
+             ->exists();  }) as $activity)
             <div class="card mt-3">
                 <div class="card-body">
 
@@ -78,15 +89,14 @@
                         <div class="border-start border-3 ps-3 mb-2 p-2
                             @if($msg->success === 1) border-success
                             @elseif($msg->success === 0) border-danger
-                            @else border-warning
+                            
                             @endif">
                             <strong>
                                 @if($msg->success === 1)
                                     <span class="text-success">✓ Úspěch</span>
                                 @elseif($msg->success === 0)
                                     <span class="text-danger">✗ Neúspěch</span>
-                                @else
-                                    <span class="text-warning">⏳ Čeká na vyhodnocení</span>
+                            
                                 @endif
                             </strong>
                             <p class="mb-1">{{ $msg->content }}</p>

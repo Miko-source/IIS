@@ -23,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
         
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,
+            'check_user_active' => \App\Http\Middleware\CheckUserActive::class,
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'role_at_least' => \App\Http\Middleware\RoleAtLeastMiddleware::class,
 
@@ -30,6 +31,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // Web middleware stack
         $middleware->web(append: [
+            \App\Http\Middleware\CheckUserActive::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
         ]);

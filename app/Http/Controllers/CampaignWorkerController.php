@@ -73,6 +73,8 @@ class CampaignWorkerController extends Controller
         // přidání pracovníka
         $campaign->users()->syncWithoutDetaching([$user->id]);
 
+
+
         // přepočet role
         $user->refreshRole();
 

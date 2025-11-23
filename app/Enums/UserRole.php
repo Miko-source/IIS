@@ -8,4 +8,6 @@ enum UserRole: string
     case CAMPAIGN_MANAGER = 'campaign_manager';
     case COORDINATOR = 'coordinator';
     case WORKER = 'worker';
+    case DEACTIVATED = 'deactivated';
+
 }

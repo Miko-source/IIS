@@ -25,13 +25,13 @@ class RegisterController extends Controller
             'surname'  => $data['surname'], 
             'email'    => $data['email'],
             'password' => Hash::make($data['password']),
-            'role'     => 'worker'
+            'role'     => 'deactivated', // výchozí role při registraci
         ]);
 
         // Automat sign in
         Auth::login($user);
 
         // dashboard
-        return redirect('/dashboard')->with('success', 'Registrace proběhla úspěšně.');
+        return redirect('/home')->with('success', 'Registrace proběhla úspěšně.');
     }
 }

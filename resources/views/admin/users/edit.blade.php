@@ -33,6 +33,7 @@
         <option value="campaign_manager">Manager</option>
         <option value="coordinator">Coordinator</option>
         <option value="worker">Worker</option>
+        <option value="deactivated">Deaktivován</option>
     </select>
 
     <br><br>

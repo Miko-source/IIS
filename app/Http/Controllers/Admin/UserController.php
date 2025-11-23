@@ -32,7 +32,7 @@ class UserController extends Controller
             'name'    => ['required', 'string', 'max:255'],
             'surname' => ['required', 'string', 'max:255'],
             'email'   => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
-            'role'    => ['required', 'in:campaign_manager,coordinator,worker'],
+            'role'    => ['required', 'in:campaign_manager,coordinator,worker,deactivated'],
         ]);
            
             if ($validated['role'] === 'admin') {
