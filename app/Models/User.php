@@ -115,5 +115,35 @@ public function refreshRole()
     $this->save();
 }
 
+public function getStrongestRole(): string
+{
+    // 1) Pokud má defaultně admin roli, vracíme ji
+    if ($this->role->value === 'admin') {
+        return 'admin';
+    }
+
+    // 2) Je správce kampaně (campaign_manager)?
+    $managesCampaigns = \App\Models\Campaign::where('user_id', $this->id)->exists();
+    if ($managesCampaigns) {
+        return 'campaign_manager';
+    }
+
+    // 3) Je koordinátor nějakého kroku?
+    $isCoordinator = \App\Models\CampaignStep::where('coordinator_id', $this->id)->exists();
+    if ($isCoordinator) {
+        return 'coordinator';
+    }
+
+    // 4) Je přiřazen jako worker v nějaké aktivitě?
+    $isWorker = \App\Models\ActivityUser::where('user_id', $this->id)->exists();
+    if ($isWorker) {
+        return 'worker';
+    }
+
+    // 5) Nemá žádnou roli → deaktivovaný
+    return 'deactivated';
+}
+
+
 
 }

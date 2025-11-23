@@ -24,16 +24,17 @@
 
     <br>
 
-    <label>Role</label>
+    <label>Aktivace účtu</label>
     <select name="role" required>
         <option value="{{ $user->role->value }}" selected hidden>
-            {{ ucfirst($user->role->value) }}
+            @if ($user->role->value === 'deactivated')
+                Neaktivní
+            @else
+                Aktivní
+            @endif
         </option>
-
-        <option value="campaign_manager">Manager</option>
-        <option value="coordinator">Coordinator</option>
-        <option value="worker">Worker</option>
-        <option value="deactivated">Deaktivován</option>
+        <option value="worker">Aktivovat</option>
+        <option value="deactivated">Deaktivovat</option>
     </select>
 
     <br><br>

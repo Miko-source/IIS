@@ -27,27 +27,38 @@ class UserController extends Controller
     }
 
     public function update(Request $request, User $user)
-    {
-        $validated = $request->validate([
-            'name'    => ['required', 'string', 'max:255'],
-            'surname' => ['required', 'string', 'max:255'],
-            'email'   => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
-            'role'    => ['required', 'in:campaign_manager,coordinator,worker,deactivated'],
-        ]);
-           
-            if ($validated['role'] === 'admin') {
-                return back()->withErrors('Nelze přiřadit roli admin.');
-            }
+{
+    $validated = $request->validate([
+        'name'    => ['required', 'string', 'max:255'],
+        'surname' => ['required', 'string', 'max:255'],
+        'email'   => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
+        'role'    => ['required', 'in:campaign_manager,coordinator,worker,deactivated'],
+    ]);
 
-            // 
-            if ($user->role === 'admin') {
-                return back()->withErrors('Nelze upravovat administrátora.');
-            }
-
-        $user->update($validated);
-
-        return redirect()->route('admin.users.index')->with('success', 'Uživatel byl upraven.');
+    if ($validated['role'] === 'admin') {
+        return back()->withErrors('Nelze přiřadit roli admin.');
     }
+
+    if ($user->role === 'admin') {
+        return back()->withErrors('Nelze upravovat administrátora.');
+    }
+
+    // === LOGIKA AKTIVACE / DEAKTIVACE ===
+
+    if ($validated['role'] === 'deactivated') {
+        // deaktivace explicitně
+        $validated['role'] = 'deactivated';
+    } else {
+        // aktivace → najdeme nejsilnější roli z DB
+        $validated['role'] = $user->getStrongestRole();
+    }
+
+    $user->update($validated);
+
+    return redirect()->route('admin.users.index')
+        ->with('success', 'Uživatel byl upraven.');
+}
+
 
     public function destroy(User $user)
     {

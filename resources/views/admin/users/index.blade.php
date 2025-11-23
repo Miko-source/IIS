@@ -25,7 +25,13 @@
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->surname }}</td>
                     <td>{{ $user->email }}</td>
-                    <td>{{ $user->role?->value}}</td>
+                    <td>   @if ($user->role->value === 'deactivated')
+        <span style="color: red; font-weight: bold;">Neaktivní</span><br>
+  
+    @else
+        <span style="color: green; font-weight: bold;">{{ ucfirst($user->role->value) }}</span><br>
+ 
+    @endif</td>
                     <td>
                         @include('components.edit-button', [
                             'href' => route('admin.users.edit', $user),
@@ -35,8 +41,8 @@
 
                         @include('components.delete-button', [
                             'action' => route('admin.users.destroy', $user),
-                            'label' => 'Smazat/Deaktivovat',
-                            'confirm' => 'Opravdu smazat/deaktivovat?',
+                            'label' => 'Smazat',
+                            'confirm' => 'Opravdu smazat?',
                             'small' => true
                         ])
                     </td>
