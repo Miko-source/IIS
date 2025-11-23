@@ -50,7 +50,7 @@ return new class extends Migration
             $table->foreignId('user_id')
                   ->nullable()
                   ->constrained('users')
-                  ->nullOnDelete(); //když se smaže uživatel, user_id, pořád zůstane správce admin
+                  ->nullOnDelete();
             $table->string('name');
             $table->date('start_date');
             $table->date('end_date')->nullable();
