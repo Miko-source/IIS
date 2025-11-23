@@ -41,92 +41,123 @@ class CampaignWorkerController extends Controller
     /**
      * Správa pracovníků dané kampaně – výpis přidaných, dostupných i koordinátorů
      */
-    public function manageWorkers(Campaign $campaign)
-    {
-        $this->authorize('manageWorkers', [Campaign::class, $campaign]);
+   public function manageWorkers(Campaign $campaign)
+{
+    $this->authorize('manageWorkers', [Campaign::class, $campaign]);
 
-        // všichni aktuální pracovníci
-        $assignedUsers = $campaign->workers()->get();
-        $assignedUserIds = $assignedUsers->pluck('id')->toArray();
+    // Eager load, ať nemáme N+1 dotazy
+    $campaign->load([
+        'manager',
+        'steps.user',                 // koordinátoři kroků
+        'steps.activities.users',     // pracovníci na aktivitách
+        'workers',                    // pracovníci kampaně (pivot)
+    ]);
 
-        // správce kampaně
-        $managerId = $campaign->user_id;
+    // 1) ID pracovníků z pivot tabulky campaign_user
+    $workerIds = $campaign->workers->pluck('id');
 
-        // koordinátoři kroků
-        $coordinatorIds = $campaign->steps()->pluck('user_id')->filter()->toArray();
+    // 2) ID správce kampaně
+    $managerId = $campaign->user_id;
 
-        // uživatelé, kteří se NESMÍ zobrazit k přidání
-        $excluded = array_filter([
-            ...$assignedUserIds,
-            $managerId,
-            ...$coordinatorIds,
-        ]);
+    // 3) ID koordinátorů kroků (step->user_id)
+    $coordinatorIds = $campaign->steps
+        ->pluck('user_id')
+        ->filter(); // vyhodí null
 
-        // dostupní uživatelé pro přidání
-        $availableUsers = User::whereNotIn('id', $excluded)->get();
+    // 4) ID uživatelů z aktivit (ti, co jsou přihlášení k aktivitám dané kampaně)
+    $activityUserIds = $campaign->steps
+        ->flatMap(function ($step) {
+            return $step->activities->flatMap(function ($activity) {
+                // pokud chceš jen potvrzené, můžeš filtrovat pivot:
+                return $activity->users->pluck('id');
+            });
+        });
 
-        // všichni uživatelé → dropdown pro "správce kampaně"
-        $allUsers = User::all();
+    // 5) Spojit vše dohromady + odstranit duplicity
+    $allAssignedIds = collect()
+        ->merge($workerIds)
+        ->when($managerId, fn ($c) => $c->push($managerId))
+        ->merge($coordinatorIds)
+        ->merge($activityUserIds)
+        ->unique()
+        ->values();
 
-        // do dropdownu koordinátorů patří všichni KROMĚ správce kampaně
-        $coordinators = User::where('id', '!=', $campaign->user_id)->get();
+    // 6) Skutečný seznam uživatelů do tabulky „Pracovníci v kampani“
+    $assignedUsers = User::whereIn('id', $allAssignedIds)
+        ->orderBy('surname')
+        ->orderBy('name')
+        ->get();
 
-        return view('campaigns.workers', compact(
-            'campaign',
-            'assignedUsers',
-            'availableUsers',
-            'coordinators',
-            'allUsers'
-        ));
-    }
+    // 7) Uživatelé, kteří se NESMÍ nabízet k přidání (už tam nějak figurují)
+    $excluded = $allAssignedIds->all();   // pole ID, které už někde v kampani jsou
+
+    // 8) Dostupní uživatelé pro přidání (select „Přidat pracovníka“)
+    $availableUsers = User::whereNotIn('id', $excluded)
+        ->orderBy('surname')
+        ->orderBy('name')
+        ->get();
+
+    // 9) Všichni uživatelé – pro dropdown správce kampaně
+    $allUsers = User::orderBy('surname')->orderBy('name')->get();
+
+    // 10) Dropdown pro koordinátory kroků – všichni kromě správce dané kampaně
+    $coordinators = User::where('id', '!=', $campaign->user_id)
+        ->orderBy('surname')
+        ->orderBy('name')
+        ->get();
+
+    return view('campaigns.workers', compact(
+        'campaign',
+        'assignedUsers',
+        'availableUsers',
+        'coordinators',
+        'allUsers'
+    ));
+}
+
 
 
     /**
      * Přidání pracovníka do kampaně
      */
     public function addWorker(Request $request, Campaign $campaign)
-    {
-        $user = User::findOrFail($request->user_id);
+{
+    $user = User::findOrFail($request->user_id);
 
-        // přidání pracovníka
-        $campaign->users()->syncWithoutDetaching([$user->id]);
+    // přidání pracovníka – pivot campaign_user
+    $campaign->workers()->syncWithoutDetaching([$user->id]);
 
+    $user->refreshRole();
 
-
-        // přepočet role
-        $user->refreshRole();
-
-        return back()->with('success', 'Pracovník přidán.');
-    }
-
-
+    return back()->with('success', 'Pracovník přidán.');
+}
 
 
     /**
      * Odebrání pracovníka + případné odstranění z role správce a koordinátora
      */
     public function removeWorker(Campaign $campaign, User $user)
-    {
-        $this->authorize('manageWorkers', [Campaign::class, $campaign]);
+{
+    $this->authorize('manageWorkers', [Campaign::class, $campaign]);
 
-        // pokud byl správce -> odebrat
-        if ($campaign->user_id === $user->id) {
-            $campaign->update(['user_id' => null]);
-        }
-
-        // pokud byl koordinátor -> odebrat
-        $campaign->steps()
-            ->where('user_id', $user->id)
-            ->update(['user_id' => null]);
-
-        // odebrat z pracovníků
-        $campaign->workers()->detach($user->id);
-
-        // přepočítat roli po odebrání
-        $user->refreshRole();
-
-        return back()->with('success', 'Pracovník byl odebrán.');
+    // pokud byl správce -> odebrat
+    if ($campaign->user_id === $user->id) {
+        $campaign->update(['user_id' => null]);
     }
+
+    // pokud byl koordinátor -> odebrat
+    $campaign->steps()
+        ->where('user_id', $user->id)
+        ->update(['user_id' => null]);
+
+    // odebrat z pracovníků (pivot campaign_user)
+    $campaign->workers()->detach($user->id);
+
+    $user->refreshRole();
+
+    return back()->with('success', 'Pracovník byl odebrán.');
+}
+
 
 
 
