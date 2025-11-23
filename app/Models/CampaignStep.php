@@ -73,6 +73,13 @@ class CampaignStep extends Model
             return $query;
         }
 
-        return $query->where('user_id', $user->id);
+        // worker or coordinator of whaterever step in campaign, sees the rest ofthe steps too
+        if ($campaign->users()->where('campaign_user.user_id', $user->id)->exists()
+            || $campaign->steps()->where('user_id', $user->id)->exists()) {
+            return $query;
+        }
+
+        // fallback
+        return $query->whereRaw('0 = 1');
     }
 }
