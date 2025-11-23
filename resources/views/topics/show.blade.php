@@ -65,11 +65,8 @@
 
                         {{-- Detail --}}
                         @can('view', $campaign)
-                            <a href="{{ route('topics.campaigns.show', [
-                                $topic,
-                                $campaign,
-                                'back' => 'topic'
-                            ]) }}">
+                            <a href="{{ route('topics.campaigns.show', [$topic, $campaign, 'back' => 'topic']) }}"
+                               class="btn btn-secondary btn-sm">
                                 Detail kampaně
                             </a>
                         @else
