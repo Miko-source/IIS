@@ -1,5 +1,5 @@
 {{-- Hlavička kampaně --}}
-<h1>{{ $campaign->name }}</h1>
+<h1>Kampaň: {{ $campaign->name }}</h1>
 
 <p><strong>Téma:</strong> {{ $topic->name }}</p>
 

@@ -42,9 +42,6 @@
         </div>
     @endcan
 
-    
-
-
     @include('campaigns.overview', [
         'campaign' => $campaign,
         'stepStates' => $stepStates ?? []
