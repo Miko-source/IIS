@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use App\Models\ActivityUser;
 use App\Policies\ActivityUserPolicy;
+use Illuminate\Pagination\Paginator;
+
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -23,5 +25,6 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerPolicies();
+        \Illuminate\Pagination\Paginator::useBootstrapFour();
     }
 }

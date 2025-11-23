@@ -1,11 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>Správa uživatelů</h1>
-
-    @if (session('success'))
-        <p style="color: green">{{ session('success') }}</p>
-    @endif
+    <h1>Správa uživatelů</h1>>
 
     <table border="1" cellpadding="8">
         <thead>

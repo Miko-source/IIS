@@ -47,6 +47,7 @@ class User extends Authenticatable
     public function hasRoleOrHigher(UserRole|string $role): bool
     {
         $roleHierarchy = [
+            UserRole::DEACTIVATED->value => 0,
             UserRole::WORKER->value => 1,
             UserRole::CAMPAIGN_MANAGER->value => 2,
             UserRole::COORDINATOR->value => 3,
@@ -89,6 +90,10 @@ public function promoteToCampaignManager()
 }
 public function refreshRole()
 {
+    // Pokud je uživatel deaktivovaný → vždy zůstává deaktivovaný
+    if ($this->role === UserRole::DEACTIVATED) {
+        return;
+    }
     // Admin se nesmí měnit
     if ($this->role === UserRole::ADMIN) {
         return;
@@ -117,32 +122,35 @@ public function refreshRole()
 
 public function getStrongestRole(): string
 {
-    // 1) Pokud má defaultně admin roli, vracíme ji
-    if ($this->role->value === 'admin') {
-        return 'admin';
+    // Admin
+    if (\App\Models\Campaign::where('user_id', $this->id)->exists()) {
+        return UserRole::CAMPAIGN_MANAGER->value;
     }
 
-    // 2) Je správce kampaně (campaign_manager)?
-    $managesCampaigns = \App\Models\Campaign::where('user_id', $this->id)->exists();
-    if ($managesCampaigns) {
-        return 'campaign_manager';
+    //  Coordinator
+    if (\App\Models\CampaignStep::where('user_id', $this->id)->exists()) {
+        return UserRole::COORDINATOR->value;
     }
 
-    // 3) Je koordinátor nějakého kroku?
-    $isCoordinator = \App\Models\CampaignStep::where('coordinator_id', $this->id)->exists();
-    if ($isCoordinator) {
-        return 'coordinator';
+    // 3) campaign worker
+    $isCampaignWorker = \App\Models\Campaign::whereHas('workers', function ($q) {
+        $q->where('users.id', $this->id);
+    })->exists();
+
+    if ($isCampaignWorker) {
+        return UserRole::WORKER->value;
     }
 
-    // 4) Je přiřazen jako worker v nějaké aktivitě?
-    $isWorker = \App\Models\ActivityUser::where('user_id', $this->id)->exists();
-    if ($isWorker) {
-        return 'worker';
+    // activity user
+    if (\App\Models\ActivityUser::where('user_id', $this->id)->exists()) {
+        return UserRole::WORKER->value;
     }
 
-    // 5) Nemá žádnou roli → deaktivovaný
-    return 'deactivated';
+    // default
+    return UserRole::WORKER->value;
 }
+
+
 
 
 

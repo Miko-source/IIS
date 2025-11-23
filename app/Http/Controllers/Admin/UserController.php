@@ -43,17 +43,27 @@ class UserController extends Controller
         return back()->withErrors('Nelze upravovat administrátora.');
     }
 
-    // === LOGIKA AKTIVACE / DEAKTIVACE ===
+        $oldRole = $user->role->value;
 
-    if ($validated['role'] === 'deactivated') {
-        // deaktivace explicitně
-        $validated['role'] = 'deactivated';
-    } else {
-        // aktivace → najdeme nejsilnější roli z DB
-        $validated['role'] = $user->getStrongestRole();
-    }
+        // AKTIVACE / DEAKTIVACE
 
-    $user->update($validated);
+        if ($validated['role'] === 'deactivated') {
+            $validated['role'] = 'deactivated';
+        } else {
+            $validated['role'] = $user->getStrongestRole();
+        }
+
+        $user->update($validated);
+
+        $newRole = $validated['role'];
+
+   
+        if ($oldRole === 'deactivated' && $newRole !== 'deactivated') {
+            return redirect()
+                ->route('admin.users.index')
+                ->with('success', "Uživatel {$user->name} byl aktivován jako {$newRole}.");
+        }
+
 
     return redirect()->route('admin.users.index')
         ->with('success', 'Uživatel byl upraven.');
