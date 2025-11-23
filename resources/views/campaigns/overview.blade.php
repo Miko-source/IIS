@@ -22,19 +22,22 @@
                         <span class="text-success fw-bold ms-3">✓ Krok splněn</span>
                     @endif
                 </div>
-
+                    {{-- edit buttons --}}
+                    
+                    
                 <div class="d-flex gap-2">
-                    @include('components.edit-button', [
-                        'href' => route('campaign.steps.show', [
-                        $campaign->id,
-                        $step->id,
-                        'edit' => 1,
-                        'back' => 'campaign'
-                    ]),
-                        'label' => 'Upravit krok',
-                        'small' => true
-                    ])
-
+                    @can('update', $step)
+                        @include('components.edit-button', [
+                            'href' => route('campaign.steps.show', [
+                            $campaign->id,
+                            $step->id,
+                            'edit' => 1,
+                            'back' => 'campaign'
+                        ]),
+                            'label' => 'Upravit krok',
+                            'small' => true
+                        ])
+                    @endcan
                     {{-- detail --}}
                     <a href="{{ route('campaign.steps.show', [$campaign->id, $step->id]) }}"
                        class="btn btn-sm btn-outline-secondary">
