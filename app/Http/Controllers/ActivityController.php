@@ -105,30 +105,48 @@ public function show(Campaign $campaign, CampaignStep $step, Activity $activity)
 public function signup(Activity $activity)
 {
     $user = auth()->user();
+
+    // Nelze se přihlásit ke kroku, který je hotový
     if ($activity->step->is_completed) {
         return back()->with('error', 'Tento krok je již dokončen. Nelze se přihlásit.');
     }
 
+    // Najdeme existující pivot pro uživatele
     $pivot = $activity->users()
         ->where('user_id', $user->id)
         ->first();
 
-    // Pokud už existuje odmítnutý záznam → jen update
+    // === 1) Uživatel byl dříve odmítnut -> znovu pending ===
     if ($pivot && $pivot->pivot->is_confirmed == 2) {
+
         $activity->users()->updateExistingPivot($user->id, [
-            'is_confirmed' => 0
+            'is_confirmed' => 0,
+            'is_completed' => 0,
         ]);
+
+        // Přihlášením (pending) se aktivita MUSÍ otevřít
+        if ($activity->completed) {
+            $activity->completed = false;
+            $activity->save();
+        }
 
         return back()->with('success', 'Přihlášení obnoveno, čeká se na potvrzení.');
     }
 
-    // Pokud existuje pending/approved → nelze
+    // === 2) Pokud existuje pending nebo approved -> přihlášen už je ===
     if ($pivot) {
         return back()->with('error', 'Už jsi k této aktivitě přihlášen.');
     }
 
-    // Nové přihlášení
-    $activity->users()->attach($user->id, ['is_confirmed' => 0]);
+    // === 3) Nové přihlášení ===
+    $activity->users()->attach($user->id, [
+        'is_confirmed' => 0,
+        'is_completed' => 0,
+    ]);
+
+    // Nové pending přihlášení musí aktivitu otevřít
+    $activity->recalculateCompletion();
+
 
     return back()->with('success', 'Úspěšně jsi se přihlásil, čeká se na potvrzení koordinátora.');
 }
@@ -152,9 +170,13 @@ public function signup(Activity $activity)
     public function confirm(ActivityUser $activityUser)
     {
         $this->authorize('manage', $activityUser);
+        $activity = $activityUser->activity;
 
         $activityUser->is_confirmed = 1;
         $activityUser->save();
+
+        $activity->recalculateCompletion();      
+        
 
         return back()->with('success', 'Uživatel byl potvrzen.');
     }
@@ -168,5 +190,26 @@ public function signup(Activity $activity)
 
         return back()->with('success', 'Uživatel byl odmítnut.');
     }
+
+    public function confirm_activity($id)
+    {
+        $activity = Activity::findOrFail($id);
+
+        // role kontrola
+        $role = auth()->user()->role->value;
+        if (!in_array($role, ['admin','campaign_manager','coordinator'])) {
+            abort(403);
+        }
+
+        if (!$activity->allWorkersCompleted()) {
+            return back()->with('error', 'Aktivitu nelze potvrdit — chybí zprávy od realizátorů.');
+        }
+
+        $activity->completed = true;
+        $activity->save();
+
+        return back()->with('success', 'Aktivita byla úspěšně potvrzena.');
+    }
+
 
 }

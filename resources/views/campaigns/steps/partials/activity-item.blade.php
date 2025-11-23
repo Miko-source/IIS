@@ -4,12 +4,19 @@
 
     {{-- LEVÁ STRANA – název + datum --}}
     <div>
+
         <strong>{{ $activity->name }}</strong><br>
+         @if($activity->completed)
+                <span class="text-success">Dokončeno</span>
+            @else
+                <span class="text-muted">Probíhá</span>
+            @endif
         <small class="text-muted">
             {{ $activity->start_date ? $activity->start_date->format('d. m. Y') : '—' }}
             –
             {{ $activity->end_date ? $activity->end_date->format('d. m. Y') : 'konec neznámý' }}
         </small>
+        
 
     </div>
 

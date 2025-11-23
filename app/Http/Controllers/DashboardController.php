@@ -9,6 +9,7 @@ use App\Models\CampaignStep;
 use App\Enums\UserRole;
 use Illuminate\Http\Request;
 use App\Models\Message;
+use App\Models\Activity;
 
 
 
@@ -100,36 +101,41 @@ class DashboardController extends Controller
     }
 
 
-
     public function submitReport(Request $request, ActivityUser $activityUser)
-        {
-            $request->validate([
-                'content' => 'required|string|min:5|max:5000',
-                'success' => 'required|boolean',
-            ]);
+    {
+        $request->validate([
+            'content' => 'required|string|min:5|max:5000',
+            'success' => 'required|boolean',
+        ]);
 
-            // jen uzivatel, ktery je prihlasen
-            if ($activityUser->user_id !== Auth::id()) {
-                abort(403);
-            }
-
-            // report
-            Message::create([
-                'activity_id' => $activityUser->activity_id,
-                'user_id'     => Auth::id(),
-                'content'     => $request->content,
-                'success'     => $request->success,
-            ]);
-
-            // // smazat všechny přihlášené uživatele k této aktivitě
-            // ActivityUser::where('activity_id', $activityUser->activity_id)->delete();
-                $activityUser->update([
-                    'is_completed' => true,
-                    ]);
-
-            // hotovo – aktivita zmizí všem workerům
-            return back()->with('status', 'Zpráva byla odeslána a aktivita byla uzavřena.');
+        // jen uzivatel, ktery je prihlasen
+        if ($activityUser->user_id !== Auth::id()) {
+            abort(403);
         }
+
+        // ulozit zpravu
+        Message::create([
+            'activity_id' => $activityUser->activity_id,
+            'user_id'     => Auth::id(),
+            'content'     => $request->content,
+            'success'     => $request->success,
+        ]);
+
+        // oznacit tohoto workera jako dokončeného
+        $activityUser->update([
+            'is_completed' => true,
+        ]);
+
+        // získat aktivitu
+        $activity = $activityUser->activity;
+
+        // přepočítat stav aktivity úplně stejně jako confirm_activity
+        $activity->recalculateCompletion();
+
+
+
+        return back()->with('status', 'Zpráva byla odeslána a aktivita byla uzavřena.');
+    }
 
         public function campaigns()
         {
@@ -195,6 +201,8 @@ class DashboardController extends Controller
 
         return back()->with('status', 'Krok byl úspěšně odstraněn.');
     }
+
+
 
 
 

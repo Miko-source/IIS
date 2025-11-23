@@ -90,6 +90,8 @@ return new class extends Migration
             // podléhá (1:N)
             $table->foreignId('type_id')
                   ->constrained('types');
+            $table->boolean('completed')->default(false);
+
             $table->decimal('cost', 10, 2)->default(0);
             $table->text('description')->nullable();
             $table->date('start_date');
