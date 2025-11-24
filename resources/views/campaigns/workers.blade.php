@@ -2,6 +2,10 @@
 
 @section('content')
 <div class="container">
+         @include('components.back-link', [
+    'target' => route('topics.campaigns', [$campaign->topic, $campaign]),
+    'label' => '← Zpět na Téma'
+])
 
     <h1 class="mb-1">Správa pracovníků kampaně</h1>
     <h5 class="text-muted mb-3">{{ $campaign->name }}</h5>

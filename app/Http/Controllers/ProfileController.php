@@ -26,7 +26,7 @@ class ProfileController extends Controller
             'name'    => ['required', 'string', 'max:255'],
             'surname' => ['required', 'string', 'max:255'],
             'email'   => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
-            'password' => ['nullable', 'confirmed', 'min:8'],
+            'password' => ['nullable', 'confirmed', 'min:6'],
         ]);
 
         $user->name = $validated['name'];

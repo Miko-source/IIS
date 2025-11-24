@@ -3,12 +3,11 @@
 @section('content')
 <div class="container">
      <div class="mb-3">
-        @include('components.back-link', [
-    'target' => auth()->check() && auth()->user()->isAdmin()
-        ? route('admin.topics.index')
-        : route('topics.campaigns.show', [$campaign->topic, $campaign]),
+     @include('components.back-link', [
+    'target' => route('topics.campaigns.show', [$campaign->topic, $campaign]),
     'label' => '← Zpět na detail kampaně'
 ])
+
 
     </div>
     <h1>Kroky kampaně: {{ $campaign->name }}</h1>

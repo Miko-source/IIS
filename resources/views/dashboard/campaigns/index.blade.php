@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
 
-    <h1 class="mb-4">Přehled kampaní</h1>
+    <h1 class="mb-4">Přehled témat a kampaní</h1>
 
     {{-- WRAPPER --}}
     <div id="topicsAccordion">
