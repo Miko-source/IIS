@@ -146,14 +146,15 @@
                                     @case('coordinator')
                                         Coordinator
                                         @break
-
-                                    @case('worker')
-                                        Pracovnik kampane
-                                        @break
-
                                     @case('activity_worker')
                                         Realizator 
+                                    @break
+
+                                    @case('worker')
+                                        Worker
                                         @break
+
+                                    
 
                                     @default
                                         —
