@@ -84,7 +84,7 @@
         <div class="mb-3">
             <label class="form-label">Role</label>
             <select name="role" class="form-select" required>
-                <option value="worker">Pracovník</option>
+                <option value="worker">worker</option>
             </select>
 
         </div>

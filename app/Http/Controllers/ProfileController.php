@@ -19,6 +19,9 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
 
+        session()->flash('profile_raw_password', $request->password);
+        session()->flash('profile_raw_password_confirmation', $request->password_confirmation);
+
         $validated = $request->validate([
             'name'    => ['required', 'string', 'max:255'],
             'surname' => ['required', 'string', 'max:255'],
@@ -36,6 +39,6 @@ class ProfileController extends Controller
 
         $user->save();
 
-        return redirect()->route('profile.edit')->with('success', 'Profil byl úspěšně upraven.');
+        return redirect()->route('dashboard')->with('success', 'Profil byl úspěšně upraven.');
     }
 }

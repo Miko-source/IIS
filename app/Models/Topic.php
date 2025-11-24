@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
 use App\Enums\UserRole;
 use App\Models\User;
+use App\Models\Traits\AutoPaginate;
 
 class Topic extends Model
 {
-    use HasFactory;
+    use HasFactory,AutoPaginate;
 
     protected $fillable = [
         'name',

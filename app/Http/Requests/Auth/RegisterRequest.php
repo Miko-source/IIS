@@ -21,4 +21,10 @@ class RegisterRequest extends FormRequest
     {
         return true;
     }
+    protected function prepareForValidation()
+        {
+            session()->flash('raw_password', $this->password);
+            session()->flash('raw_password_confirmation', $this->password_confirmation);
+        }
+
 }

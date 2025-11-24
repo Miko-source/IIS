@@ -60,6 +60,9 @@
                 </div>
             </div>
         @endforeach
+            <div class="mt-4 d-flex justify-content-center">
+            {{ $assigned->links() }}
+        </div>
     @endif
 
 
@@ -106,8 +109,12 @@
 
                 </div>
             </div>
+            
         @endforeach
     @endif
+            <div class="mt-4 d-flex justify-content-center">
+            {{ $closedActivities->links() }}
+        </div>
 
 </div>
 @endsection

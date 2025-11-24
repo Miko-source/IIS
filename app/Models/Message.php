@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Traits\AutoPaginate;
 
 class Message extends Model
 {
-    use HasFactory;
+    use HasFactory, AutoPaginate;
 
     protected $fillable = [
         'activity_id',

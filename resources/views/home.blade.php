@@ -210,154 +210,173 @@
     </p>
 
     {{-- LOGIN / REGISTER CARD --}}
-    <section class="auth-card">
+  <section class="auth-card">
 
-        {{-- LOGIN FORM --}}
-        <form
-            id="login-form"
-            method="POST"
-            action="{{ route('login.post') }}"
-            novalidate
-            style="{{ $errors->any() && !old('form_mode') ? '' : '' }}"
-        >
-            @csrf
-            <h2>Přihlášení do systému</h2>
-            <p class="small">Zadejte svůj e-mail a heslo.</p>
+    <style>
+        #register-form {
+            display: {{ $errors->any() && old('form_mode') === 'register' ? 'block' : 'none' }};
+        }
+        #login-form {
+            display: {{ $errors->any() && old('form_mode') === 'register' ? 'none' : 'block' }};
+        }
+    </style>
 
-            {{-- obecná chyba z LoginControlleru --}}
-            @if ($errors->has('login'))
-                <div class="error-text mb-2">
-                    {{ $errors->first('login') }}
-                </div>
-            @endif
+    <form
+        id="login-form"
+        method="POST"
+        action="{{ route('login.post') }}"
+        novalidate
+    >
+        @csrf
+        <input type="hidden" name="form_mode" value="login">
 
-            <div class="mb-3">
-                <label class="form-label">E-mail</label>
-                <input
-                    type="email"
-                    name="email"
-                    class="form-control"
-                    value="{{ old('email') }}"
-                    placeholder="např. worker@disinfo.test"
-                >
-                @error('email')
-                    <div class="error-text">{{ $message }}</div>
-                @enderror
+        <h2>Přihlášení do systému</h2>
+        <p class="small">Zadejte svůj e-mail a heslo.</p>
+
+        @if ($errors->has('login'))
+            <div class="error-text mb-2">
+                {{ $errors->first('login') }}
             </div>
+        @endif
 
-            <div class="mb-3">
-                <label class="form-label">Heslo</label>
-                <input
-                    type="password"
-                    name="password"
-                    class="form-control"
-                >
-                @error('password')
-                    <div class="error-text">{{ $message }}</div>
-                @enderror
-            </div>
+        <div class="mb-3">
+            <label class="form-label">E-mail</label>
+            <input
+                type="email"
+                name="email"
+                placeholder="worker@disinfo.com"
+                class="form-control"
+                value="{{ old('email') }}"
+                placeholder="např. worker@disinfo.test"
+            >
+            @error('email')
+                <div class="error-text">{{ $message }}</div>
+            @enderror
+        </div>
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <div class="form-check"></div>
-            </div>
+        <div class="mb-3">
+            <label class="form-label">Heslo</label>
+            <input
+                type="password"
+                name="password"
+                placeholder="Zadejte heslo"
+                class="form-control"
+            >
+            @error('password')
+                <div class="error-text">{{ $message }}</div>
+            @enderror
+        </div>
 
-            <button type="submit" class="auth-submit-btn">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="form-check"></div>
+        </div>
+
+        <button type="submit" class="auth-submit-btn">
+            Přihlásit se
+        </button>
+
+        <div class="auth-switch-line">
+            Nemáte účet?
+            <button type="button" class="auth-switch-link" id="show-register">
+                Registrovat účet pracovníka
+            </button>
+        </div>
+    </form>
+
+    <form
+        id="register-form"
+        method="POST"
+        action="{{ route('register') }}"
+    >
+        @csrf
+        <input type="hidden" name="form_mode" value="register">
+
+        <h2>Registrace pracovníka</h2>
+        <p class="small">Vyplňte údaje pro vytvoření nového účtu.</p>
+
+        <div class="mb-3">
+            <label class="form-label">Jméno</label>
+            <input
+                type="text"
+                placeholder="Milan"
+                name="name"
+                class="form-control"
+                value="{{ old('name') }}"
+            >
+            @error('name')
+                <div class="error-text">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Příjmení</label>
+            <input
+                type="text"
+                placeholder="Novák"
+                name="surname"
+                class="form-control"
+                value="{{ old('surname') }}"
+            >
+            @error('surname')
+                <div class="error-text">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">E-mail</label>
+            <input
+                type="email"
+                placeholder="např. worker@disinfo.com"
+                name="email"
+                class="form-control"
+                value="{{ old('email') }}"
+            >
+            @error('email')
+                <div class="error-text">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Heslo</label>
+            <input
+                type="password"
+                name="password"
+                placeholder="Zadejte heslo"
+                class="form-control"
+                value="{{ session('raw_password') }}"
+            >
+            @error('password')
+                <div class="error-text">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Potvrzení hesla</label>
+            <input
+                type="password"
+                placeholder="Znovu zadejte heslo"
+                name="password_confirmation"
+                class="form-control"
+                value="{{ session('raw_password_confirmation') }}"
+
+            >
+            @error('password_confirmation')
+                <div class="error-text">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <button type="submit" class="auth-submit-btn">
+            Registrovat se
+        </button>
+
+        <div class="auth-switch-line">
+            Už máte účet?
+            <button type="button" class="auth-switch-link" id="show-login">
                 Přihlásit se
             </button>
-
-            <div class="auth-switch-line">
-                Nemáte účet?
-                <button type="button" class="auth-switch-link" id="show-register">
-                    Registrovat účet pracovníka
-                </button>
-            </div>
-        </form>
-
-        <form
-            id="register-form"
-            method="POST"
-            action="{{ route('register') }}"
-            style="display:none;"
-        >
-            @csrf
-            <h2>Registrace pracovníka</h2>
-            <p class="small">Vyplňte údaje pro vytvoření nového účtu.</p>
-
-            <div class="mb-3">
-                <label class="form-label">Jméno</label>
-                <input
-                    type="text"
-                    name="name"
-                    class="form-control"
-                    value="{{ old('name') }}"
-                >
-                @error('name')
-                    <div class="error-text">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Příjmení</label>
-                <input
-                    type="text"
-                    name="surname"
-                    class="form-control"
-                    value="{{ old('surname') }}"
-                >
-                @error('surname')
-                    <div class="error-text">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">E-mail</label>
-                <input
-                    type="email"
-                    name="email"
-                    class="form-control"
-                    value="{{ old('email') }}"
-                >
-                @error('email')
-                    <div class="error-text">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Heslo</label>
-                <input
-                    type="password"
-                    name="password"
-                    class="form-control"
-                >
-                @error('password')
-                    <div class="error-text">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Potvrzení hesla</label>
-                <input
-                    type="password"
-                    name="password_confirmation"
-                    class="form-control"
-                >
-                @error('password_confirmation')
-                    <div class="error-text">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <button type="submit" class="auth-submit-btn">
-                Registrovat se
-            </button>
-
-            <div class="auth-switch-line">
-                Už máte účet?
-                <button type="button" class="auth-switch-link" id="show-login">
-                    Přihlásit se
-                </button>
-            </div>
-        </form>
-    </section>
+        </div>
+    </form>
+</section>
 
     {{-- button na zobrazení rolí --}}
     <button type="button" class="roles-toggle-btn" id="toggle-roles">

@@ -32,7 +32,7 @@ class RegisterRequest extends FormRequest
             'email.email' => 'Zadejte platný e-mail.',
             'email.unique' => 'Tento e-mail je již zaregistrován.',
             'password.required' => 'Zadejte heslo.',
-            'password.min' => 'Heslo musí mít alespoň 8 znaků.',
+            'password.min' => 'Heslo musí mít alespoň 6 znaků.',
             'password.confirmed' => 'Hesla se neshodují.',
         ];
     }

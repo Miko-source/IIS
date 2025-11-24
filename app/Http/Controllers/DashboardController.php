@@ -79,7 +79,8 @@ class DashboardController extends Controller
             ->where('user_id', $user->id)
             ->where('is_confirmed', true)
             ->where('is_completed', false)
-            ->get();
+            ->paginate(2);
+            
 
         // zjisteni aktivit, kde uzivatel odeslal zpravu (uzavrene aktivity)
         $closedActivityIds = Message::where('user_id', $user->id)
@@ -92,8 +93,9 @@ class DashboardController extends Controller
                 'step.campaign',
                 'messages'
             ])
-            ->whereIn('id', $closedActivityIds)
-            ->get();
+            ->whereIn('id', $closedActivityIds)            
+            ->paginate(2);
+            
 
         return view('workspace.index', compact('assigned', 'closedActivities'));
     }
@@ -211,4 +213,6 @@ class DashboardController extends Controller
 
         return back()->with('status', 'Krok byl uspesne odstranen.');
     }
+
+    
 }
