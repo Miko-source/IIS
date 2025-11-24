@@ -25,7 +25,7 @@ class Topic extends Model
     }
 
     /**
-     * Topics visible for a given user based on campaign involvement.
+     * Temata viditelna pro daneho uzivatele
      */
     public function scopeVisibleFor(Builder $query, User $user): Builder
     {
@@ -36,11 +36,11 @@ class Topic extends Model
         return $query->whereHas('campaigns', function (Builder $campaignQuery) use ($user) {
             // campaign manager
             $campaignQuery->where('campaigns.user_id', $user->id)
-                // assigned worker
+                // prirazeny pracovnik kampane
                 ->orWhereHas('users', function (Builder $userQuery) use ($user) {
                     $userQuery->where('campaign_user.user_id', $user->id);
                 })
-                // coordinator of any step
+                // koordinator kroku
                 ->orWhereHas('steps', function (Builder $stepQuery) use ($user) {
                     $stepQuery->where('user_id', $user->id);
                 });

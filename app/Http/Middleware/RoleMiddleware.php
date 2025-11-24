@@ -9,10 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RoleMiddleware
 {
-    /**
-     * Handle an incoming request.
-     *
-     */
+    // prichazejici request
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
         $user = $request->user();

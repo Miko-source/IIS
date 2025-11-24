@@ -10,7 +10,7 @@ class LoginController extends Controller
 {
     public function show()
     {
-        // if logged, goto dashboard
+        // pokud prihlasen presmeruj na dashboard
         if (auth()->check()) {
             return redirect()->route('dashboard');
         }
@@ -22,7 +22,7 @@ class LoginController extends Controller
     {
         $credentials = $request->validated();
 
-        // fail sign in
+        // fail prihlaseni
         if (!Auth::attempt($credentials)) {
             return back()
                 ->withErrors(['login' => 'Neplatné přihlašovací údaje.'])

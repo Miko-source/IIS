@@ -132,32 +132,54 @@
                         <tr>
                             <th>Jméno</th>
                             <th>Email</th>
-                            <th>Role</th>
+                            <th>Role v kampani</th>
                             <th width="110">Akce</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($assignedUsers as $u)
-                            <tr>
-                                <td>{{ $u->name }} {{ $u->surname }}</td>
-                                <td>{{ $u->email }}</td>
-                                <td>{{ $u->role }}</td>
+                    @foreach($assignedUsers as $u)
+                        <tr>
+                            <td>{{ $u->name }} {{ $u->surname }}</td>
+                            <td>{{ $u->email }}</td>
 
-                                <td>
-                                    <form action="{{ route('campaigns.workers.remove', [$campaign->id, $u->id]) }}"
-                                          method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn btn-danger btn-sm w-100"
-                                                onclick="return confirm('Odebrat pracovníka?')">
-                                            Odebrat
-                                        </button>
-                                    </form>
-                                </td>
+                            <td>
+                                @switch($u->campaign_position)
+                                    @case('manager')
+                                        Campaign_manager
+                                        @break
 
-                            </tr>
-                        @endforeach
+                                    @case('coordinator')
+                                        Coordinator
+                                        @break
+
+                                    @case('worker')
+                                        Pracovnik kampane
+                                        @break
+
+                                    @case('activity_worker')
+                                        Realizator 
+                                        @break
+
+                                    @default
+                                        —
+                                @endswitch
+                            </td>
+
+                            <td>
+                                <form action="{{ route('campaigns.workers.remove', [$campaign->id, $u->id]) }}"
+                                    method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-danger btn-sm w-100"
+                                            onclick="return confirm('Odebrat pracovníka?')">
+                                        Odebrat
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
                     </tbody>
+
                 </table>
             @endif
 

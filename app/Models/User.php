@@ -43,7 +43,7 @@ class User extends Authenticatable
 
         return $this->role?->value === $role;
     }
-// kontrola zda je aktuální role vyšší než požadovaná (vstupní), dědičná funkce
+// kontrola zda je aktualni role vyssi nebo rovna nez pozadovana
     public function hasRoleOrHigher(UserRole|string $role): bool
     {
         $roleHierarchy = [
@@ -90,7 +90,7 @@ public function promoteToCampaignManager()
 }
 public function refreshRole()
 {
-    // Pokud je uživatel deaktivovaný → vždy zůstává deaktivovaný
+    // Pokud deaktivovany, zustava deaktivovany
     if ($this->role === UserRole::DEACTIVATED) {
         return;
     }
@@ -99,7 +99,7 @@ public function refreshRole()
         return;
     }
 
-    // správce kampaně
+    // spravce kampaně
     $isManager = \App\Models\Campaign::where('user_id', $this->id)->exists();
     if ($isManager) {
         $this->role = UserRole::CAMPAIGN_MANAGER;
@@ -107,7 +107,7 @@ public function refreshRole()
         return;
     }
 
-    // koordinátor kroku
+    // koordinator kroku
     $isCoordinator = \App\Models\CampaignStep::where('user_id', $this->id)->exists();
     if ($isCoordinator) {
         $this->role = UserRole::COORDINATOR;
@@ -132,7 +132,7 @@ public function getStrongestRole(): string
         return UserRole::COORDINATOR->value;
     }
 
-    // 3) campaign worker
+    // campaign worker
     $isCampaignWorker = \App\Models\Campaign::whereHas('workers', function ($q) {
         $q->where('users.id', $this->id);
     })->exists();

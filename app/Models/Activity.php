@@ -120,12 +120,8 @@ public function isCompleted(): bool
 
 public function allWorkersCompleted(): bool
 {
-    // // Pokud existuje pending uživatel → aktivita nemůže být dokončena
-    // if ($this->users()->wherePivot('is_confirmed', 0)->exists()) {
-    //     return false;
-    // }
 
-    // Pokud existuje potvrzený uživatel bez dokončení → aktivita nemůže být dokončena
+    // pokud je nejaky potvrzeny, ktery neni dokoncen, vraci false
     if ($this->users()
         ->wherePivot('is_confirmed', 1)
         ->wherePivot('is_completed', 0)
@@ -134,7 +130,7 @@ public function allWorkersCompleted(): bool
         return false;
     }
 
-    // Pokud nemáme žádné potvrzené → aktivita nemůže být dokončena
+    // pokud zadne potvrzene realizatory vraci false
     if (!$this->users()->wherePivot('is_confirmed', 1)->exists()) {
         return false;
     }
@@ -151,7 +147,6 @@ public function allWorkersCompleted(): bool
 
     $this->save();
 }
-
 
 
 }

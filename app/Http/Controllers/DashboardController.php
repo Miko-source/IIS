@@ -11,20 +11,18 @@ use Illuminate\Http\Request;
 use App\Models\Message;
 use App\Models\Activity;
 
-
-
 class DashboardController extends Controller
 {
     public function index()
     {
         $user = Auth::user();
 
-        // role 
+        // ziskani role prihlaseneho uzivatele
         $role = $user->role instanceof UserRole
             ? $user->role->value
             : $user->role;
 
-        // nepotvrzene zadosti
+        // zakladni dotaz na vsechny nepotvrzene zadosti
         $query = ActivityUser::with([
                 'user',
                 'activity',
@@ -33,9 +31,8 @@ class DashboardController extends Controller
             ])
             ->where('is_confirmed', false);
 
-        // ADMIN vidi vse
+        // pokud je campaign_manager, uvidi jen zadosti v kampanich ktere spravuje
         if ($role === 'campaign_manager') {
-            // spravce kampane jen kampane ktere spravuju
             $campaignIds = Campaign::where('user_id', $user->id)->pluck('id');
 
             $query->whereHas('activity.step.campaign', function ($q) use ($campaignIds) {
@@ -43,7 +40,7 @@ class DashboardController extends Controller
             });
 
         } elseif ($role === 'coordinator') {
-            // koordinator pouze pridelene kroky
+            // koordinator vidi zadosti jen u kroku, ktere ma prirazene
             $stepIds = CampaignStep::where('user_id', $user->id)->pluck('id');
 
             $query->whereHas('activity.step', function ($q) use ($stepIds) {
@@ -51,7 +48,7 @@ class DashboardController extends Controller
             });
         }
 
-        
+        // nacteni vysledku s paginaci
         $requests = $query->paginate(10);
 
         return view('dashboard', compact('requests'));
@@ -61,7 +58,7 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
 
-        // všechny aktivity na ktere je prihlasen
+        // vsechny aktivity na ktere je uzivatel prihlasen
         $activities = $user->activities()
             ->with(['step.campaign'])
             ->get();
@@ -73,7 +70,7 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        // Aktivní
+        // aktivni aktivity uzivatele (prihlasen + potvrzen + nedokonceno)
         $assigned = ActivityUser::with([
                 'activity',
                 'activity.step',
@@ -84,15 +81,16 @@ class DashboardController extends Controller
             ->where('is_completed', false)
             ->get();
 
-        // Uzavřené aktivity
+        // zjisteni aktivit, kde uzivatel odeslal zpravu (uzavrene aktivity)
         $closedActivityIds = Message::where('user_id', $user->id)
             ->pluck('activity_id')
             ->unique();
 
-        $closedActivities = \App\Models\Activity::with([
+        // nacteni uzavrenych aktivit i s hlaskami
+        $closedActivities = Activity::with([
                 'step',
                 'step.campaign',
-                'messages'  
+                'messages'
             ])
             ->whereIn('id', $closedActivityIds)
             ->get();
@@ -100,20 +98,20 @@ class DashboardController extends Controller
         return view('workspace.index', compact('assigned', 'closedActivities'));
     }
 
-
     public function submitReport(Request $request, ActivityUser $activityUser)
     {
+        // validace vstupu zpravy
         $request->validate([
             'content' => 'required|string|min:5|max:5000',
             'success' => 'required|boolean',
         ]);
 
-        // jen uzivatel, ktery je prihlasen
+        // kontrola, ze report odesila worker prirazeny k aktivite
         if ($activityUser->user_id !== Auth::id()) {
             abort(403);
         }
 
-        // ulozit zpravu
+        // vytvoreni zpravy o splneni nesplneni
         Message::create([
             'activity_id' => $activityUser->activity_id,
             'user_id'     => Auth::id(),
@@ -121,57 +119,55 @@ class DashboardController extends Controller
             'success'     => $request->success,
         ]);
 
-        // oznacit tohoto workera jako dokončeného
+        // oznaceni uzivatele jako dokonceneho
         $activityUser->update([
             'is_completed' => true,
         ]);
 
-        // získat aktivitu
+        // prepocteni stavu cele aktivity
         $activity = $activityUser->activity;
-
-        // přepočítat stav aktivity úplně stejně jako confirm_activity
         $activity->recalculateCompletion();
 
-
-
-        return back()->with('status', 'Zpráva byla odeslána a aktivita byla uzavřena.');
+        return back()->with('status', 'Zprava byla odeslana a aktivita byla uzavrena.');
     }
 
     public function campaigns()
     {
         $user = Auth::user();
 
-        
+        // zakladni dotaz vcetne vazeb
         $query = Campaign::with([
             'topic',
             'steps.activities.users',
         ]);
 
-        // ADMIN 
+        // omezeni pro ne-adminy – vidi jen kampane, kde maji roli
         if (!$user->hasRoleOrHigher(UserRole::ADMIN)) {
-            // ostatní vidí kampaně, ke kterým mají právo
+
             $query->where(function ($q) use ($user) {
 
-                // správce kampaně 
+                // kampane kde je spravce
                 $q->where('user_id', $user->id)
 
-                // campaign_user
+                // kampane kde je uzivatel pridany jako member
                 ->orWhereHas('users', function ($q) use ($user) {
                     $q->where('campaign_user.user_id', $user->id);
                 })
 
-                // koordinator
+                // kampane u kroku ktere koordinuje
                 ->orWhereHas('steps', function ($q) use ($user) {
                     $q->where('user_id', $user->id);
                 });
             });
         }
 
+        // trideni a nacteni
         $campaigns = $query
             ->orderBy('topic_id')
             ->orderBy('name')
             ->get();
 
+        // seskupeni podle tematu
         $campaignsByTopic = $campaigns->groupBy('topic_id');
 
         return view('dashboard.campaigns.index', compact('campaignsByTopic'));
@@ -181,11 +177,12 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        // admin nebo správce kampaně
+        // pristup jen pro admina nebo spravce dane kampane
         if (!($user->hasRoleOrHigher(UserRole::ADMIN) || $campaign->user_id === $user->id)) {
             abort(403);
         }
 
+        // nacteni podrobnych vazeb kampane
         $campaign->load([
             'topic',
             'steps.activities.messages.user',
@@ -199,25 +196,19 @@ class DashboardController extends Controller
         $user = Auth::user();
         $campaign = $step->campaign;
 
-        // správce kampaně nebo admin
+        // kontrola opravneni na mazani kroku
         if (!($user->hasRoleOrHigher(UserRole::ADMIN) || $campaign->user_id === $user->id)) {
             abort(403);
         }
 
-        // krok lze smazat jen pokud je splněn
+        // krok lze smazat jen pokud je splnen
         if (!$step->isCompletedSuccessfully()) {
-            return back()->with('error', 'Krok nemůže být odstraněn, protože není kompletně splněný.');
+            return back()->with('error', 'Krok nemuze byt odstranen, protoze neni kompletne splnen.');
         }
 
-        // smazat krok
+        // smazani kroku
         $step->delete();
 
-        return back()->with('status', 'Krok byl úspěšně odstraněn.');
+        return back()->with('status', 'Krok byl uspesne odstranen.');
     }
-
-
-
-
-
-
 }

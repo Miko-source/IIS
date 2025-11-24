@@ -12,7 +12,7 @@ class UserController extends Controller
 
     public function create()
     {
-        // povolíme pouze dvě role pro vytvoření účtu
+        // pouze role pracovníků
         $roles = [
             UserRole::WORKER,
         ];
@@ -29,8 +29,8 @@ class UserController extends Controller
         'role'    => ['required', 'in:worker'],
     ]);
 
-    // Vytvoření uživatele
-    // Laravel sám zahashuje heslo díky castu "password"
+    // vytvoreni automaticky
+    //  hash pomoci laravel automaticky
     $user = User::create([
         'name'     => $validated['name'],
         'surname'  => $validated['surname'],

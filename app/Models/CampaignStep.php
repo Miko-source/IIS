@@ -40,7 +40,7 @@ class CampaignStep extends Model
     }
 
     /**
-     * this steps activities were all finished successfully
+     * pro uspesne dokonceni kroku je potreba, aby kazda aktivita mela nejmene jednu zpravu s uspechem = true
      */
     public function isCompletedSuccessfully(): bool
     {

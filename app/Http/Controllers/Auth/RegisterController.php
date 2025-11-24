@@ -19,13 +19,13 @@ class RegisterController extends Controller
     {
         $data = $request->validated();
 
-        // Create User
+        // vtvoreni uzivatele
         $user = User::create([
             'name'     => $data['name'],
             'surname'  => $data['surname'], 
             'email'    => $data['email'],
             'password' => Hash::make($data['password']),
-            'role'     => 'deactivated', // výchozí role při registraci
+            'role'     => 'deactivated', //vychozi role je deactivate admin je musi aktivovat
         ]);
 
         // Automat sign in
