@@ -1,10 +1,4 @@
 <?php
-/**
- * ---------------------------------------------------------
- * Autor:  Martin Bureš
- * Login:  xbures38
- * ---------------------------------------------------------
- */
 
 use App\Http\Controllers\Campaign\CampaignController;
 use App\Http\Controllers\Campaign\CampaignManagerController;
@@ -27,6 +21,9 @@ Route::prefix('topics/{topic}')->group(function () {
         ->prefix('campaigns')
         ->name('topics.campaigns.')
         ->group(function () {
+            Route::get('/{campaign}/edit', [CampaignController::class, 'edit'])
+                ->whereNumber('campaign')
+                ->name('edit');
             Route::put('/{campaign}', [CampaignController::class, 'update'])
                 ->whereNumber('campaign')
                 ->name('update');
@@ -42,10 +39,6 @@ Route::prefix('topics/{topic}')->group(function () {
             Route::delete('/{campaign}', [CampaignController::class, 'destroy'])
                 ->whereNumber('campaign')
                 ->name('destroy');
-
-            Route::get('/{campaign}/edit', [CampaignController::class, 'edit'])->name('edit');
-            Route::put('/{campaign}', [CampaignController::class, 'update'])->name('update');
-            Route::delete('/{campaign}', [CampaignController::class, 'destroy'])->name('destroy');
         });
 
     // Sprava spravcu kampani
