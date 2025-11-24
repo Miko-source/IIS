@@ -9,7 +9,7 @@ use App\Enums\UserRole;
 class ActivityUserPolicy
 {
     /**
-     * může potvrdit/odmítnout aktivitu?
+     * může potvrdit/odmítnout aktivitu
      */
     public function manage(User $user, ActivityUser $activityUser): bool
     {
