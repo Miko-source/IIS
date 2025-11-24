@@ -11,14 +11,13 @@ Route::fallback(function () {
             ->with('error', 'Požadovaná stránka neexistuje.');
     }
     
-    // logged in user
+    // prihlaseny uzivatel
     if (request()->headers->has('referer') && 
         str_starts_with(request()->header('referer'), request()->root())) {
         
         return back()->with('error', 'Stránka nebyla nalezena.');
     }
-    
-    // logged in user URL
+    // prihlaseni uzivatel URL
     return redirect()
         ->route('dashboard')
         ->with('error', 'Požadovaná stránka neexistuje.');

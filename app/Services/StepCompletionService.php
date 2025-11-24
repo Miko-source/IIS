@@ -36,7 +36,6 @@ class StepCompletionService
                 continue;
             }
 
-            // no confirmed worker
             if (! $activity->hasConfirmedWorkers()) {
                 return "Aktivita '{$activity->name}' nemá žádné potvrzené pracovníky. Musí být přiřazen alespoň jeden pracovník.";
             }

@@ -3,12 +3,12 @@
     @foreach ($campaign->steps as $step)
         <div class="card mb-3">
 
-            {{-- header --}}
+            {{-- hlavička --}}
             <div class="card-header d-flex justify-content-between align-items-center">
                 <div>
                     <strong>Krok {{ $step->order }}:</strong> {{ $step->name }}
 
-                    {{-- coordinator --}}
+                    {{-- koordinátor --}}
                     @if($step->user)
                         <span class="text-muted ms-2">
                             (Koordinátor: {{ $step->user->name }} {{ $step->user->surname }})
@@ -17,12 +17,12 @@
                         <span class="text-muted ms-2 fst-italic">(bez koordinátora)</span>
                     @endif
 
-                    {{-- step status --}}
+                    {{-- stav kroku --}}
                     @if($step->is_completed)
                         <span class="text-success fw-bold ms-3">✓ Krok splněn</span>
                     @endif
                 </div>
-                    {{-- edit buttons --}}
+                    {{-- tlačítka úprav --}}
                     
                     
                 <div class="d-flex gap-2">

@@ -32,7 +32,7 @@
                             <th>Jméno</th>
                             <th>E-mail</th>
                             <th>Stav</th>
-                            <th>Má zprávu?</th>  {{-- ➕ nový sloupec --}}
+                            <th>Má zprávu?</th>
                             <th>Akce</th>
                         </tr>
                     </thead>
@@ -60,7 +60,7 @@
                                     @endif
                                 </td>
 
-                                {{-- 🔥 NOVÝ SLOUPEC --}}
+                                {{-- NOVÝ SLOUPEC --}}
                                 <td>
                                     @if($hasMessage)
                                         <span class="badge bg-success">Ano</span>

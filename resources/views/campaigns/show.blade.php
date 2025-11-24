@@ -8,18 +8,18 @@
         </a>
     </div>
 
-    {{-- header --}}
+    {{-- hlavička --}}
     @include('campaigns.header', ['campaign' => $campaign, 'topic' => $topic])
 
     @can('manageManager', App\Models\Campaign::class)
-        {{--admin view --}}
+        {{-- pohled pro admina --}}
         @include('campaigns.managers.section', [
             'campaign' => $campaign, 
             'topic' => $topic,
             'users' => $users
         ])
     @else
-        {{--rest of the roles view --}}
+        {{-- ostatní role --}}
         <p class="mb-3">
             <strong>Správce kampaně:</strong>
             @if($campaign->manager)
@@ -30,10 +30,10 @@
         </p>
     @endcan
 
-    {{-- inline edit --}}
+    {{-- inline úpravy --}}
     @include('campaigns.crud.section', ['campaign' => $campaign, 'topic' => $topic])
     
-    {{-- steps  --}}
+    {{-- kroky  --}}
     @can('update', $campaign)
         <div class="d-flex flex-wrap gap-2 my-3">
             <a href="{{ route('campaign.steps.index', $campaign->id) }}" class="btn-app btn-app-primary">

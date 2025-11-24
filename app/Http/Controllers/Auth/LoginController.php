@@ -26,11 +26,9 @@ class LoginController extends Controller
         if (!Auth::attempt($credentials)) {
             return back()
                 ->withErrors(['login' => 'Neplatné přihlašovací údaje.'])
-                ->with('openLoginModal', true)
                 ->withInput();
         }
 
-        
         $request->session()->regenerate();
 
         // dashboard

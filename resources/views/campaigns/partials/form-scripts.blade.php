@@ -173,7 +173,7 @@
                 });
             });
 
-            // Initialize Flatpickr
+            // Inicializace Flatpickr
             if (typeof flatpickr !== 'undefined') {
                 const baseOptions = {
                     dateFormat: 'd/m/Y',
@@ -190,10 +190,10 @@
                 const startDateISO = startHidden.value;
                 const endDateISO = endHidden.value;
 
-                // 1. Inicializace START DATE
+                // 1. Inicializace datum OD
                 const fpStart = flatpickr(startDisplay, {
                     ...baseOptions,
-                    // Default date zkusíme, ale níže ho vynutíme
+                    // Pokus o default date, níže ještě vynutíme
                     defaultDate: startDateISO || null,
                     onChange: function(selectedDates, dateStr) {
                         syncStartDate();
@@ -209,7 +209,7 @@
                 // -------------------------------------
 
 
-                // 2. Inicializace END DATE
+                // 2. Inicializace datum DO
                 const fpEnd = flatpickr(endDisplay, {
                     ...baseOptions,
                     defaultDate: endDateISO || null,
@@ -223,11 +223,9 @@
                     }
                 });
 
-                 // --- KLÍČOVÁ OPRAVA (FORCE UPDATE) ---
                 if (endDateISO) {
                     fpEnd.setDate(endDateISO, true);
                 }
-                // -------------------------------------
             }
         };
     })();

@@ -59,9 +59,7 @@ class ActivityWorkerController extends Controller
         $userId = $data['user_id'];
         $campaign = $activity->step->campaign;
 
-        //
-        // Pokud není v kampani → automaticky přidat
-        //
+        // Pokud není v kampani, automaticky přidat
         $isInCampaign = $campaign->workers()
             ->where('users.id', $userId)
             ->exists();
@@ -70,9 +68,7 @@ class ActivityWorkerController extends Controller
             $campaign->workers()->attach($userId);
         }
 
-        //
-        // Pokud už je přiřazen → nelze znovu
-        //
+        // Pokud už je přiřazen, nelze znovu
         $alreadyAssigned = $activity->users()
             ->where('users.id', $userId)
             ->exists();
@@ -81,9 +77,7 @@ class ActivityWorkerController extends Controller
             return back()->with('error', 'Uživatel je již k aktivitě přiřazen.');
         }
 
-        //
         //  Přidat k aktivitě jako potvrzeného realizátora
-        //
         $activity->users()->attach($userId, [
             'is_confirmed' => 1,
             'is_completed' => 0,
@@ -96,35 +90,24 @@ public function destroy(Activity $activity, User $user)
 {
     $this->authorize('manageWorkers', $activity);
 
-    //
     // SMAZAT zprávy odebraného uživatele
-    //
     $activity->messages()
         ->where('user_id', $user->id)
         ->delete();
 
-    //
     //  Odebrat vztah z activity_user
-    //
     $activity->users()->detach($user->id);
 
-    //
     //  Znovu načíst zbývající uživatele
-    //
     $remainingUsers = $activity->users()->get();
 
-    //
     //  Zjistit, zda KAŽDÝ zbývající uživatel má alespoň jednu zprávu
-    //
     $allHaveMessages = $remainingUsers->every(function ($u) use ($activity) {
         return $activity->messages()
             ->where('user_id', $u->id)
             ->exists();
     });
 
-    //
-
-    //
     if ($allHaveMessages && $remainingUsers->count() > 0) {
         $activity->completed = true;
     } else {

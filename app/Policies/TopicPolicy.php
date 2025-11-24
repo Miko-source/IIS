@@ -8,9 +8,6 @@ use App\Models\User;
 
 class TopicPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
     public function viewAny(User $user): bool
     {
         return $user->hasRoleOrHigher(UserRole::WORKER);
@@ -25,18 +22,15 @@ class TopicPolicy
         if ($user->hasRoleOrHigher(UserRole::ADMIN)) {
             return true;
         }
-        //1. campaign manager of any campaign of the topic
-        //2. worker of any campaign of the topic
-        //3. step coordinator of any campaign of the topic
+        //1. správce kampaně jaekékoliv kampaně tématu
+        //2. pracovník jakékoliv kampaně tématu
+        //3. koordinátor kroku jakékoliv kampaně tématu
         return $topic->campaigns()
             ->where(function ($campaignQuery) use ($user) {
-                // campaign manager of campaign the topic
                 $campaignQuery->where('campaigns.user_id', $user->id)
-                    // worker of any campaign of the topic
                     ->orWhereHas('users', function ($userQuery) use ($user) {
                         $userQuery->where('campaign_user.user_id', $user->id);
                     })
-                    // step coordinator of any campaign of the topic
                     ->orWhereHas('steps', function ($stepQuery) use ($user) {
                         $stepQuery->where('user_id', $user->id);
                     });
@@ -44,7 +38,7 @@ class TopicPolicy
             ->exists();
     }
 
-        // crud methods are limited by Middleware, but to be sure
+        // crud metody
 
         public function create(User $user): bool
             {

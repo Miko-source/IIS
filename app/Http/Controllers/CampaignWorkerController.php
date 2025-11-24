@@ -18,12 +18,12 @@ class CampaignWorkerController extends Controller
     {
         $user = auth()->user();
 
-        // Pokud je uzivatel admin -> muze spravovat vse
+        // Pokud je uzivatel admin -muze spravovat vse
         if ($user->hasRoleOrHigher(UserRole::ADMIN)) {
             $topics = Topic::with('campaigns')->get();
         }
 
-        // Pro nespravce -> videt jen kampane, ktere muze spravovat
+        // Pro nespravce - vidi jen kampane, ktere muze spravovat
         else {
             $topics = Topic::with(['campaigns' => function ($q) use ($user) {
                     // nacte jen kampane, ktere patri aktualnimu uzivateli
@@ -184,7 +184,7 @@ class CampaignWorkerController extends Controller
         return back()->with('error', 'Uzivatele nelze odebrat – ma podanou zpravu.');
     }
 
-    // Dale standardni odebrani…
+    // odebrani
     if ($campaign->user_id === $user->id) {
         $campaign->update(['user_id' => null]);
     }
@@ -225,7 +225,6 @@ class CampaignWorkerController extends Controller
                 ->where('user_id', $old)
                 ->exists();
 
-            // Pokud ne -> odebrat z pracovniku kampane
             if (!$stillCoordinator) {
                 $campaign->workers()->detach($old);
             }
@@ -233,7 +232,7 @@ class CampaignWorkerController extends Controller
             $oldUser->refreshRole();
         }
 
-        // Novy koordinator musi byt pracovnik kampane
+        // Novy koordinator se zaroven pridava mezi pracovniky
         if ($new) {
             $campaign->workers()->syncWithoutDetaching([$new]);
 

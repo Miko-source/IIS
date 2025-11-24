@@ -22,7 +22,7 @@ class DashboardController extends Controller
             ? $user->role->value
             : $user->role;
 
-        // zakladni dotaz na vsechny nepotvrzene zadosti
+        // dotaz na vsechny nepotvrzene zadosti
         $query = ActivityUser::with([
                 'user',
                 'activity',
@@ -31,7 +31,7 @@ class DashboardController extends Controller
             ])
             ->where('is_confirmed', false);
 
-        // pokud je campaign_manager, uvidi jen zadosti v kampanich ktere spravuje
+        // campaign_manager, vidi jen zadosti v kampanich ktere spravuje
         if ($role === 'campaign_manager') {
             $campaignIds = Campaign::where('user_id', $user->id)->pluck('id');
 
@@ -111,7 +111,7 @@ class DashboardController extends Controller
             abort(403);
         }
 
-        // vytvoreni zpravy o splneni nesplneni
+        // vytvoreni zpravy o uspechu/neuspechu
         Message::create([
             'activity_id' => $activityUser->activity_id,
             'user_id'     => Auth::id(),

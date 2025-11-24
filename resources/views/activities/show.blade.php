@@ -62,7 +62,6 @@
         </div>
     </div>
 
-    {{-- Tlačítka dole --}}
     <div class="mt-4 d-flex gap-2">
 
         {{-- Upravit aktivitu --}}
@@ -71,7 +70,7 @@
             Upravit aktivitu
         </a>
 
-        {{-- Přihlásit se / Odhlásit se jako pracovník – jen pokud existuje logika --}}
+        {{-- Přihlásit se / Odhlásit se jako pracovník --}}
         @if(auth()->user()->can('registerOnActivity', $activity))
             <a href="{{ route('activities.register', [$campaign->id, $step->id, $activity->id]) }}"
                class="btn btn-primary">

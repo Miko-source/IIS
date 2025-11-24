@@ -14,9 +14,7 @@
             — žádný —
         @endif
     </p>
-       {{-- ===========================
-         Přidání pracovníka – MIMO roletu
-       =========================== --}}
+       {{--Přidání pracovníka --}}
     <div class="card mb-3">
         <div class="card-header py-2">
             Přidat pracovníka
@@ -46,9 +44,7 @@
         </div>
     </div>
 
-    {{-- =============================
-          Koordinátoři kroků v accordionu
-       ============================= --}}
+    {{--Koordinátoři kroků --}}
     <div class="accordion mb-4" id="campaignManagement">
 
         <div class="accordion-item">
@@ -111,13 +107,12 @@
             </div>
         </div>
 
-    </div>{{-- /accordion --}}
+    </div>
 
  
 
-    {{-- ===========================
-         Seznam pracovníků – MIMO roletu
-       =========================== --}}
+    {{--
+         Seznam pracovníků--}}
     <div class="card mb-4">
         <div class="card-header py-2">
             Pracovníci v kampani

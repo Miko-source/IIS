@@ -1,4 +1,4 @@
-{{-- Formulář pro změnu nebo přiřazení správce --}}
+{{-- Formular pro zmenu spravce --}}
 <div class="border-top pt-3 mt-3">
     @if(!$campaign->user_id)
         <h6 class="mb-3">Přiřadit správce</h6>

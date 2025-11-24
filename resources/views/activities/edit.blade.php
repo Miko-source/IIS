@@ -138,13 +138,11 @@
         }
 
         function syncEndDate() {
-            // pokud neni zadany zacatek, jen zrusime omezeni minima
             if (!startInput.value) {
                 endInput.min = '';
                 return;
             }
 
-            // nastavime minimalni povolene datum konce
             endInput.min = startInput.value;
 
             if (endInput.value && endInput.value < startInput.value) {
@@ -152,16 +150,13 @@
             }
         }
 
-        // kdyz se meni zacatek (klik/vyber/psani)
         startInput.addEventListener('input', syncEndDate);
         startInput.addEventListener('change', syncEndDate);
 
-        // kdyz uzivatel meni konec (psani/klik)
         endInput.addEventListener('input', syncEndDate);
         endInput.addEventListener('change', syncEndDate);
         endInput.addEventListener('blur', syncEndDate);
 
-        // inicializace po nacteni
         syncEndDate();
     });
 </script>

@@ -130,7 +130,7 @@
             color: #ffffff;
         }
 
-        /* Flatpickr - lepší zobrazení */
+        /* Flatpickr */
         .flatpickr-months .flatpickr-month {
             height: 40px;
         }

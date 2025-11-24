@@ -90,7 +90,7 @@ public function promoteToCampaignManager()
 }
 public function refreshRole()
 {
-    // Pokud deaktivovany, zustava deaktivovany
+    // Pokud deaktivovany, zustava 
     if ($this->role === UserRole::DEACTIVATED) {
         return;
     }

@@ -45,9 +45,6 @@ class Activity extends Model
                 ->withTimestamps();
         }
 
-        
-
-
     public function workers(): BelongsToMany
     {
         return $this->users();
@@ -121,7 +118,7 @@ public function isCompleted(): bool
 public function allWorkersCompleted(): bool
 {
 
-    // pokud je nejaky potvrzeny, ktery neni dokoncen, vraci false
+    // pokud je nejaky potvrzeny a jeste neni dokoncen, vraci false
     if ($this->users()
         ->wherePivot('is_confirmed', 1)
         ->wherePivot('is_completed', 0)

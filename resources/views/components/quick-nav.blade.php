@@ -9,7 +9,7 @@
         } else {
             $q->whereHas('campaigns.users', fn($c) => $c->where('campaign_user.user_id', $user->id));
         }
-    })->paginate(5);   // 🔥 stránkování témat (5 položek na stránku)
+    })->paginate(5);
 @endphp
 
 <div class="bg-light border-end" style="width: 260px; min-height: 100vh;">
@@ -26,7 +26,7 @@
             <div class="mb-2">
                 <strong>{{ $topic->name }}</strong>
 
-                {{-- KAMPAŇE — limit na 5 --}}
+                {{-- KAMPAŇE limit 5 --}}
                 @foreach($topic->campaigns->take(5) as $campaign)
                     @if($user->can('view', $campaign))
                         
@@ -34,7 +34,7 @@
                             📣 {{ $campaign->name }}
                         </a>
 
-                        {{-- KROKY — limit na 5 --}}
+                        {{-- KROKY limit 5 --}}
                         @foreach($campaign->steps->take(5) as $step)
                             @if($user->can('view', $step))
                                 <div class="ms-3">
@@ -43,7 +43,7 @@
                                         🧩 {{ $step->name }}
                                     </a>
 
-                                    {{-- AKTIVITY — limit na 5 --}}
+                                    {{-- AKTIVITYlimit  5 --}}
                                     @foreach($step->activities->take(5) as $activity)
                                         @if($user->can('view', $activity))
                                             <a href="{{ route('activities.show', [
@@ -67,7 +67,7 @@
             </div>
         @endforeach
 
-        {{-- stránkovací navigace pro témata --}}
+        {{-- stránkovací navigace--}}
         <div class="mt-3 small">
             {{ $topics->links() }}
         </div>

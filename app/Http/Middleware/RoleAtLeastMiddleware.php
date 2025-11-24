@@ -1,16 +1,9 @@
 <?php
-/**
- * ---------------------------------------------------------
- * Autor:  Martin Bureš
- * Login:  xbures38
- * ---------------------------------------------------------
- */
-
 namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-
+//pomocna trida pro overeni role
 class RoleAtLeastMiddleware
 {
     public function handle(Request $request, Closure $next, string $role)

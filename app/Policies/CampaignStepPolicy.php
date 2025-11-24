@@ -10,12 +10,12 @@ use App\Models\User;
 class CampaignStepPolicy
 {
     /**
-     * view list of steps
-     * (concrete steps are filtered by scope)
+     * Zobrazení seznamu kroků
+     * (konkrétní kroky se filtrují přes scope)
      */
     public function viewAny(User $user, Campaign $campaign): bool
     {
-        // must be allowed to view the campaign first
+        // nejdřív musí mít právo zobrazit kampaň
         if (! $user->can('view', $campaign)) {
             return false;
         }
@@ -25,32 +25,32 @@ class CampaignStepPolicy
             return true;
         }
 
-        // campaign manager of this campaign (role campaign_manager or higher)
+        // správce této kampaně (role campaign_manager nebo vyšší)
         if ($user->hasRoleOrHigher(UserRole::CAMPAIGN_MANAGER)
             && $campaign->user_id === $user->id) {
             return true;
         }
 
-        // coordinator of any step in this campaign
+        // koordinátor libovolného kroku v kampani
         if ($campaign->steps()->where('user_id', $user->id)->exists()) {
             return true;
         }
 
-        // worker assigned to this campaign
+        // pracovník přiřazený ke kampani
         if ($campaign->users()->where('campaign_user.user_id', $user->id)->exists()) {
             return true;
         }
 
-        // fallback (no access to manage/list steps)
+        // fallback (žádný přístup ke správě/výpisu kroků)
         return false;
     }
 
     /**
-     * view concrete step, if we want to change the viewing logic
+     * Zobrazení konkrétního kroku, pokud chceme odlišnou logiku zobrazení
      */
     public function view(User $user, CampaignStep $step): bool
     {
-        // must be allowed to view the campaign first
+        // nejdřív musí mít právo zobrazit kampaň
         if (! $step->campaign || ! $user->can('view', $step->campaign)) {
             return false;
         }
@@ -65,13 +65,13 @@ class CampaignStepPolicy
             return true;
         }
 
-        // coordinator of any step in this campaign (read-only access)
+        // koordinátor libovolného kroku v kampani (pouze čtení)
         if ($step->campaign
             && $step->campaign->steps()->where('user_id', $user->id)->exists()) {
             return true;
         }
 
-        // worker assigned to this campaign (read-only access to step detail)
+        // pracovník přiřazený ke kampani (pouze čtení detailu kroku)
         if ($step->campaign
             && $step->campaign->users()->where('campaign_user.user_id', $user->id)->exists()) {
             return true;
@@ -87,7 +87,7 @@ class CampaignStepPolicy
             return true;
         }
 
-        // campaign_manager can create steps
+        // campaign_manager může vytvářet kroky
         return $campaign->user_id === $user->id;
     }
 
@@ -97,7 +97,7 @@ class CampaignStepPolicy
             return true;
         }
 
-        // campaign_manager or coordinator can update steps
+        // campaign_manager nebo koordinátor může upravovat kroky
         return $step->campaign?->user_id === $user->id
             || $step->user_id === $user->id;
     }
@@ -119,7 +119,7 @@ class CampaignStepPolicy
         }
 
 
-        // campaign_manager or coordinator
+        // campaign_manager nebo koordinátor
         return $step->campaign?->user_id === $user->id
             || $step->user_id === $user->id;
     }

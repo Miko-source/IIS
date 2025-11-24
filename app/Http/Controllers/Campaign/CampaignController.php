@@ -1,10 +1,4 @@
 <?php
-/**
- * ---------------------------------------------------------
- * Autor:  Martin Bureš
- * Login:  xbures38
- * ---------------------------------------------------------
- */
 namespace App\Http\Controllers\Campaign;
 
 use App\Http\Controllers\Controller;
@@ -52,7 +46,7 @@ class CampaignController extends Controller
         // vytvoreni nove kampane v ramci tematu
         $campaign = $topic->campaigns()->create([
             ...$validated,
-            'user_id' => $request->user()->id, // autor/spravce kampane
+            'user_id' => $request->user()->id, // zakladatel kampane
         ]);
 
         // presmerovani na detail kampane
@@ -92,7 +86,7 @@ class CampaignController extends Controller
 
     public function edit(Topic $topic, Campaign $campaign)
     {
-        // kontrola opravneni upravovat kampa
+        // kontrola opravneni upravovat kampan
         $this->authorize('update', $campaign);
 
         // editace probiha na show strance, pouze se aktivuje rezim editace

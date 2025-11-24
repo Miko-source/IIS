@@ -9,12 +9,12 @@ class MessagePolicy
 {
     public function view(User $user, Message $message): bool
     {
-        // autor zprávy
+        // autor zpravy
         if ($message->user_id === $user->id) {
             return true;
         }
 
-        //  správce kampaně
+        //  spravce kampaně
         if (
             $message->activity &&
             $message->activity->step &&

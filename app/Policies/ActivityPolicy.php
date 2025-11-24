@@ -12,17 +12,17 @@ class ActivityPolicy
 
 public function view(User $user, Activity $activity)
 {
-    // admin 
+    // administrátor
     if ($user->hasRoleOrHigher(UserRole::ADMIN)) {
         return true;
     }
 
-    // user must be allowed to view the parent campaign
+    // uzivatel ma pravo zobrazit kampan
     if ($activity->step && $activity->step->campaign) {
         if (! $user->can('view', $activity->step->campaign)) {
             return false;
         }
-        // if campaign is viewable, no further checks are needed
+        //  muze zobrazit kampan, neni potreba kontrolovat dal
         if ($user->can('view', $activity->step->campaign)) {
             return true;
         }
@@ -35,7 +35,7 @@ public function view(User $user, Activity $activity)
         return false;
     }
 
-    // campaign manager
+    // správce kampaně
     if ($campaign->user_id === $user->id) {
         return true;
     }
@@ -48,17 +48,17 @@ public function view(User $user, Activity $activity)
         $step = $activity->step;
         $campaign = $step?->campaign;
 
-        // ADMIN → always allowed
+        // ADMIN
         if ($user->hasRoleOrHigher(UserRole::ADMIN)) {
             return true;
         }
 
-        // Campaign manager (campaign owner)
+        // Spravce kampane (vlastnik kampane)
         if ($campaign && $campaign->user_id === $user->id) {
             return true;
         }
 
-        // Step coordinator (step owner)
+        // Koordinator kroku (vlastnik kroku)
         if ($step && $step->user_id === $user->id) {
             return true;
         }
@@ -76,12 +76,12 @@ public function view(User $user, Activity $activity)
             return true;
         }
 
-        // CAMPAIGN MANAGER
+        // Spravce kampane
         if ($campaign && $campaign->user_id === $user->id) {
             return true;
         }
 
-        // STEP COORDINATOR
+        // Koordinator kroku
         if ($user->hasRole(UserRole::COORDINATOR) && $step && $step->user_id === $user->id) {
             return true;
         }
@@ -99,12 +99,12 @@ public function view(User $user, Activity $activity)
             return true;
         }
 
-        // CAMPAIGN MANAGER
+        // Spravce kampane
         if ($campaign && $campaign->user_id === $user->id) {
             return true;
         }
 
-        // STEP COORDINATOR
+        // Koordinator kroku
         if ($step && $step->user_id === $user->id) {
             return true;
         }

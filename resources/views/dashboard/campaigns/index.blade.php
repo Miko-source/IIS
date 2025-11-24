@@ -5,7 +5,7 @@
 
     <h1 class="mb-4">Přehled kampaní</h1>
 
-    {{-- WRAPPER pro accordion přes témata --}}
+    {{-- WRAPPER --}}
     <div id="topicsAccordion">
         @forelse($campaignsByTopic as $topicId => $campaigns)
 
@@ -28,8 +28,6 @@
                         Detail
                     </a>
                 </div>
-
-                {{-- DŮLEŽITÉ: data-bs-parent zajistí, že se při otevření jiného tématu tohle zavře --}}
                 <div id="{{ $topicCollapseId }}" 
                      class="collapse mt-3"
                      data-bs-parent="#topicsAccordion">
@@ -104,14 +102,6 @@
                                                         <strong>{{ $activity->name }}</strong>
                                                         {{ $icons[$status] }}
                                                     </span>
-
-                                                    {{-- nechávám zakomentováno jak máš --}}
-                                                    <!--
-                                                    <a href="{{ route('activities.show', [$campaign, $step, $activity]) }}"
-                                                       class="btn btn-info btn-sm ms-auto">
-                                                        Detail
-                                                    </a>
-                                                    -->
                                                 </li>
                                             @empty
                                                 <li class="text-muted fst-italic">Žádné aktivity</li>

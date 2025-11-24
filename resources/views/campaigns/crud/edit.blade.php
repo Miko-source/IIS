@@ -1,4 +1,4 @@
-{{-- Formulář pro úpravu kampaně (inline použitelný v show) --}}
+{{-- formular - uprava kampane --}}
 <div class="border rounded p-3">
     <h6 class="mb-3">Upravit kampaň</h6>
 

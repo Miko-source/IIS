@@ -31,23 +31,22 @@ class StepStateService
     }
 
     private function allActivitiesEvaluated(CampaignStep $step): bool
-    {
-        // has atleast 1 activity
+    {   
+        // ma alespon jednu aktivitu
         if ($step->activities->isEmpty()) {
             return false;
         }
 
         return $step->activities->every(fn ($activity) => $activity->isEvaluated());
     }
-
-    // previous steps completed
+    //predchozi kroky dokonceny
     private function allPreviousStepsCompleted(CampaignStep $step, Collection $allSteps): bool
     {
         return $allSteps
             ->where('order', '<', $step->order)
             ->every(fn ($s) => $s->is_completed);
     }
-    // user is logged in 
+    // prihlaseny uzivatel
     private function canMarkComplete(CampaignStep $step): bool
     {
         $user = auth()->user();

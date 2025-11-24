@@ -9,11 +9,6 @@
 @section('content')
     <h1>Vítej v systému, {{ auth()->user()->name }} {{ auth()->user()->surname }}!</h1>
 
-    <!-- <p>Tvá role: 
-        <strong>{{ $role }}</strong>
-    </p> -->
-
-
     {{-- -------------------------
         ODKAZY PODLE ROLE
     -------------------------- --}}
@@ -40,14 +35,6 @@
     <a href="{{ route('workspace') }}" class="btn btn-primary mt-3">
         Vyhodnocení mých aktivit
     </a>
-
-
-    <!-- @if ($role === 'admin')
-        <p><a href="{{ route('admin.users.index') }}">Správa uživatelů</a></p>
-    @endif
-
-    <p><a href="{{ route('topics.index') }}">Zobrazit témata</a></p>
-    <p><a href="{{ route('profile.edit') }}">Můj profil</a></p> -->
 
 
     {{-- -------------------------

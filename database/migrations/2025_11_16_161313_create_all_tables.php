@@ -14,24 +14,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Schema::create('users', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->string('name');
-        //     $table->string('surname');
-        //     $table->string('email')->unique();
-        //     $table->string('password', 255);
-        //     $table->string('contact')->nullable();
-        //     $table->string('address')->nullable();
-        //     $table->enum('role', [
-        //         'admin',
-        //         'campaign_manager',
-        //         'coordinator',
-        //         'worker',
-        //         'guest'
-        //     ])->default('guest');
-        //     $table->timestamps();
-        // });
-
         Schema::create('topics', function (Blueprint $table) {
             $table->id();
             $table->string('name');
@@ -117,7 +99,6 @@ return new class extends Migration
 
         // M:N - Viditelnost kampaní pro uživatele
         // může ji upravovat jen správce kampaně nebo admin
-        // Správce kampaně "přidává uživatele do kampaně"
         Schema::create('campaign_user', function (Blueprint $table) {
             $table->id();
             $table->foreignId('campaign_id')

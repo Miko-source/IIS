@@ -1,11 +1,4 @@
 <?php
-/**
- * ---------------------------------------------------------
- * Author:  Martin Bureš
- * Login:  xbures38
- * ---------------------------------------------------------
- */
-
 namespace App\Policies;
 
 use App\Models\User;
@@ -15,7 +8,7 @@ use App\Models\Campaign;
 class CampaignPolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * Určuje, zda může uživatel zobrazit libovolné záznamy.
      */
     public function viewAny(User $user): bool
     {
@@ -24,32 +17,32 @@ class CampaignPolicy
 
     public function view(User $user, Campaign $campaign): bool
     {
-        // admin
+        // ADMIN
         if ($user->hasRoleOrHigher(UserRole::ADMIN)) {
             return true;
         }
 
-        // campaign manager with role at least campaign_manager
+        // správce kampaně
         if ($user->hasRoleOrHigher(UserRole::CAMPAIGN_MANAGER)
             && $campaign->user_id === $user->id) {
             return true;
         }
 
-        // worker added to this campaign (pivot campaign_user)
+        // pracovník přidaný do kampaně (pivot campaign_user)
         if ($campaign->users()
             ->where('campaign_user.user_id', $user->id)
             ->exists()) {
             return true;
         }
 
-        // coordinator of any step in this campaign
+        // koordinátor libovolného kroku v kampani
         if ($campaign->steps()
             ->where('user_id', $user->id)
             ->exists()) {
             return true;
         }
 
-        // user assigned to any activity in this campaign
+        // uživatel přiřazený k libovolné aktivitě v kampani
         if ($campaign->steps()
             ->whereHas('activities.users', function ($q) use ($user) {
                 $q->where('activity_user.user_id', $user->id);
@@ -66,7 +59,7 @@ class CampaignPolicy
         return $user->hasRoleOrHigher(UserRole::ADMIN);
     }
 
-    // admin or assigned campaign manager
+    // admin nebo přiřazený správce kampaně
     public function update(User $user, Campaign $campaign): bool
     {
         return $user->hasRoleOrHigher(UserRole::ADMIN)
@@ -79,31 +72,25 @@ class CampaignPolicy
         return $user->hasRoleOrHigher(UserRole::ADMIN);
     }
 
- // campaign manager or admin can edit campaign
+ // správce kampaně nebo admin mohou upravovat kampaň
 
     public function manageManager(User $user): bool
     {
         return $user->hasRoleOrHigher(UserRole::ADMIN);
     }
     
-    /**
-     * Determine whether the user can restore the model.
-     */
     public function restore(User $user): bool
     {
         return false;
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
     public function forceDelete(User $user): bool
     {
         return false;
     } 
 
     /**
-     * Determine whether the user can assign a manager to the campaign.
+     * Určuje, zda může uživatel přiřadit správce kampani.
      */
     public function assignManager(User $user, Campaign $campaign): bool
     {
@@ -117,17 +104,15 @@ class CampaignPolicy
     {
         return $user->hasRoleOrHigher(UserRole::ADMIN);
     }
-//////////////////////////////// added ///////////////////////////////////////
-
 
     public function manageWorkers(User $user, Campaign $campaign)
     {
-        // ADMIN role
+        // role ADMIN
         if ($user->role instanceof UserRole && $user->role === UserRole::ADMIN) {
             return true;
         }
 
-        // Campaign manager (campaign owner)
+        // Správce kampaně (vlastník kampaně)
         if ($user->id === $campaign->user_id) {
             return true;
         }

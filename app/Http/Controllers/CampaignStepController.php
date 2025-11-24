@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\UserRole;
 use Illuminate\Http\Request;
 use App\Models\Campaign;    
 use App\Models\CampaignStep;     

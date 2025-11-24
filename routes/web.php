@@ -14,7 +14,6 @@ Route::get('/', function () {
         : view('home');
 })->name('home');
 
-// Include route file
 require __DIR__.'/auth.php';
 require __DIR__.'/admin.php';
 require __DIR__.'/topics.php';

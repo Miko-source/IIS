@@ -15,11 +15,12 @@ class TopicController extends Controller
         return view('admin.topics.index', compact('topics'));
     }
 
+    // ukazat formular
     public function create()
     {
         return view('admin.topics.create');
     }
-
+    // ulozit hodnoty z formulare
     public function store(Request $request)
     {
         $request->validate([
@@ -36,11 +37,12 @@ class TopicController extends Controller
         return redirect()->route('admin.topics.index')->with('success', 'Téma vytvořeno.');
     }
 
+    // ukazat formular
     public function edit(Topic $topic)
     {
         return view('admin.topics.edit', compact('topic'));
     }
-
+    // ulozit hodnoty z formulare
     public function update(Request $request, Topic $topic)
     {
         $request->validate([
@@ -58,4 +60,3 @@ class TopicController extends Controller
         return redirect()->route('admin.topics.index')->with('success', 'Téma smazáno.');
     }
 }
-

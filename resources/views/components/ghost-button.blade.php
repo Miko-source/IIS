@@ -1,5 +1,5 @@
 @php
-    // change campaign manazer/coordinator button
+    // tlačítko pro změnu správce/koordinátora kampaně
     $sizeClass = (!empty($small) && $small) ? 'btn-sm' : '';
     $classes   = trim("btn btn-outline-secondary text-dark {$sizeClass}");
 @endphp

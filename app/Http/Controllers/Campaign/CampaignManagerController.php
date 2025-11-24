@@ -1,10 +1,4 @@
 <?php
-/**
- * ---------------------------------------------------------
- * Autor:  Martin Bureš
- * Login:  xbures38
- * ---------------------------------------------------------
- */
 namespace App\Http\Controllers\Campaign;
 
 use App\Http\Controllers\Controller;
@@ -12,7 +6,6 @@ use App\Models\Campaign;
 use App\Models\Topic;
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Enums\UserRole;
 
 
 class CampaignManagerController extends Controller
@@ -46,7 +39,6 @@ class CampaignManagerController extends Controller
         // aktualizace role noveho spravce
         $newManager->refreshRole();
 
-        // presmerovani zpet na detail kampane
         return redirect()
             ->route('topics.campaigns.show', [$topic, $campaign])
             ->with('success', 'Spravce kampane byl prirazen.');
@@ -58,18 +50,17 @@ class CampaignManagerController extends Controller
         // kontrola opravneni
         $this->authorize('manageManager', Campaign::class);
         
-        // najdi aktualniho spravce kampane
+        // najdi aktualniho spravce
         $oldManager = User::find($campaign->user_id);
         
         // odebrani spravce z kampane
         $campaign->update(['user_id' => null]);
         
-        // aktualizace role stareho spravce (uz nemusim byt spravce)
+        // aktualizace role stareho spravce
         if ($oldManager) {
             $oldManager->refreshRole();
         }
         
-        // presmerovani s hlaskou
         return redirect()
             ->route('topics.campaigns.show', [$topic, $campaign])
             ->with('success', 'Spravce kampane byl odebran.');

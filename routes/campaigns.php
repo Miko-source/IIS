@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 
 // Správa kampaní
 Route::prefix('topics/{topic}')->group(function () {
-    // Detail kampaně – přístupný od role worker
+    // Detail kampane
     Route::middleware(['auth', 'role_at_least:worker'])
         ->prefix('campaigns')
         ->name('topics.campaigns.')
@@ -22,7 +22,7 @@ Route::prefix('topics/{topic}')->group(function () {
                 ->name('show');
         });
 
-    // Úprava kampaně – správce kampaně a výš
+    // Uprava kampane
     Route::middleware(['auth', 'role_at_least:campaign_manager'])
         ->prefix('campaigns')
         ->name('topics.campaigns.')
@@ -32,7 +32,7 @@ Route::prefix('topics/{topic}')->group(function () {
                 ->name('update');
         });
 
-    // Vytvoření a smazání kampaně – pouze admin
+    // Vytvoreni a smazani kampane
     Route::middleware(['auth', 'role_at_least:admin'])
         ->prefix('campaigns')
         ->name('topics.campaigns.')
@@ -42,15 +42,13 @@ Route::prefix('topics/{topic}')->group(function () {
             Route::delete('/{campaign}', [CampaignController::class, 'destroy'])
                 ->whereNumber('campaign')
                 ->name('destroy');
-            //necham, ale blokkovalo to workera,
-            // Route::get('/{campaign}', [CampaignController::class, 'show'])->name('show');
-            
+
             Route::get('/{campaign}/edit', [CampaignController::class, 'edit'])->name('edit');
             Route::put('/{campaign}', [CampaignController::class, 'update'])->name('update');
             Route::delete('/{campaign}', [CampaignController::class, 'destroy'])->name('destroy');
         });
 
-    // Správa správců kampaní - jen pro adminy
+    // Sprava spravcu kampani
     Route::middleware(['auth', 'role_at_least:admin'])
         ->prefix('campaigns/{campaign}/manager')
         ->name('topics.campaigns.manager.')

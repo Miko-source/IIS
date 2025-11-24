@@ -1,4 +1,4 @@
-{{-- Sekce pro CRUD akce kampaně (zobrazení / inline edit) --}}
+{{-- sekce CRUD akce kampane --}}
 @can('update', $campaign)
     @if(request()->has('edit_campaign'))
         @include('campaigns.crud.edit', ['campaign' => $campaign, 'topic' => $topic])

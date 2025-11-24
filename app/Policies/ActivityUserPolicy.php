@@ -9,7 +9,7 @@ use App\Enums\UserRole;
 class ActivityUserPolicy
 {
     /**
-     * Uživatel může potvrdit/odmítnout aktivitu?
+     * může potvrdit/odmítnout aktivitu?
      */
     public function manage(User $user, ActivityUser $activityUser): bool
     {
@@ -17,7 +17,7 @@ class ActivityUserPolicy
         $step = $activity->step;
         $campaign = $step->campaign;
 
-        // ADMIN – může vše
+        // ADMIN
         if ($user->hasRole(UserRole::ADMIN)) {
             return true;
         }

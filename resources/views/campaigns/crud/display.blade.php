@@ -1,4 +1,4 @@
-{{-- Zobrazení akčních tlačítek pro kampaň --}}
+{{-- kampan tlacitka --}}
 <div class="d-flex gap-2 my-3">
     @include('components.edit-button', [
         'href' => route('topics.campaigns.show', [$topic, $campaign]) . '?edit_campaign=1',

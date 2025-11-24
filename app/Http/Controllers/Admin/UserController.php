@@ -52,14 +52,14 @@ class UserController extends Controller
 
         return view('admin.users.index', compact('users'));
     }
-
+ // ukazat formular
     public function edit(User $user)
     {
         $roles = UserRole::cases();
 
         return view('admin.users.edit', compact('user', 'roles'));
     }
-
+    // ulozit hodnoty z formulare
     public function update(Request $request, User $user)
 {
     $validated = $request->validate([

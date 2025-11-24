@@ -1,10 +1,4 @@
 <?php
-/**
- * ---------------------------------------------------------
- * Autor:  Martin Bureš
- * Login:  xbures38
- * ---------------------------------------------------------
- */
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -54,6 +48,7 @@ class Campaign extends Model
         return $this->belongsToMany(User::class, 'campaign_user')
                     ->withTimestamps();
     }
+    //omezovani viditelnosti DB dotazu podle uzivatele
     public function scopeVisibleFor(Builder $query, User $user): Builder
     {
         if ($user->hasRoleOrHigher(UserRole::ADMIN)) {
